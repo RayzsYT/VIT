@@ -62,7 +62,7 @@ public enum Weapon {
      * @param weaponName Weapon name. Letter casing does not matter!
      * @return Returns matched weapon or null.
      */
-    public static Weapon getWeapon(final String weaponName) {
+    public static Weapon getWeaponByName(final String weaponName) {
         for (final Weapon weapon : Weapon.values()) {
             if (weapon.getWeaponName().equalsIgnoreCase(weaponName)) {
                 return weapon;

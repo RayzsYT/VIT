@@ -33,7 +33,7 @@ public enum AgentRole {
      * @param roleName Team role name. Letter casing does not matter!
      * @return Returns matched team role or null.
      */
-    public static AgentRole getRole(final String roleName) {
+    public static AgentRole getRoleByName(final String roleName) {
         for (final AgentRole role : AgentRole.values()) {
             if (role.getRoleName().equalsIgnoreCase(roleName)) {
                 return role;

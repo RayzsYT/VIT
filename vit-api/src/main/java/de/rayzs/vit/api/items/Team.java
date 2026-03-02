@@ -42,7 +42,7 @@ public enum Team {
      * @param teamName Team name. Letter casing does not matter!
      * @return Returns matched agent or null.
      */
-    public static Team getTeam(final String teamName) {
+    public static Team getTeamByName(final String teamName) {
         for (final Team team : Team.values()) {
             if (team.getTeamName().equalsIgnoreCase(teamName)) {
                 return team;
