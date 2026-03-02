@@ -11,6 +11,7 @@ import de.rayzs.vit.api.request.RequestMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.*;
 
@@ -48,7 +49,11 @@ public class VITStart {
             );
 
             process.start(p -> {
-                System.out.println(dir.getFolderName() + " -> " + p.getPercent());
+                try {
+                    System.out.write(("\rDownloading " + dir.getFolderName() + ": " + Math.round(p.getPercent()) + "%").getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
 
         }
