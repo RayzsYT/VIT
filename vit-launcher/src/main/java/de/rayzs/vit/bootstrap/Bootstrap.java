@@ -2,7 +2,7 @@ package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.impl.VITAPIImpl;
-import de.rayzs.vit.start.VITPrep;
+import de.rayzs.vit.start.AssetPreparer;
 
 public class Bootstrap {
 
@@ -11,7 +11,7 @@ public class Bootstrap {
         final VITAPIImpl api = new VITAPIImpl();
         VIT.set(api);
 
-        final VITPrep prep = new VITPrep(api);
+        final AssetPreparer prep = new AssetPreparer(api);
 
     }
 }
