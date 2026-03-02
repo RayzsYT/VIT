@@ -1,7 +1,5 @@
 package de.rayzs.vit.api.items;
 
-import java.util.Locale;
-
 public enum Team {
 
     DEFEND      ("Defender", "defending"),
@@ -31,7 +29,7 @@ public enum Team {
      * @return Team adjective.
      */
     public String getTeamAdjective() {
-        return teamAdjective;
+        return this.teamAdjective;
     }
 
     /**
