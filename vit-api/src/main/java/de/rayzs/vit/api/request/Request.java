@@ -162,7 +162,7 @@ public class Request {
     }
 
     /**
-     * Send the request and returns the body of the
+     * Sends the request and returns the body of the
      * request if successful.
      *
      * @param client HttpClient.
