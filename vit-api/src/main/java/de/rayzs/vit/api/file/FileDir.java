@@ -7,7 +7,7 @@ public enum FileDir {
     ROOT                (null,      System.getenv("LOCALAPPDATA") + "\\VIT"),
     ASSETS              (ROOT,      "assets"),
 
-    ICONS               (ASSETS,    "icons"),
+    SYSTEM              (ASSETS,    "system"),
 
     WEAPONS             (ASSETS,    "weapons"),
     AGENTS              (ASSETS,    "agents"),
