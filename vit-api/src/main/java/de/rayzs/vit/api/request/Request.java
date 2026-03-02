@@ -37,7 +37,7 @@ public class Request {
             SSL_CONTEXT = SSLContext.getInstance("TLS");
             SSL_CONTEXT.init(null, dummy, new SecureRandom());
         } catch (Exception exception) {
-            exception.fillInStackTrace();
+            exception.printStackTrace();
         }
     }
 
@@ -161,7 +161,7 @@ public class Request {
             return Optional.of(contentResponse.body());
 
         } catch (Exception exception) {
-            exception.fillInStackTrace();
+            exception.printStackTrace();
         }
 
         return Optional.empty();
