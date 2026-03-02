@@ -38,12 +38,11 @@ public enum Agent {
     HARBOR      ("Harbor",      AgentRole.CONTROLLER),;
 
 
-    private final String agentName, agentId;
+    private String agentId;
+    private final String agentName;
     private final AgentRole agentRole;
 
     Agent(final String agentName, final AgentRole agentRole) {
-        this.agentId = agentName.toLowerCase(Locale.ROOT);
-
         this.agentName = agentName;
         this.agentRole = agentRole;
     }
@@ -58,11 +57,27 @@ public enum Agent {
     }
 
     /**
-     * Returns agent id which is basically just
-     * the agent name but in lowercased letters
-     * for simpler management.
+     * Update agent id. Should only be called once
+     * during runtime to set the agent id fetched from
+     * the valorant-api.
      *
-     * @return Agent id.
+     * @param agentId Agent id.
+     */
+    public void updateAgentId(final String agentId) {
+        if (this.agentId != null) {
+            throw new IllegalStateException("Agent ID is already set!");
+        }
+
+        this.agentId = agentId;
+    }
+
+    /**
+     * Get the agent id. This one needs to be set first after
+     * fetching the agent uuid from the valorant-api.
+     * It can then be used to easier navigate through
+     * each agent's images and other information.
+     *
+     * @return Agent UUID.
      */
     public String getAgentId() {
         return this.agentId;
@@ -78,14 +93,32 @@ public enum Agent {
     }
 
     /**
+     * Iterates through all agents and compare their names
+     * with the provided input. Returns the agent if it finds a match,
+     * otherwise returns null.
+     *
+     * @param agentName Agent name. Letter casing does not matter!
+     * @return Returns matched agent or null.
+     */
+    public static Agent getAgentByName(final String agentName) {
+        for (final Agent agent : Agent.values()) {
+            if (agent.getAgentName().equalsIgnoreCase(agentName)) {
+                return agent;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Iterates through all agents and compare their ids
      * with the provided input. Returns the agent if it finds a match,
      * otherwise returns null.
      *
-     * @param agentId Agent name. Letter casing does not matter!
+     * @param agentId Agent id. Letter casing does not matter!
      * @return Returns matched agent or null.
      */
-    public static Agent getAgent(final String agentId) {
+    public static Agent getAgentById(final String agentId) {
         for (final Agent agent : Agent.values()) {
             if (agent.getAgentId().equalsIgnoreCase(agentId)) {
                 return agent;
