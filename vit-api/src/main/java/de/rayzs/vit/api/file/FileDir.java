@@ -9,7 +9,7 @@ public enum FileDir {
 
     WEAPONS     (ASSETS,        "weapons"),
     AGENTS      (ASSETS,        "agents"),
-    TIERS        (ASSETS,        "tiers"),
+    TIERS       (ASSETS,        "tiers"),
     MAPS        (ASSETS,        "maps");
 
 
@@ -23,7 +23,7 @@ public enum FileDir {
         this.folderName = folderName;
 
         this.folder = parent != null
-                ? new File(parent.getFolderName(), folderName)
+                ? new File(parent.getFolder(), folderName)
                 : new File(folderName);
 
         if (this.folder.mkdir()) {
