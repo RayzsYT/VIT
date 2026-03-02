@@ -69,6 +69,10 @@ public class ImageIdMap {
             final String id,
             final String imageUrl
     ) {
+        if (this.miniDir == null) {
+            throw new IllegalStateException("That ImageIdMap does not have a mini image area!");
+        }
+
         this.miniImages.putIfAbsent(id, provider.getOrCreateImage(
                 imageUrl,
                 miniDir,
@@ -103,6 +107,10 @@ public class ImageIdMap {
      * @return DisplayImage.
      */
     public DisplayImage getMiniImage(final String id) {
+        if (this.miniDir == null) {
+            throw new IllegalStateException("That ImageIdMap does not have a mini image area!");
+        }
+
         return this.miniImages.get(id);
     }
 }
