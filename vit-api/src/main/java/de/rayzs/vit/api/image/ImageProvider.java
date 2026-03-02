@@ -49,4 +49,11 @@ public interface ImageProvider {
      * @return ImageIdMap for all agents.
      */
     ImageIdMap getAgents();
+
+    /**
+     * Get ImageIdMap for all tiers.
+     *
+     * @return ImageIdMap for all tiers.
+     */
+    ImageIdMap getTiers();
 }
