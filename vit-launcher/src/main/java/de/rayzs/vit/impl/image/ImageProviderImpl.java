@@ -58,6 +58,6 @@ public class ImageProviderImpl implements ImageProvider {
 
     @Override
     public ImageIdMap getTiers() {
-        return null;
+        return this.tiersIdMap;
     }
 }
