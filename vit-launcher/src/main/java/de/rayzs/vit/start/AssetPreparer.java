@@ -13,9 +13,9 @@ import de.rayzs.vit.api.request.RequestMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class AssetPreparer {
 
@@ -51,9 +51,11 @@ public class AssetPreparer {
 
     private final VITAPI api;
 
-    public AssetPreparer(VITAPI api) {
+    public AssetPreparer(final VITAPI api, final Consumer<DownloadProcess> processConsumer) {
         this.api = api;
 
+
+        // Fetch and load all necessary assets.
         final HttpClient client = Request.createClient();
 
         loadWeapons(client);
@@ -61,37 +63,77 @@ public class AssetPreparer {
         loadMaps(client);
         loadTiers(client);
 
+        // Not required anymore, therefore closing the client.
         client.close();
 
 
-        Map<FileDir, HashSet<DownloadElement>> images = new HashMap<>();
+
+        // Collects all the files which need to be downloaded.
+
+        final Map<FileDir, HashSet<DownloadElement>> images = new HashMap<>();
         for (final FileDir dir : FileDir.values()) {
             for (final DisplayImage image : api.getImageProvider().getImages(dir)) {
+                if (image.doesExist()) {
+                    continue;
+                }
+
                 images.computeIfAbsent(dir, k -> new HashSet<>())
                         .add(image.getDownloadElement());
             }
         }
 
         for (final FileDir dir : FileDir.values()) {
-            final DownloadProcess process = new DownloadProcess(
-                    dir,
-                    images.getOrDefault(
-                            dir,
+
+            // Creates a DownloadProcess for the directory and all
+            // its assets that still need to be downloaded.
+            final DownloadProcess process = new DownloadProcess(dir,
+                    images.getOrDefault(dir,
                             HashSet.newHashSet(0)
                     ).toArray(new DownloadElement[0])
             );
 
-            process.start(p -> {
-                try {
-                    System.out.write(("\rDownloading " + dir.getFolderName() + ": " + Math.round(p.getPercent()) + "%").getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            // Downloads all the missing assets.
+            process.start(processConsumer);
         }
     }
 
-    public void loadAgents(final HttpClient client) {
+
+    /**
+     * Sends a request to the valorant-api
+     * and fetches the result and returns
+     * it as a JsonObject.
+     *
+     * @param client Client.
+     * @param name Name of the request information.
+     * @return JsonObject.
+     */
+    private JSONObject fetch(final HttpClient client, final String name) {
+
+        // Creating request
+        final Request request = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.API,
+                name
+        );
+
+        // Send the request.
+        final Optional<String> body = request.sendAndGet(client);
+        if (body.isEmpty()) {
+            // Well, as it already says it, it will throw and exception in case it failed.
+            throw new NullPointerException("No body found! URL connection seems to have failed.");
+        }
+
+        // Return body as JsonObject
+        return new JSONObject(body.get());
+    }
+
+
+    /**
+     * Fetches and loads all agents.
+     *
+     * @param client HttpClient.
+     */
+    private void loadAgents(final HttpClient client) {
         final JSONObject jsonObj = fetch(client, "agents");
         final JSONArray agents = jsonObj.getJSONArray("data");
 
@@ -117,7 +159,13 @@ public class AssetPreparer {
         }
     }
 
-    public void loadMaps(final HttpClient client) {
+
+    /**
+     * Fetches and loads all maps.
+     *
+     * @param client HttpClient.
+     */
+    private void loadMaps(final HttpClient client) {
         final JSONObject jsonObj = fetch(client, "maps");
         final JSONArray maps = jsonObj.getJSONArray("data");
 
@@ -153,7 +201,13 @@ public class AssetPreparer {
         }
     }
 
-    public void loadTiers(final HttpClient client) {
+
+    /**
+     * Fetches and loads all competitive tiers.
+     *
+     * @param client HttpClient.
+     */
+    private void loadTiers(final HttpClient client) {
         final JSONObject jsonObj = fetch(client, "competitivetiers");
 
         final JSONArray acts = jsonObj.getJSONArray("data");
@@ -204,7 +258,13 @@ public class AssetPreparer {
         }
     }
 
-    public void loadWeapons(final HttpClient client) {
+
+    /**
+     * Fetches and loads all weapons.
+     *
+     * @param client HttpClient.
+     */
+    private void loadWeapons(final HttpClient client) {
         final JSONObject jsonObj = fetch(client, "weapons");
         final JSONArray guns = jsonObj.getJSONArray("data");
 
@@ -252,20 +312,5 @@ public class AssetPreparer {
 
             }
         }
-    }
-
-    private JSONObject fetch(final HttpClient client, final String name) {
-        final Request request = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.API,
-                name
-        );
-
-        final Optional<String> body = request.sendAndGet(client);
-        if (body.isEmpty()) {
-            throw new NullPointerException("No body found! URL connection seems to have failed.");
-        }
-
-        return new JSONObject(body.get());
     }
 }
