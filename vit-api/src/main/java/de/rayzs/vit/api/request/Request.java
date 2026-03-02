@@ -98,7 +98,8 @@ public class Request {
     ) {
         return new Request(
                 method,
-                dest.from(urlPath),
+                dest,
+                urlPath,
                 ""
         );
     }
@@ -120,7 +121,8 @@ public class Request {
     ) {
         return new Request(
                 method,
-                dest.from(urlPath),
+                dest,
+                urlPath,
                 body
         );
     }
@@ -130,15 +132,19 @@ public class Request {
 
     private Request(
             final RequestMethod method,
+            final RequestDest dest,
             final String urlPath,
             final String body
     ) {
         final HttpRequest.Builder builder = HttpRequest.newBuilder()
-                .uri(URI.create(urlPath))
-                .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                .header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
-                .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
-                .header("X-Riot-ClientVersion", CURRENT_VERSION);
+                .uri(URI.create(dest.from(urlPath)));
+
+        if (dest != RequestDest.API) {
+            builder.header("Authorization", "Bearer " + ACCESS_TOKEN)
+                    .header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
+                    .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
+                    .header("X-Riot-ClientVersion", CURRENT_VERSION);
+        }
 
         switch (method) {
             case GET -> builder.GET();
