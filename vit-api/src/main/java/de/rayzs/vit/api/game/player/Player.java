@@ -1,6 +1,6 @@
-package de.rayzs.vit.api.items.game.player;
+package de.rayzs.vit.api.game.player;
 
-import de.rayzs.vit.api.items.Agent;
+import de.rayzs.vit.api.game.items.Agent;
 
 public record Player(
         String name,

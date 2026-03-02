@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.items;
+package de.rayzs.vit.api.game.items;
 
 public enum Team {
 

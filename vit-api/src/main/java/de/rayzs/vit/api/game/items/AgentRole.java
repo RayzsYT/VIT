@@ -1,6 +1,4 @@
-package de.rayzs.vit.api.items;
-
-import java.util.Locale;
+package de.rayzs.vit.api.game.items;
 
 public enum AgentRole {
 
