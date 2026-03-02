@@ -31,7 +31,7 @@ public class ImageProviderImpl implements ImageProvider {
     }
 
     @Override
-    public Collection<DisplayImage> getImages(FileDir dir) {
+    public Collection<DisplayImage> getImages(final FileDir dir) {
         final Map<String, DisplayImage> map = this.images.get(dir);
 
         if (map == null) {
