@@ -135,6 +135,15 @@ public enum Tier {
     }
 
     /**
+     * Returns the mini sized DisplayImage of the tier.
+     *
+     * @return DisplayImage.
+     */
+    public DisplayImage getMiniImage() {
+        return VIT.get().getImageProvider().getTiers().getMiniImage(this.tierId);
+    }
+
+    /**
      * Iterates through all tiers and compare their names
      * with the provided input. Returns the agent if it finds a match,
      * otherwise returns null.
