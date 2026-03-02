@@ -54,7 +54,7 @@ public enum Tier {
      */
 
 
-    private String tierId;
+    private String tierId, tierColor;
     private final String tierName;
 
     Tier(final String tierName) {
@@ -68,6 +68,30 @@ public enum Tier {
      */
     public String getTierName() {
         return this.tierName;
+    }
+
+    /**
+     * Update tier color. Should only be called once
+     * during runtime to set the agent id fetched from
+     * the valorant-api.
+     *
+     * @param tierColor Tier color.
+     */
+    public void updateTierColor(final String tierColor) {
+        if (this.tierColor != null) {
+            throw new IllegalStateException("Tier color is already set!");
+        }
+
+        this.tierColor = tierColor;
+    }
+
+    /**
+     * Get the tier color.
+     *
+     * @return Tier color.
+     */
+    public String getTierColor() {
+        return tierColor;
     }
 
     /**
@@ -94,6 +118,10 @@ public enum Tier {
      * @return Tier id.
      */
     public String getTierId() {
+        if (this.tierId == null) {
+            throw new IllegalStateException("Tier ID is not set yet!");
+        }
+
         return this.tierId;
     }
 
