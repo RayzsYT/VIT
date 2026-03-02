@@ -8,11 +8,9 @@ public enum Team {
     ATTACK      ("Attacker", "attacking");
 
 
-    private final String teamName, teamId, teamAdjective;
+    private final String teamName, teamAdjective;
 
     Team(final String teamName, final String teamAdjective) {
-        this.teamId = teamName.toLowerCase(Locale.ROOT);
-
         this.teamName = teamName;
         this.teamAdjective = teamAdjective;
     }
@@ -27,17 +25,6 @@ public enum Team {
     }
 
     /**
-     * Returns the team id which is basically just
-     * the team name but in lowercased letters
-     * for simpler management.
-     *
-     * @return Team id.
-     */
-    public String getTeamId() {
-        return this.teamId;
-    }
-
-    /**
      * Returns the team adjective.
      * Example: defending, attacking
      *
@@ -48,16 +35,16 @@ public enum Team {
     }
 
     /**
-     * Iterates through all teams and compare their ids
+     * Iterates through all teams and compare their names
      * with the provided input. Returns the team if it finds a match,
      * otherwise returns null.
      *
-     * @param teamId Team id. Letter casing does not matter!
+     * @param teamName Team name. Letter casing does not matter!
      * @return Returns matched agent or null.
      */
-    public static Team getTeam(final String teamId) {
+    public static Team getTeam(final String teamName) {
         for (final Team team : Team.values()) {
-            if (team.getTeamId().equalsIgnoreCase(teamId)) {
+            if (team.getTeamName().equalsIgnoreCase(teamName)) {
                 return team;
             }
         }

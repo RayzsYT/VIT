@@ -38,11 +38,9 @@ public enum Weapon {
     BUCKY       ("Bucky");
 
 
-    private final String weaponName, weaponId;
+    private final String weaponName;
 
     Weapon(final String weaponName) {
-        this.weaponId = weaponName.toLowerCase(Locale.ROOT);
-
         this.weaponName = weaponName;
     }
 
@@ -55,29 +53,18 @@ public enum Weapon {
         return this.weaponName;
     }
 
-    /**
-     * Returns weapon id which is basically just
-     * the weapon name but in lowercased letters
-     * for simpler management.
-     *
-     * @return Weapon id.
-     */
-    public String getWeaponId() {
-        return this.weaponId;
-    }
-
 
     /**
-     * Iterates through all weapons and compare their ids
+     * Iterates through all weapons and compare their names
      * with the provided input. Returns the weapon if it finds a match,
      * otherwise returns null.
      *
-     * @param weaponId Weapon id. Letter casing does not matter!
+     * @param weaponName Weapon name. Letter casing does not matter!
      * @return Returns matched weapon or null.
      */
-    public static Weapon getWeapon(final String weaponId) {
+    public static Weapon getWeapon(final String weaponName) {
         for (final Weapon weapon : Weapon.values()) {
-            if (weapon.getWeaponId().equalsIgnoreCase(weaponId)) {
+            if (weapon.getWeaponName().equalsIgnoreCase(weaponName)) {
                 return weapon;
             }
         }
