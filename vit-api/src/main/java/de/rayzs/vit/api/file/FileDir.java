@@ -4,7 +4,7 @@ import java.io.File;
 
 public enum FileDir {
 
-    ROOT        (null,   System.getenv("LOCALAPPDATA") + "\\VIT"),
+    ROOT        (null,          System.getenv("LOCALAPPDATA") + "\\VIT"),
     ASSETS      (ROOT,          "assets"),
 
     WEAPONS     (ASSETS,        "weapons"),
