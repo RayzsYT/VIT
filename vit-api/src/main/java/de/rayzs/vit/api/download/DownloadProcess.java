@@ -81,6 +81,7 @@ public class DownloadProcess {
         }
 
         consumer.accept(this);
+        downloadRecursively(consumer);
     }
 
     /**
