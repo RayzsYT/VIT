@@ -9,9 +9,8 @@ public enum SystemImages {
 
     LOGO        ("images/logo.png"),
     ERROR       ("images/error.png"),
-    LOADING     ("images/loading.gif"),
-    WARNING     ("images/warning.gif"),
-    ICON        ("images/icon.ico");
+    WARNING     ("images/warning.png"),
+    LOADING     ("images/loading.gif");
 
 
     private final DisplayImage displayImage;
@@ -24,8 +23,8 @@ public enum SystemImages {
         );
 
         final String[] fileNameSplit = file.getName().split("\\."); // ["file", "png"]
-        final String fileName = fileNameSplit[0];                   // "file"
-        final String fileType = fileNameSplit[1];                   // "png"
+        final String fileName = fileNameSplit[0];                         // "file"
+        final String fileType = fileNameSplit[1];                         // "png"
 
         this.displayImage = new DisplayImage(
             null,
