@@ -14,6 +14,10 @@ public enum RequestDest {
         private String formattedUrl;
         RequestDest(final String url) {
             this.unformattedUrl = url;
+
+            if (!this.unformattedUrl.contains("%")) {
+                this.formattedUrl = this.unformattedUrl;
+            }
         }
 
         /**
