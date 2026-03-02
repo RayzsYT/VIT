@@ -28,4 +28,25 @@ public interface ImageProvider {
      * @return Collection of all DisplayImages.
      */
     Collection<DisplayImage> getImages(final FileDir dir);
+
+    /**
+     * Get ImageIdMap for all weapons.
+     *
+     * @return ImageIdMap for all weapons.
+     */
+    ImageIdMap getWeaponSkins();
+
+    /**
+     * Get ImageIdMap for all maps.
+     *
+     * @return ImageIdMap for all maps.
+     */
+    ImageIdMap getMaps();
+
+    /**
+     * Get ImageIdMap for all agents.
+     *
+     * @return ImageIdMap for all agents.
+     */
+    ImageIdMap getAgents();
 }
