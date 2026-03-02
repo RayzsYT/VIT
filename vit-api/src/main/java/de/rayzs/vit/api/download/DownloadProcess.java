@@ -87,7 +87,7 @@ public class DownloadProcess {
      * Goes through each DownloadElement until
      * it has been gone through all of them.
      *
-     * @param consumer COnsumer after each downloaded file.
+     * @param consumer Consumer after each downloaded file.
      */
     private void downloadRecursively(final Consumer<DownloadProcess> consumer) {
         if (isCompleted()) {
