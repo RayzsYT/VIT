@@ -15,15 +15,11 @@ public class FileUtils {
      *
      * @param inFilePath Resource file path.
      * @param outFileDir Export file directory.
-     * @param outFileName Export file name.
-     *
-     * @throws IOException In case something went wrong.
      */
-    public static void exportResourceFile(
+    public static File exportResourceFile(
             final String inFilePath,
-            final FileDir outFileDir,
-            final String outFileName
-    ) throws IOException {
+            final FileDir outFileDir
+    ) {
 
         final URL url = FileUtils.class.getClassLoader().getResource(
                 inFilePath.replace("/", "\\")
@@ -33,17 +29,21 @@ public class FileUtils {
             throw new NullPointerException("Resource not found: " + inFilePath);
         }
 
-        final URLConnection connection = url.openConnection();
-        connection.setUseCaches(false);
-
-        final InputStream inputStream = connection.getInputStream();
-        final File outputFile = outFileDir.getFile(outFileName);
-
-        if (outputFile.exists()) {
-            return;
-        }
 
         try {
+
+            final URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+
+            final InputStream inputStream = connection.getInputStream();
+            final File outputFile = outFileDir.getFile(
+                    inFilePath.substring(inFilePath.lastIndexOf("/") + 1)
+            );
+
+            if (outputFile.exists()) {
+                return outputFile;
+            }
+
             final OutputStream outputStream = new FileOutputStream(outputFile);
             final byte[] buffer = new byte[1024];
 
@@ -54,8 +54,10 @@ public class FileUtils {
             outputStream.close();
             inputStream.close();
 
+            return outputFile;
+
         } catch (Exception exception) {
-            exception.printStackTrace();
+            throw new NullPointerException("Failed to export resource file: " + inFilePath);
         }
     }
 }
