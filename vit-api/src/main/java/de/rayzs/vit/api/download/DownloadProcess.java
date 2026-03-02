@@ -105,7 +105,7 @@ public class DownloadProcess {
         // intended. I mean, I would rather have that instead of a never ending loop
         // because of some failed internet connection.
         try (InputStream in = new URL(element.url()).openStream()) {
-            Files.copy(in, Paths.get(file.getPath()), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(in, Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
