@@ -5,6 +5,8 @@ import de.rayzs.vit.api.image.DisplayImage;
 
 public enum Tier {
 
+    UNRANKED            ("Unranked"),
+
     // This one exists?
     IRON_I              ("Iron I"),
     IRON_II             ("Iron II"),
