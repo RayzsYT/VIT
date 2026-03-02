@@ -9,6 +9,7 @@ public enum FileDir {
 
     WEAPONS     (ASSETS,        "weapons"),
     AGENTS      (ASSETS,        "agents"),
+    TIERS        (ASSETS,        "tiers"),
     MAPS        (ASSETS,        "maps");
 
 
