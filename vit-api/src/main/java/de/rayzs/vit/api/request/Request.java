@@ -9,7 +9,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.Objects;
 import java.util.Optional;
 
 public class Request {
@@ -70,6 +69,19 @@ public class Request {
         CLIENT_PLATFORM = clientPlatform;
         CURRENT_VERSION = currentVersion;
     }
+
+
+    /**
+     * Create a HttpClient.
+     *
+     * @return Created HttpClient.
+     */
+    public static HttpClient createClient() {
+        return HttpClient.newBuilder()
+                .sslContext(SSL_CONTEXT)
+                .build();
+    }
+
 
     /**
      * Creates a Request object without a body.
