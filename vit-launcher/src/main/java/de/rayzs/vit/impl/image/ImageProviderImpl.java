@@ -11,10 +11,13 @@ public class ImageProviderImpl implements ImageProvider {
 
     private final Map<FileDir, Map<String, DisplayImage>> images = new HashMap<>();
 
-    private final ImageIdMap weaponsIdMap = new ImageIdMap(this, FileDir.WEAPONS);
-    private final ImageIdMap agentsIdMap = new ImageIdMap(this, FileDir.AGENTS);
-    private final ImageIdMap mapsIdMap = new ImageIdMap(this, FileDir.MAPS);
-    private final ImageIdMap tiersIdMap = new ImageIdMap(this, FileDir.TIERS);
+    // Images that only have one image size.
+    private final ImageIdMap weaponsIdMap = new ImageIdMap(this, FileDir.WEAPONS, null);
+    private final ImageIdMap agentsIdMap = new ImageIdMap(this, FileDir.AGENTS, null);
+
+    // Images that contain both normal and mini sized images.
+    private final ImageIdMap mapsIdMap = new ImageIdMap(this, FileDir.MAPS_NORMAL, FileDir.MAPS_SMALL);
+    private final ImageIdMap tiersIdMap = new ImageIdMap(this, FileDir.TIERS_NORMAL, FileDir.TIERS_SMALL);
 
     @Override
     public DisplayImage getOrCreateImage(

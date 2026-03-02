@@ -4,13 +4,19 @@ import java.io.File;
 
 public enum FileDir {
 
-    ROOT        (null,          System.getenv("LOCALAPPDATA") + "\\VIT"),
-    ASSETS      (ROOT,          "assets"),
+    ROOT                (null,          System.getenv("LOCALAPPDATA") + "\\VIT"),
+    ASSETS              (ROOT,          "assets"),
 
-    WEAPONS     (ASSETS,        "weapons"),
-    AGENTS      (ASSETS,        "agents"),
-    TIERS       (ASSETS,        "tiers"),
-    MAPS        (ASSETS,        "maps");
+    WEAPONS             (ASSETS,        "weapons"),
+    AGENTS              (ASSETS,        "agents"),
+
+    TIERS               (ASSETS,        "tiers"),
+    TIERS_NORMAL        (TIERS,        "normal"),
+    TIERS_SMALL         (TIERS,        "small"),
+
+    MAPS                (ASSETS,        "maps"),
+    MAPS_NORMAL         (MAPS,        "normal"),
+    MAPS_SMALL          (MAPS,        "small");
 
 
     private final FileDir parent;

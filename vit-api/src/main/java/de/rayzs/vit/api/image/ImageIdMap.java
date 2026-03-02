@@ -17,11 +17,16 @@ public class ImageIdMap {
     private final Map<String, DisplayImage> miniImages = new HashMap<>();
 
     private final ImageProvider provider;
-    private final FileDir dir;
+    private final FileDir normalDir, miniDir;
 
-    public ImageIdMap(final ImageProvider provider, final FileDir dir) {
+    public ImageIdMap(
+            final ImageProvider provider,
+            final FileDir normalDir,
+            final FileDir miniDir
+    ) {
         this.provider = provider;
-        this.dir = dir;
+        this.normalDir = normalDir;
+        this.miniDir = miniDir;
     }
 
     /**
@@ -49,7 +54,7 @@ public class ImageIdMap {
     ) {
         this.images.putIfAbsent(id, provider.getOrCreateImage(
                 imageUrl,
-                dir,
+                normalDir,
                 id
         ));
     }
@@ -66,7 +71,7 @@ public class ImageIdMap {
     ) {
         this.miniImages.putIfAbsent(id, provider.getOrCreateImage(
                 imageUrl,
-                dir,
+                miniDir,
                 id
         ));
     }
@@ -82,12 +87,22 @@ public class ImageIdMap {
     }
 
     /**
-     * Get name of the associated id.
+     * Get the DisplayImage of the associated id.
      *
      * @param id Id.
      * @return DisplayImage.
      */
     public DisplayImage getImage(final String id) {
         return this.images.get(id);
+    }
+
+    /**
+     * Get the mini DisplayImage of the associated id.
+     *
+     * @param id Id.
+     * @return DisplayImage.
+     */
+    public DisplayImage getMiniImage(final String id) {
+        return this.miniImages.get(id);
     }
 }
