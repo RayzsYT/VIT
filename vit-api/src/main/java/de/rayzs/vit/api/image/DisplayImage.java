@@ -84,7 +84,7 @@ public class DisplayImage {
                 this.image = ImageIO.read(imageFile);
                 this.icon = new ImageIcon(this.image);
             } catch (Exception exception) {
-                exception.printStackTrace();
+                throw new RuntimeException("Could not load image from " + imageFile.getAbsolutePath());
             }
         }
     }
