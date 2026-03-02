@@ -92,6 +92,12 @@ public class AssetPreparer {
                     ).toArray(new DownloadElement[0])
             );
 
+            // If it's already completed aka empty, it will
+            // just skip that DownloadProcess.
+            if (process.isCompleted()) {
+                continue;
+            }
+
             // Downloads all the missing assets.
             process.start(processConsumer);
         }
