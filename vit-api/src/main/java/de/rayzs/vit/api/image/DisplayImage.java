@@ -1,18 +1,33 @@
 package de.rayzs.vit.api.image;
 
+import de.rayzs.vit.api.download.DownloadElement;
+import de.rayzs.vit.api.file.FileDir;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
 
 public class DisplayImage {
 
     private final String url, fileName;
+
+    private final DownloadElement downloadElement;
+    private final FileDir dir;
+
     private Image image;
 
     public DisplayImage(
             final String url,
+            final FileDir dir,
             final String fileName
     ) {
         this.url = url;
+        this.dir = dir;
         this.fileName = fileName;
+
+        this.downloadElement = new DownloadElement(url, fileName);
+
+        updateImage();
     }
 
     /**
@@ -25,8 +40,38 @@ public class DisplayImage {
         return image != null;
     }
 
-    public void download() {
+    /**
+     * Get FileDir where image is stored.
+     *
+     * @return FileDir.
+     */
+    public FileDir getDir() {
+        return dir;
+    }
 
+    /**
+     * Return DownloadElement from image.
+     *
+     * @return DownloadElement.
+     */
+    public DownloadElement getDownloadElement() {
+        return this.downloadElement;
+    }
+
+    /**
+     * Updates the image in case it did
+     * not load at first.
+     */
+    public void updateImage() {
+        final File imageFile = dir.getFile(fileName);
+
+        if (imageFile.exists()) {
+            try {
+                this.image = ImageIO.read(imageFile);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     public Image getImage() {
