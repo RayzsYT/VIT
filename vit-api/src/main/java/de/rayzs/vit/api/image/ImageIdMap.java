@@ -15,10 +15,11 @@ public class ImageIdMap {
     private final Map<String, String> names = new HashMap<>();
     private final Map<String, DisplayImage> images = new HashMap<>();
 
-
+    private final ImageProvider provider;
     private final FileDir dir;
 
-    public ImageIdMap(final FileDir dir) {
+    public ImageIdMap(final ImageProvider provider, final FileDir dir) {
+        this.provider = provider;
         this.dir = dir;
     }
 
@@ -45,13 +46,11 @@ public class ImageIdMap {
             final String id,
             final String iconUrl
     ) {
-        final DisplayImage icon = new DisplayImage(
+        this.images.putIfAbsent(id, provider.getOrCreateImage(
                 iconUrl,
                 dir,
-                id + ".png"
-        );
-
-        this.images.put(id, icon);
+                id
+        ));
     }
 
     /**
