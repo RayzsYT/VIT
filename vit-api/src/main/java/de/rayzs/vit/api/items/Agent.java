@@ -11,6 +11,8 @@ public enum Agent {
     KILLJOY     ("Killjoy",     AgentRole.SENTINEL),
     SAGE        ("Sage",        AgentRole.SENTINEL),
     VYSE        ("Vyse",        AgentRole.SENTINEL),
+    VETO        ("Veto",        AgentRole.SENTINEL),
+
 
     // Duelists
     CLOVE       ("Clove",       AgentRole.DUELIST),
@@ -21,6 +23,7 @@ public enum Agent {
     RAZE        ("Raze",        AgentRole.DUELIST),
     REYNA       ("Reyna",       AgentRole.DUELIST),
     YORU        ("Yoru",        AgentRole.DUELIST),
+    WAYLAY      ("Waylay",      AgentRole.DUELIST),
 
     // Initiators
     BREACH      ("Breach",      AgentRole.INITIATOR),
