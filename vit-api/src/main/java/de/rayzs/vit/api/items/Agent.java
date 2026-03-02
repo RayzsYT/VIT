@@ -1,6 +1,7 @@
 package de.rayzs.vit.api.items;
 
-import java.util.Locale;
+import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.image.DisplayImage;
 
 public enum Agent {
 
@@ -77,14 +78,23 @@ public enum Agent {
 
     /**
      * Get the agent id. This one needs to be set first after
-     * fetching the agent uuid from the valorant-api.
+     * fetching the agent id from the valorant-api.
      * It can then be used to easier navigate through
      * each agent's images and other information.
      *
-     * @return Agent UUID.
+     * @return Agent id.
      */
     public String getAgentId() {
         return this.agentId;
+    }
+
+    /**
+     * Returns the DisplayImage of the agent.
+     *
+     * @return DisplayImage.
+     */
+    public DisplayImage getImage() {
+        return VIT.get().getImageProvider().getTiers().getImage(this.agentId);
     }
 
     /**
