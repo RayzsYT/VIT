@@ -92,7 +92,7 @@ public class DownloadProcess {
      */
     private void downloadRecursively(final Consumer<DownloadProcess> consumer) {
         if (isCompleted()) {
-            // Base case.
+            this.percent = 100;
             return;
         }
 
