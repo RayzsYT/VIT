@@ -2,10 +2,12 @@ package de.rayzs.vit.api.request;
 
 public enum RequestDest {
 
-        LOCAL       ("https://127.0.0.1:%d/"),               // port
-        PD          ("https://pd.%s.a.pvp.net/"),            // region 1
-        SHARED      ("https://shared.%s.a.pvp.net/"),        // region 1
-        GLZ         ("https://glz-%s.%s.a.pvp.net/");        // region 2, region 1
+        API             ("https://valorant-api.com/v1/"),
+
+        LOCAL           ("https://127.0.0.1:%d/"),               // port
+        PD              ("https://pd.%s.a.pvp.net/"),            // region 1
+        SHARED          ("https://shared.%s.a.pvp.net/"),        // region 1
+        GLZ             ("https://glz-%s.%s.a.pvp.net/");        // region 2, region 1
         
         
         private final String unformattedUrl;
