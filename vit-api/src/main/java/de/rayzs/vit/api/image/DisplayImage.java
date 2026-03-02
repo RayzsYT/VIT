@@ -23,9 +23,18 @@ public class DisplayImage {
             final FileDir dir,
             final String fileName
     ) {
+        this(url, dir, fileName, "png");
+    }
+
+    public DisplayImage(
+            final String url,
+            final FileDir dir,
+            final String fileName,
+            final String fileType
+    ) {
         this.url = url;
         this.dir = dir;
-        this.fileName = fileName + ".png";
+        this.fileName = fileName + "." + fileType;
 
         this.downloadElement = new DownloadElement(
                 this.url,
