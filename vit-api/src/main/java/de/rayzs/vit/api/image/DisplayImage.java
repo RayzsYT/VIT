@@ -27,7 +27,10 @@ public class DisplayImage {
         this.dir = dir;
         this.fileName = fileName + ".png";
 
-        this.downloadElement = new DownloadElement(url, fileName);
+        this.downloadElement = new DownloadElement(
+                this.url,
+                this.fileName
+        );
 
         updateImage();
     }
