@@ -10,6 +10,7 @@ public enum Agent {
     DEADLOCK    ("Deadlock",    AgentRole.SENTINEL),
     KILLJOY     ("Killjoy",     AgentRole.SENTINEL),
     SAGE        ("Sage",        AgentRole.SENTINEL),
+    VYSE        ("Vyse",        AgentRole.SENTINEL),
 
     // Duelists
     CLOVE       ("Clove",       AgentRole.DUELIST),
