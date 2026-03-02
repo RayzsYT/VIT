@@ -54,6 +54,8 @@ public class AssetPreparer {
     public AssetPreparer(final VITAPI api, final Consumer<DownloadProcess> processConsumer) {
         this.api = api;
 
+        System.out.println("Fetching and loading assets...");
+
 
         // Fetch and load all necessary assets.
         final HttpClient client = Request.createClient();
@@ -101,6 +103,9 @@ public class AssetPreparer {
             // Downloads all the missing assets.
             process.start(processConsumer);
         }
+
+
+        System.out.println("Finished loading assets!");
     }
 
 
