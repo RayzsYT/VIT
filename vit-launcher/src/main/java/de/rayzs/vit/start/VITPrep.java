@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.*;
 
-public class VITStart {
+public class VITPrep {
 
     private final VITAPI api;
 
-    public VITStart(VITAPI api) {
+    public VITPrep(VITAPI api) {
         this.api = api;
 
         final HttpClient client = Request.createClient();
