@@ -25,6 +25,9 @@ public class VITPrep {
         final HttpClient client = Request.createClient();
 
         loadWeapons(client);
+        loadAgents(client);
+        loadMaps(client);
+        loadTiers(client);
 
         client.close();
 
@@ -57,6 +60,18 @@ public class VITPrep {
             });
 
         }
+    }
+
+    public void loadAgents(final HttpClient client) {
+        final JSONObject jsonObj = fetch(client, "agents");
+    }
+
+    public void loadMaps(final HttpClient client) {
+        final JSONObject jsonObj = fetch(client, "maps");
+    }
+
+    public void loadTiers(final HttpClient client) {
+        final JSONObject jsonObj = fetch(client, "competitiveTiers");
     }
 
     public void loadWeapons(final HttpClient client) {
