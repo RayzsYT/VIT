@@ -70,8 +70,6 @@ public class VITPrep {
             final String name = gun.getString("displayName");
             final String displayIcon = gun.getString("displayIcon");
 
-            System.out.println(name + ": " + displayIcon);
-
             api.getImageProvider().getWeaponSkins().putName(id, name);
             api.getImageProvider().getWeaponSkins().putImage(id, displayIcon);
 
