@@ -1,5 +1,8 @@
 package de.rayzs.vit.api;
 
+import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.image.SystemImages;
+
 public class VIT {
 
     private static VITAPI API = null;
@@ -34,6 +37,12 @@ public class VIT {
         if (API != null) {
             throw new IllegalArgumentException("VIT API is already initialized!");
         }
+
+
+        // Called so they create the necessary folders and files.
+        FileDir.values();
+        SystemImages.values();
+
 
         API = api;
     }
