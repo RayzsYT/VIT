@@ -4,6 +4,7 @@ import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.file.FileDir;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
@@ -15,6 +16,7 @@ public class DisplayImage {
     private final FileDir dir;
 
     private Image image;
+    private ImageIcon icon;
 
     public DisplayImage(
             final String url,
@@ -37,7 +39,7 @@ public class DisplayImage {
      * @return True if downloaded and stored. False otherwise.
      */
     public boolean doesExist() {
-        return image != null;
+        return this.image != null;
     }
 
     /**
@@ -46,7 +48,7 @@ public class DisplayImage {
      * @return FileDir.
      */
     public FileDir getDir() {
-        return dir;
+        return this.dir;
     }
 
     /**
@@ -68,10 +70,19 @@ public class DisplayImage {
         if (imageFile.exists()) {
             try {
                 this.image = ImageIO.read(imageFile);
+                this.icon = new ImageIcon(this.image);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         }
+    }
+
+    public ImageIcon getIcon() {
+        if (this.icon == null) {
+            throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
+        }
+
+        return this.icon;
     }
 
     public Image getImage() {
