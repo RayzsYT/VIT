@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class maps UUIDs with names and images.
+ * This class maps ids with names and images.
  * The idea is to use this class to simplify the process
  * of storing images of skins, agents, and maps.
  */
@@ -14,6 +14,7 @@ public class ImageIdMap {
 
     private final Map<String, String> names = new HashMap<>();
     private final Map<String, DisplayImage> images = new HashMap<>();
+    private final Map<String, DisplayImage> miniImages = new HashMap<>();
 
     private final ImageProvider provider;
     private final FileDir dir;
@@ -39,15 +40,32 @@ public class ImageIdMap {
     /**
      * Apply an icon image to an id.
      *
-     * @param id Skin id.
-     * @param iconUrl Skin icon url.
+     * @param id Id.
+     * @param imageUrl imageUrl.
      */
     public void putImage(
             final String id,
-            final String iconUrl
+            final String imageUrl
     ) {
         this.images.putIfAbsent(id, provider.getOrCreateImage(
-                iconUrl,
+                imageUrl,
+                dir,
+                id
+        ));
+    }
+
+    /**
+     * Apply an icon image to an id.
+     *
+     * @param id Id.
+     * @param imageUrl Image url.
+     */
+    public void putMiniImage(
+            final String id,
+            final String imageUrl
+    ) {
+        this.miniImages.putIfAbsent(id, provider.getOrCreateImage(
+                imageUrl,
                 dir,
                 id
         ));
