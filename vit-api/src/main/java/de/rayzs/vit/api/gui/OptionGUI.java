@@ -80,12 +80,12 @@ public class OptionGUI extends GUI {
 
 
         acceptButton.addActionListener(event -> {
-            response = 1;
+            this.response = 1;
             dispose();
         });
 
         denyButton.addActionListener(event -> {
-            response = -1;
+            this.response = -1;
             dispose();
         });
 
