@@ -104,6 +104,11 @@ public class DisplayImage {
      * @return ImageIcon.
      */
     public ImageIcon getIcon() {
+
+        if (this.isIcon) {
+            throw new IllegalStateException("This image is an .ico file and cannot be converted into an image icon.");
+        }
+
         if (this.icon == null) {
             throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
@@ -125,6 +130,11 @@ public class DisplayImage {
             final int height,
             final int hints
     ) {
+
+        if (this.isIcon) {
+            throw new IllegalStateException("This image is an .ico file and cannot be converted into an image icon.");
+        }
+
         if (this.icon == null) {
             throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
@@ -138,6 +148,11 @@ public class DisplayImage {
      * @return Image.
      */
     public Image getImage() {
+
+        if (this.isIcon) {
+            throw new IllegalStateException("This image is an .ico file and cannot be converted into an image.");
+        }
+
         if (this.image == null) {
             throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
@@ -159,6 +174,11 @@ public class DisplayImage {
             final int height,
             final int hints
     ) {
+
+        if (this.isIcon) {
+            throw new IllegalStateException("This image is an .ico file and cannot be converted into an image.");
+        }
+
         if (this.image == null) {
             throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
