@@ -47,7 +47,7 @@ public class DownloadGUI extends GUI {
 
 
         // Image logo
-        JLabel logo = new JLabel();
+        final JLabel logo = new JLabel();
         logo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         logo.setIcon(SystemImages
                 .LOGO

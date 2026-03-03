@@ -32,7 +32,12 @@ public class GUI extends JFrame {
 
         PROGRESS_BAR_SELECTED_TEXT      (74, 8, 12),
         PROGRESS_BAR_FOREGROUND         (236, 97, 108),
-        PROGRESS_BAR_BACKGROUND         (BACKGROUND);
+        PROGRESS_BAR_BACKGROUND         (BACKGROUND),
+
+        BUTTON_HOVER                    (255, 93, 104),
+        BUTTON_PRESSED                  (80, 80, 96),
+        BUTTON_RELEASED                 (64, 64, 96),
+        BUTTON_BACKGROUND               (64, 64, 96);
 
 
         private final Color color;
