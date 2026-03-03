@@ -4,6 +4,8 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.gui.DownloadGUI;
+import de.rayzs.vit.api.gui.UninterpretableGUI;
 import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.game.items.Agent;
 import de.rayzs.vit.api.game.items.Tier;
@@ -15,7 +17,6 @@ import org.json.JSONObject;
 
 import java.net.http.HttpClient;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class AssetPreparer {
 
@@ -51,57 +52,90 @@ public class AssetPreparer {
 
     private final VITAPI api;
 
-    public AssetPreparer(final VITAPI api, final Consumer<DownloadProcess> processConsumer) {
+    public AssetPreparer(final VITAPI api) {
         this.api = api;
 
         System.out.println("Fetching and loading assets...");
 
 
+        final UninterpretableGUI uninterpretableGUI = UninterpretableGUI.create(
+                "Loading...", "Loading all assets."
+        );
+
+
         // Fetch and load all necessary assets.
         final HttpClient client = Request.createClient();
 
+        uninterpretableGUI.updateText("Loading all weapons...");
         loadWeapons(client);
+
+        uninterpretableGUI.updateText("Loading all agents...");
         loadAgents(client);
+
+        uninterpretableGUI.updateText("Loading all maps...");
         loadMaps(client);
+
+        uninterpretableGUI.updateText("Loading all tiers...");
         loadTiers(client);
 
         // Not required anymore, therefore closing the client.
         client.close();
+        uninterpretableGUI.dispose(); // Close uninterpretable gui.
 
 
 
         // Collects all the files which need to be downloaded.
 
         final Map<FileDir, HashSet<DownloadElement>> images = new HashMap<>();
+
+        boolean requiresToDownload = false;
         for (final FileDir dir : FileDir.values()) {
             for (final DisplayImage image : api.getImageProvider().getImages(dir)) {
                 if (image.doesExist()) {
                     continue;
                 }
 
+                requiresToDownload = true;
                 images.computeIfAbsent(dir, k -> new HashSet<>())
                         .add(image.getDownloadElement());
             }
         }
 
-        for (final FileDir dir : FileDir.values()) {
 
-            // Creates a DownloadProcess for the directory and all
-            // its assets that still need to be downloaded.
-            final DownloadProcess process = new DownloadProcess(dir,
-                    images.getOrDefault(dir,
-                            HashSet.newHashSet(0)
-                    ).toArray(new DownloadElement[0])
+        // Only shows the download-gui when there's
+        // actually something to download.
+        if (requiresToDownload) {
+            // Prepare download gui.
+            final DownloadGUI downloadGUI = DownloadGUI.create(
+                    "Downloading...",
+                    "I'm not a very good programmer, but I'm certainly decent enough to call myself one."
             );
 
-            // If it's already completed aka empty, it will
-            // just skip that DownloadProcess.
-            if (process.isCompleted()) {
-                continue;
-            }
 
-            // Downloads all the missing assets.
-            process.start(processConsumer);
+            for (final FileDir dir : FileDir.values()) {
+
+                // Creates a DownloadProcess for the directory and all
+                // its assets that still need to be downloaded.
+                final DownloadProcess downloadProcess = new DownloadProcess(dir,
+                        images.getOrDefault(dir,
+                                HashSet.newHashSet(0)
+                        ).toArray(new DownloadElement[0])
+                );
+
+                // If it's already completed aka empty, it will
+                // just skip that DownloadProcess.
+                if (downloadProcess.isCompleted()) {
+                    continue;
+                }
+
+                // Downloads all the missing assets.
+                downloadProcess.start(process -> {
+                    downloadGUI.getProgressBar().setValue(Math.round(process.getPercent()));
+                });
+
+                // Close download gui.
+                downloadGUI.dispose();
+            }
         }
 
 
