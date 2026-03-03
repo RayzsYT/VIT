@@ -10,19 +10,21 @@ public enum SystemImages {
     LOGO        ("images/logo.png"),
     ERROR       ("images/error.png"),
     WARNING     ("images/warning.png"),
-    LOADING     ("images/loading.gif");
+    LOADING     ("images/loading.gif"),
+    ICON        ("icon/icon.ico");
 
 
     private final DisplayImage displayImage;
+    private final File imageFile;
 
     SystemImages(final String inFilePath) {
         // Export the file first if it doesn't exist.
-        final File file = FileUtils.exportResourceFile(
+        this.imageFile = FileUtils.exportResourceFile(
                 inFilePath,
                 FileDir.SYSTEM
         );
 
-        final String[] fileNameSplit = file.getName().split("\\."); // ["file", "png"]
+        final String[] fileNameSplit = this.imageFile.getName().split("\\."); // ["file", "png"]
         final String fileName = fileNameSplit[0];                         // "file"
         final String fileType = fileNameSplit[1];                         // "png"
 
@@ -41,5 +43,14 @@ public enum SystemImages {
      */
     public DisplayImage getDisplayImage() {
         return this.displayImage;
+    }
+
+    /**
+     * Get file of the image.
+     *
+     * @return Image file
+     */
+    public File getImageFile() {
+        return imageFile;
     }
 }
