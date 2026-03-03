@@ -1,5 +1,7 @@
 package de.rayzs.vit.api.gui;
 
+import de.rayzs.vit.api.image.SystemImages;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,19 +12,42 @@ public class GUI extends JFrame {
     public GUI(final String title, final int width, final int height) {
         super(TITLE.formatted(title));
 
+        setIconImage(SystemImages.LOGO.getDisplayImage().getImage());
+
+        setLocationRelativeTo(null);
+        setResizable(false);
+
         setSize(width, height);
-        setBackground(Colors.BACKGROUND.get());
     }
 
 
 
     public enum Colors {
 
-        BACKGROUND          (41, 41, 61),
-        TEXT_FOREGROUND     (255, 255, 255);
+        BACKGROUND                      (41, 41, 61),
+        BORDER                          (64, 64, 64),
+
+        TEXT_FOREGROUND                 (Color.WHITE),
+        SELECTION_BACKGROUND            (Color.WHITE),
+
+        PROGRESS_BAR_SELECTED_TEXT      (74, 8, 12),
+        PROGRESS_BAR_FOREGROUND         (236, 97, 108),
+        PROGRESS_BAR_BACKGROUND         (BACKGROUND);
 
 
         private final Color color;
+
+        Colors(final Colors color) {
+            this(color.get().getRGB());
+        }
+
+        Colors(final Color color) {
+            this(color.getRGB());
+        }
+
+        Colors(final int rgb) {
+            this.color = new Color(rgb);
+        }
 
         Colors(final int r, final int g, final int b) {
             this(r, g, b, 255);
