@@ -18,6 +18,8 @@ public class DisplayImage {
     private Image image;
     private ImageIcon icon;
 
+    private boolean isIcon = false;
+
     public DisplayImage(
             final String url,
             final FileDir dir,
@@ -40,6 +42,8 @@ public class DisplayImage {
                 this.url,
                 this.fileName
         );
+
+        this.isIcon = fileType.equals("ico");
 
         updateImage();
     }
@@ -79,10 +83,15 @@ public class DisplayImage {
     public void updateImage() {
         final File imageFile = dir.getFile(fileName);
 
+        if (isIcon) {
+            return;
+        }
+
         if (imageFile.exists()) {
             try {
                 this.image = ImageIO.read(imageFile);
                 this.icon = new ImageIcon(this.image);
+
             } catch (Exception exception) {
                 throw new RuntimeException("Could not load image from " + imageFile.getAbsolutePath());
             }
