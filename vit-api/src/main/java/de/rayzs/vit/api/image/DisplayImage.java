@@ -89,6 +89,11 @@ public class DisplayImage {
         }
     }
 
+    /**
+     * Get the image as ImageIcon.
+     *
+     * @return ImageIcon.
+     */
     public ImageIcon getIcon() {
         if (this.icon == null) {
             throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
@@ -97,11 +102,58 @@ public class DisplayImage {
         return this.icon;
     }
 
+    /**
+     * Get a rescaled version of the icon.
+     *
+     * @param width Rescaled icon width.
+     * @param height Rescaled icon height.
+     * @param hints Image#(HINTS)
+     *
+     * @return Rescaled icon.
+     */
+    public ImageIcon getIcon(
+            final int width,
+            final int height,
+            final int hints
+    ) {
+        if (this.icon == null) {
+            throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
+        }
+
+        return new ImageIcon(getImage(width, height, hints));
+    }
+
+    /**
+     * Get the image.
+     *
+     * @return Image.
+     */
     public Image getImage() {
         if (this.image == null) {
             throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
 
         return this.image;
+    }
+
+    /**
+     * Get a rescaled version of the image.
+     *
+     * @param width Rescaled image width.
+     * @param height Rescaled image height.
+     * @param hints Image#(HINTS)
+     *
+     * @return Rescaled image.
+     */
+    public Image getImage(
+            final int width,
+            final int height,
+            final int hints
+    ) {
+        if (this.image == null) {
+            throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
+        }
+
+        return this.image.getScaledInstance(width, height, hints);
     }
 }
