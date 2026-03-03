@@ -5,6 +5,7 @@ import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.DownloadGUI;
+import de.rayzs.vit.api.gui.OptionGUI;
 import de.rayzs.vit.api.gui.UninterpretableGUI;
 import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.game.items.Agent;
@@ -105,6 +106,30 @@ public class AssetPreparer {
         // Only shows the download-gui when there's
         // actually something to download.
         if (requiresToDownload) {
+
+
+            final OptionGUI optionGUI = OptionGUI.create(
+                    "Confirmation required!",
+                    "Yes", "No",
+                    "You are about to install VIT. Are you sure you wish to proceed?"
+            );
+
+            // Just a way to kind of stop the process
+            // so it won't run any further. May not
+            // be the best approach though.
+            while (optionGUI.getResponse() == 0) {
+                try {
+                    Thread.sleep(50);
+                } catch (Exception ignored) {}
+            }
+
+            // When denied, ignore action and close program.
+            if (optionGUI.getResponse() == -1) {
+                System.exit(-1);
+                return;
+            }
+
+
             // Prepare download gui.
             final DownloadGUI downloadGUI = DownloadGUI.create(
                     "Downloading...",
