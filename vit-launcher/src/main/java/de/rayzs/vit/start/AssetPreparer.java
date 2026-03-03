@@ -16,7 +16,10 @@ import de.rayzs.vit.api.request.RequestMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.http.HttpClient;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class AssetPreparer {
@@ -160,6 +163,28 @@ public class AssetPreparer {
 
                 // Close download gui.
                 downloadGUI.dispose();
+
+
+                // Create shortcut?
+                final OptionGUI createShortcutGUI = OptionGUI.create(
+                        "Create Desktop shortcut?",
+                        "yes", "no",
+                        "Would you like to create a shortcut on your Dektop?"
+                );
+
+                if (createShortcutGUI.getResponse() == 1) {
+                    createDesktopShortcut(
+                            System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs\\VIT.lmk",
+                            shortcutFile.getAbsolutePath(),
+                            iconFile.getAbsolutePath()
+                    );
+
+                    createDesktopShortcut(
+                            System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs",
+                            shortcutFile.getAbsolutePath(),
+                            iconFile.getAbsolutePath()
+                    );
+                }
             }
         }
 
@@ -382,5 +407,55 @@ public class AssetPreparer {
 
             }
         }
+    }
+
+    /**
+     * Creates a Desktop shortcut.
+     *
+     * @param shortcutPath Path where to create shortcut.
+     * @param targetPath Target path.
+     * @param iconPath Icon path.
+     *
+     * @return True successful or not. False otherwise.
+     */
+    private static boolean createDesktopShortcut(
+            final String shortcutPath,
+            final String targetPath,
+            final String iconPath
+    ) {
+        final File shortcutFile = new File(shortcutPath);
+        if (shortcutFile.exists()) {
+            return false;
+        }
+
+        final String psScript = "$WshShell = New-Object -ComObject WScript.Shell\n" +
+                "$Shortcut = $WshShell.CreateShortcut('" + shortcutPath.replace("\\", "\\\\") + "')\n" +
+                "$Shortcut.TargetPath = '" + targetPath.replace("\\", "\\\\") + "'\n" +
+                "$Shortcut.IconLocation = '" + iconPath.replace("\\", "\\\\") + "'\n" +
+                "$Shortcut.WorkingDirectory = '" + new File(targetPath).getParentFile().getAbsolutePath().replace("\\", "\\\\") + "'\n" +
+                "$Shortcut.Save()\n";
+
+        try {
+            final Path tempScript = Files.createTempFile("create_shortcut", ".ps1");
+            Files.write(tempScript, psScript.getBytes());
+
+            ProcessBuilder pb = new ProcessBuilder("powershell",
+                    "-ExecutionPolicy", "Bypass",
+                    "-File", tempScript.toString());
+
+            pb.inheritIO();
+
+
+            final Process process = pb.start();
+            final int exitCode = process.waitFor();
+
+            Files.deleteIfExists(tempScript);
+
+            return exitCode == 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
