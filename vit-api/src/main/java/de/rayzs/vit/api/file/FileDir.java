@@ -5,6 +5,9 @@ import java.io.File;
 public enum FileDir {
 
     ROOT                (null,      System.getenv("LOCALAPPDATA") + "\\VIT"),
+
+    SCRIPTS             (ROOT,      "scripts"),
+    DATA                (ROOT,      "data"),
     ASSETS              (ROOT,      "assets"),
 
     SYSTEM              (ASSETS,    "system"),
