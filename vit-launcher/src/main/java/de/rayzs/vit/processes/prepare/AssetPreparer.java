@@ -1,4 +1,4 @@
-package de.rayzs.vit.processes;
+package de.rayzs.vit.processes.prepare;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
@@ -71,17 +71,34 @@ public class AssetPreparer {
         // Fetch and load all necessary assets.
         final HttpClient client = Request.createClient();
 
-        uninterpretableGUI.updateText("Loading all weapons...");
+
+        // Loading all weapons...
+        uninterpretableGUI.updateText("Fetching all weapons...");
+        System.out.println("Fetching all weapons...");
         loadWeapons(client);
+        System.out.println("Fetched all weapons!");
 
-        uninterpretableGUI.updateText("Loading all agents...");
+
+        // Loading all agents...
+        uninterpretableGUI.updateText("Fetching all agents...");
+        System.out.println("Fetching all agents...");
         loadAgents(client);
+        System.out.println("Fetched all agents!");
 
-        uninterpretableGUI.updateText("Loading all maps...");
+
+        // Loading all maps...
+        uninterpretableGUI.updateText("Fetching all maps...");
+        System.out.println("Fetching all maps...");
         loadMaps(client);
+        System.out.println("Fetched all maps!");
 
-        uninterpretableGUI.updateText("Loading all tiers...");
+
+        // Loading all tiers...
+        uninterpretableGUI.updateText("Fetching all tiers...");
+        System.out.println("Fetching all tiers...");
         loadTiers(client);
+        System.out.println("Fetched all tiers!");
+
 
         // Not required anymore, therefore closing the client.
         client.close();
@@ -111,6 +128,7 @@ public class AssetPreparer {
         // actually something to download.
         if (requiresToDownload) {
 
+            System.out.println("Waiting for confirmation on if VIT should be installed or not...");
 
             final OptionGUI optionGUI = OptionGUI.create(
                     "Confirmation required!",
@@ -120,9 +138,15 @@ public class AssetPreparer {
 
             // When denied, ignore action and close program.
             if (optionGUI.getResponse() == -1) {
+
+                System.out.println("Cancelled installation setup!");
+
                 System.exit(0);
                 return;
             }
+
+
+            System.out.println("Started installation process...");
 
 
             // Prepare download gui.
@@ -158,6 +182,10 @@ public class AssetPreparer {
             downloadGUI.dispose();
 
 
+            System.out.println("Finished installation process!");
+            System.out.println("Waiting for confirmation on if VIT should create a Desktop shortcut or not...");
+
+
             // Create default shortcuts.
             createShortcut(
                     "VIT",
@@ -180,11 +208,39 @@ public class AssetPreparer {
                         "start.bat",
                         System.getProperty("user.home") + "\\Desktop"
                 );
-            }
+
+                System.out.println("Created Desktop shortcut!");
+            } else System.out.println("Denied Desktop shortcut!");
 
 
             // Close the shortcut-option gui
             createShortcutGUI.dispose();
+
+
+            System.out.println("Waiting for confirmation on if VIT should run right away or not...");
+
+
+            // Create shortcut on Desktop?
+            final OptionGUI startNowGUI = OptionGUI.create(
+                    "Start VIT now?",
+                    "LET'S GO", "not now",
+                    "Would you like to start VIT now?"
+            );
+
+            if (startNowGUI.getResponse() == -1) {
+
+                System.out.println("Chose to now run VIT right away!");
+
+                System.exit(0);
+                return;
+            }
+
+            System.out.println("Accepted to run VIT right away after!");
+
+        } else {
+
+            System.out.println("Skipped installation process, since everything is already installed.");
+
         }
 
 
