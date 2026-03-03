@@ -99,6 +99,14 @@ public class OptionGUI extends GUI {
 
         setContentPane(panel);
         setVisible(true);
+
+
+        // Freezing 'til any response is made.
+        while (this.response == 0) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ignored) {}
+        }
     }
 
     /**
