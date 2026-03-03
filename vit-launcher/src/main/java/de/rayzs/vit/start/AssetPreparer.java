@@ -10,9 +10,12 @@ import de.rayzs.vit.api.gui.UninterpretableGUI;
 import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.game.items.Agent;
 import de.rayzs.vit.api.game.items.Tier;
+import de.rayzs.vit.api.image.SystemImages;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
+import jdk.jshell.JShell;
+import jdk.jshell.JShellConsole;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -117,18 +120,9 @@ public class AssetPreparer {
                     "You are about to install VIT. Are you sure you wish to proceed?"
             );
 
-            // Just a way to kind of stop the process
-            // so it won't run any further. May not
-            // be the best approach though.
-            while (optionGUI.getResponse() == 0) {
-                try {
-                    Thread.sleep(50);
-                } catch (Exception ignored) {}
-            }
-
             // When denied, ignore action and close program.
             if (optionGUI.getResponse() == -1) {
-                System.exit(-1);
+                System.exit(0);
                 return;
             }
 
@@ -160,32 +154,39 @@ public class AssetPreparer {
                 downloadProcess.start(process -> {
                     downloadGUI.getProgressBar().setValue(Math.round(process.getPercent()));
                 });
-
-                // Close download gui.
-                downloadGUI.dispose();
-
-
-                // Create shortcut?
-                final OptionGUI createShortcutGUI = OptionGUI.create(
-                        "Create Desktop shortcut?",
-                        "yes", "no",
-                        "Would you like to create a shortcut on your Dektop?"
-                );
-
-                if (createShortcutGUI.getResponse() == 1) {
-                    createDesktopShortcut(
-                            System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs\\VIT.lmk",
-                            shortcutFile.getAbsolutePath(),
-                            iconFile.getAbsolutePath()
-                    );
-
-                    createDesktopShortcut(
-                            System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs",
-                            shortcutFile.getAbsolutePath(),
-                            iconFile.getAbsolutePath()
-                    );
-                }
             }
+
+            // Close download gui.
+            downloadGUI.dispose();
+
+
+            // Create default shortcuts.
+            createShortcut(
+                    "VIT",
+                    "start.bat",
+                    System.getenv("APPDATA") + "/Microsoft/Windows/Start Menu/Programs"
+            );
+
+
+            // Create shortcut on Desktop?
+            final OptionGUI createShortcutGUI = OptionGUI.create(
+                    "Create Desktop shortcut?",
+                    "yes", "no",
+                    "Would you like to create a shortcut on your Desktop?"
+            );
+
+
+            if (createShortcutGUI.getResponse() == 1) {
+                createShortcut(
+                        "VIT",
+                        "start.bat",
+                        System.getProperty("user.home") + "\\Desktop"
+                );
+            }
+
+
+            // Close the shortcut-option gui
+            createShortcutGUI.dispose();
         }
 
 
@@ -410,38 +411,39 @@ public class AssetPreparer {
     }
 
     /**
-     * Creates a Desktop shortcut.
+     * Creates a shortcut.
      *
-     * @param shortcutPath Path where to create shortcut.
-     * @param targetPath Target path.
-     * @param iconPath Icon path.
+     * @param shortcutName Name of the shortcut.
+     * @param targetFileName Path of the file which is being executed.
+     * @param shortcutDir Directory path where to create the shortcut.
      *
      * @return True successful or not. False otherwise.
      */
-    private static boolean createDesktopShortcut(
-            final String shortcutPath,
-            final String targetPath,
-            final String iconPath
+    private boolean createShortcut(
+            final String shortcutName,
+            final String targetFileName,
+            String shortcutDir
     ) {
-        final File shortcutFile = new File(shortcutPath);
-        if (shortcutFile.exists()) {
-            return false;
-        }
 
-        final String psScript = "$WshShell = New-Object -ComObject WScript.Shell\n" +
-                "$Shortcut = $WshShell.CreateShortcut('" + shortcutPath.replace("\\", "\\\\") + "')\n" +
-                "$Shortcut.TargetPath = '" + targetPath.replace("\\", "\\\\") + "'\n" +
-                "$Shortcut.IconLocation = '" + iconPath.replace("\\", "\\\\") + "'\n" +
-                "$Shortcut.WorkingDirectory = '" + new File(targetPath).getParentFile().getAbsolutePath().replace("\\", "\\\\") + "'\n" +
-                "$Shortcut.Save()\n";
+        final String[] scriptLines = prepareScriptLines(
+                targetFileName,
+                shortcutDir.replace('/', '\\') + "\\" + shortcutName + ".lnk"
+        );
+
+        final String script = String.join("\n", scriptLines);
 
         try {
+            // Create a temp script file and execute it the code
+            // to create the shortcut using PowerShell.
             final Path tempScript = Files.createTempFile("create_shortcut", ".ps1");
-            Files.write(tempScript, psScript.getBytes());
+            Files.write(tempScript, script.getBytes());
 
-            ProcessBuilder pb = new ProcessBuilder("powershell",
+            final ProcessBuilder pb = new ProcessBuilder(
+                    "powershell",
                     "-ExecutionPolicy", "Bypass",
-                    "-File", tempScript.toString());
+                    "-File",
+                    tempScript.toString()
+            );
 
             pb.inheritIO();
 
@@ -449,13 +451,50 @@ public class AssetPreparer {
             final Process process = pb.start();
             final int exitCode = process.waitFor();
 
+            // Delete temp script file.
             Files.deleteIfExists(tempScript);
 
             return exitCode == 0;
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         return false;
+    }
+
+    /**
+     * Prepares the script for creating a shortcut
+     * using PowerShell.
+     *
+     * @param targetFileName Target file name.
+     * @param shortcutFilePath Shortcut file path.
+     *
+     * @return Script lines.
+     */
+    private String[] prepareScriptLines(
+            final String targetFileName,
+            final String shortcutFilePath
+    ) {
+        final File targetFile = FileDir.SCRIPTS.getFile(targetFileName);
+        final File iconFile = SystemImages.ICON.getImageFile();
+
+        final String targetPath = targetFile.getAbsolutePath()
+                .replace('/', '\\');
+
+        final String targetDirectory = targetFile.getParentFile().getAbsolutePath()
+                .replace('/', '\\');
+
+        final String iconPath = iconFile.getAbsolutePath()
+                .replace('/', '\\');
+
+        return new String[] {
+                "$WshShell = New-Object -ComObject WScript.Shell",
+                "$Shortcut = $WshShell.CreateShortcut('" + shortcutFilePath + "')",
+                "$Shortcut.TargetPath = '" + targetPath + "'",
+                "$Shortcut.IconLocation = '" + iconPath + "'",
+                "$Shortcut.WorkingDirectory = '" + targetDirectory + "'",
+                "$Shortcut.Save()"
+        };
     }
 }
