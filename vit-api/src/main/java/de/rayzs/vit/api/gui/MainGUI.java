@@ -5,15 +5,33 @@ import java.awt.*;
 
 public class MainGUI extends GUI {
 
+    private JPanel contentPane;
+
     public MainGUI(String title) {
         super(title, 1000, 900);
 
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        final JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Colors.BACKGROUND.get());
+        this.contentPane = new JPanel(new BorderLayout());
+        this.contentPane.setBackground(Colors.BACKGROUND.get());
 
-        setContentPane(panel);
-        setVisible(true);
+        setContentPane(this.contentPane);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        super.setTitle(TITLE.formatted(title));
+    }
+
+    @Override
+    public JPanel getContentPane() {
+        return this.contentPane;
+    }
+
+    public void reset() {
+        this.contentPane = new JPanel(new BorderLayout());
+        this.contentPane.setBackground(Colors.BACKGROUND.get());
+
+        setContentPane(this.contentPane);
     }
 }
