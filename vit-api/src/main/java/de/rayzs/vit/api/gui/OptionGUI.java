@@ -1,5 +1,6 @@
 package de.rayzs.vit.api.gui;
 
+import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.image.SystemImages;
 
 import javax.swing.*;
@@ -122,41 +123,9 @@ public class OptionGUI extends GUI {
     }
 
     private JButton createButton(final String text) {
-        final JButton button = new JButton(text);
+        final JButton button = new BeautifiedButton(text);
 
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
-
-        button.setText(text);
-
-        button.setFocusPainted(false);
-        button.setBackground(Colors.BUTTON_BACKGROUND.get());
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         button.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
-
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent event) {
-                button.setBackground(Colors.BUTTON_HOVER.get());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent event) {
-                button.setBackground(Colors.BUTTON_BACKGROUND.get());
-            }
-        });
-
-        button.addChangeListener(event -> {
-            final ButtonModel model = button.getModel();
-            button.setBackground(model.isPressed()
-                    ? Colors.BUTTON_PRESSED.get()
-                    : Colors.BUTTON_RELEASED.get()
-            );
-        });
 
         return button;
     }
