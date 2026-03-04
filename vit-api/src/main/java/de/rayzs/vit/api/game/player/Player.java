@@ -8,6 +8,8 @@ public record Player(
         Team team,
         Agent agent,
         int level,
+        String peakTierId,
+        String currentTierId,
         String playerCardId,
         String playerTitleId
 ) { }
