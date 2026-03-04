@@ -7,9 +7,13 @@ import java.awt.*;
 
 public class GUI extends JFrame {
 
-    private static final String TITLE = "VIT | %s";
+    protected static final String TITLE = "VIT | %s";
 
-    public GUI(final String title, final int width, final int height) {
+    protected GUI(
+            final String title,
+            final int width,
+            final int height
+    ) {
         super(TITLE.formatted(title));
 
         setIconImage(SystemImages.LOGO.getDisplayImage().getImage());
