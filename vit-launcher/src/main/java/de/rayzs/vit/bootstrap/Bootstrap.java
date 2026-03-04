@@ -3,7 +3,9 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.impl.VITAPIImpl;
+import de.rayzs.vit.processes.prepare.AssetPreparer;
 import de.rayzs.vit.processes.screen.InactiveScreen;
+import de.rayzs.vit.processes.screen.LiveScreen;
 import de.rayzs.vit.processes.screen.LoadingScreen;
 
 import java.util.Timer;
@@ -17,7 +19,7 @@ public class Bootstrap {
         VIT.set(api);
 
 
-        //final AssetPreparer prep = new AssetPreparer(api);
+        final AssetPreparer prep = new AssetPreparer(api);
 
 
         final MainGUI gui = new MainGUI("Waiting");
@@ -25,21 +27,23 @@ public class Bootstrap {
 
         final InactiveScreen inactiveScreen = new InactiveScreen();
         final LoadingScreen loadingScreen = new LoadingScreen();
+        final LiveScreen liveScreen = new LiveScreen();
         inactiveScreen.load(api, gui);
 
         TimerTask task = new TimerTask() {
-            boolean b = true;
+            int i = 1;
 
             public void run() {
-                b = !b;
+                i = (++i % 3);
 
-                System.out.println(b);
-
-                if (b) inactiveScreen.load(api, gui);
-                else loadingScreen.load(api, gui);
+                switch (i) {
+                    case 0: inactiveScreen.load(api, gui); break;
+                    case 1: loadingScreen.load(api, gui); break;
+                    case 2: liveScreen.load(api, gui); break;
+                }
             }
         };
 
-        new Timer().scheduleAtFixedRate(task, 5000, 5000);
+        new Timer().scheduleAtFixedRate(task, 5000, 3000);
     }
 }
