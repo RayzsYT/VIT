@@ -90,7 +90,7 @@ public class DisplayImage {
         if (imageFile.exists()) {
             try {
                 this.image = ImageIO.read(imageFile);
-                this.icon = new ImageIcon(this.image);
+                this.icon = new ImageIcon(imageFile.getAbsolutePath());
 
             } catch (Exception exception) {
                 throw new RuntimeException("Could not load image from " + imageFile.getAbsolutePath());
