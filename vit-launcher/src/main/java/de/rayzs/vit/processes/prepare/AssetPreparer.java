@@ -6,7 +6,7 @@ import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
-import de.rayzs.vit.api.gui.UninterpretableGUI;
+import de.rayzs.vit.api.gui.UninteractableGUI;
 import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.game.items.Agent;
 import de.rayzs.vit.api.game.items.Tier;
@@ -63,9 +63,11 @@ public class AssetPreparer {
         System.out.println("Fetching and loading assets...");
 
 
-        final UninterpretableGUI uninterpretableGUI = UninterpretableGUI.create(
+        final UninteractableGUI loadingGUI = UninteractableGUI.create(
                 "Loading...", "Loading all assets."
         );
+
+        loadingGUI.setAlwaysOnTop(true);
 
 
         // Fetch and load all necessary assets.
@@ -73,28 +75,28 @@ public class AssetPreparer {
 
 
         // Loading all weapons...
-        uninterpretableGUI.updateText("Fetching all weapons...");
+        loadingGUI.updateText("Fetching all weapons...");
         System.out.println("Fetching all weapons...");
         loadWeapons(client);
         System.out.println("Fetched all weapons!");
 
 
         // Loading all agents...
-        uninterpretableGUI.updateText("Fetching all agents...");
+        loadingGUI.updateText("Fetching all agents...");
         System.out.println("Fetching all agents...");
         loadAgents(client);
         System.out.println("Fetched all agents!");
 
 
         // Loading all maps...
-        uninterpretableGUI.updateText("Fetching all maps...");
+        loadingGUI.updateText("Fetching all maps...");
         System.out.println("Fetching all maps...");
         loadMaps(client);
         System.out.println("Fetched all maps!");
 
 
         // Loading all tiers...
-        uninterpretableGUI.updateText("Fetching all tiers...");
+        loadingGUI.updateText("Fetching all tiers...");
         System.out.println("Fetching all tiers...");
         loadTiers(client);
         System.out.println("Fetched all tiers!");
@@ -102,7 +104,7 @@ public class AssetPreparer {
 
         // Not required anymore, therefore closing the client.
         client.close();
-        uninterpretableGUI.dispose(); // Close uninterpretable gui.
+        loadingGUI.dispose(); // Close uninterpretable gui.
 
 
 
