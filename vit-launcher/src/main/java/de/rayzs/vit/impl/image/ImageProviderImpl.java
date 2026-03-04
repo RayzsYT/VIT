@@ -25,9 +25,20 @@ public class ImageProviderImpl implements ImageProvider {
             final FileDir dir,
             final String fileName
     ) {
-        return this.images.computeIfAbsent(dir, k -> new HashMap<>()).put(fileName,
-                new DisplayImage(url, dir, fileName)
-        );
+        this.images.computeIfAbsent(dir, k -> new HashMap<>());
+
+        // Get the current image result.
+        DisplayImage image = this.images.get(dir).get(fileName);
+        if (image == null) {
+            // Put it inside the map in case it does not exist yet.
+            image = new DisplayImage(url, dir, fileName);
+
+            this.images.get(dir).put(fileName, image);
+            return image; // Returning just created image.
+        }
+
+        // Returning the found image.
+        return image;
     }
 
     @Override
