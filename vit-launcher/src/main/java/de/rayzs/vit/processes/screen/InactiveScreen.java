@@ -5,6 +5,7 @@ import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.image.SystemImages;
 
+import javax.print.attribute.standard.PresentationDirection;
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,6 +15,7 @@ public class InactiveScreen extends Screen {
 
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
+        gui.reset();
         gui.setTitle("Waiting for VALORANT to start...");
 
 
@@ -59,7 +61,7 @@ public class InactiveScreen extends Screen {
 
 
         contentPane.add(panel, BorderLayout.CENTER);
-        contentPane.revalidate();
+        contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
 
     public void updateText(final String text) {

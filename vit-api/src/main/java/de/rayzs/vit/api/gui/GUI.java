@@ -38,6 +38,11 @@ public class GUI extends JFrame {
         PROGRESS_BAR_FOREGROUND         (236, 97, 108),
         PROGRESS_BAR_BACKGROUND         (BACKGROUND),
 
+        BANNER_ATTACKER                 (206, 62, 62),
+        BANNER_DEFENDER                 (59, 110, 245),
+        BANNER_BACKGROUND               (41, 41, 61),
+        BANNER_BORDER                   (0, 0, 0, 120),
+
         BUTTON_HOVER                    (255, 93, 104),
         BUTTON_PRESSED                  (80, 80, 96),
         BUTTON_RELEASED                 (64, 64, 96),

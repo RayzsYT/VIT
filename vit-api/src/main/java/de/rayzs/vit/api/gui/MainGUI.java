@@ -5,7 +5,20 @@ import java.awt.*;
 
 public class MainGUI extends GUI {
 
+
+    // Disclaimer text. Will be shown on the very bottom of the program.
+    private static final String[] DISCLAIMER = {
+            "<html><div style='width:800px; text-align:center; color:rgba(255,255,255,0.2);'>",
+            "VIT isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.<br>",
+            "Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.",
+            "<br><br>Version v",
+            "</div></html>"
+    };
+
+
+    private final JPanel disclaimerPanel;
     private JPanel contentPane;
+
 
     public MainGUI(String title) {
         super(title, 1000, 900);
@@ -14,6 +27,13 @@ public class MainGUI extends GUI {
 
         this.contentPane = new JPanel(new BorderLayout());
         this.contentPane.setBackground(Colors.BACKGROUND.get());
+
+        this.disclaimerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        this.disclaimerPanel.setBackground(GUI.Colors.BACKGROUND.get());
+
+        final JLabel disclaimerLabel = new JLabel(String.join("", DISCLAIMER));
+        disclaimerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+        disclaimerPanel.add(disclaimerLabel);
 
         setContentPane(this.contentPane);
     }
@@ -26,6 +46,10 @@ public class MainGUI extends GUI {
     @Override
     public JPanel getContentPane() {
         return this.contentPane;
+    }
+
+    public JPanel getDisclaimerPanel() {
+        return this.disclaimerPanel;
     }
 
     public void reset() {
