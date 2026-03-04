@@ -44,8 +44,12 @@ public class Request {
     private static String ACCESS_TOKEN, ENTITLEMENT_TOKEN, CLIENT_PLATFORM, CURRENT_VERSION;
 
     /**
-     * Set the variables. This can only be done once,
+     * Set the headers. This can only be done once,
      * since this should not be changed during runtime.
+     *
+     * Only condition for it to be reset is when calling
+     * the {@link #unsetHeaders()} method.
+     *
      * It's required for headers when creating a request.
      *
      * @param accessToken Access token.
@@ -53,7 +57,7 @@ public class Request {
      * @param clientPlatform Client platform.
      * @param currentVersion Version.
      */
-    public static void setVariables(
+    public static void setHeaders(
             final String accessToken,
             final String entitlementToken,
             final String clientPlatform,
@@ -61,13 +65,28 @@ public class Request {
     ) {
 
         if (ACCESS_TOKEN != null) {
-            throw new IllegalStateException("Variables are already set!");
+            throw new IllegalStateException("Headers are already set!");
         }
 
         ACCESS_TOKEN = accessToken;
         ENTITLEMENT_TOKEN = entitlementToken;
         CLIENT_PLATFORM = clientPlatform;
         CURRENT_VERSION = currentVersion;
+    }
+
+    /**
+     * Unsets all the headers. Can only be
+     * done when they have been set before.
+     */
+    public static void unsetHeaders() {
+        if (ACCESS_TOKEN == null) {
+            throw new IllegalStateException("Headers are not set!");
+        }
+
+        ACCESS_TOKEN = null;
+        ENTITLEMENT_TOKEN = null;
+        CLIENT_PLATFORM = null;
+        CURRENT_VERSION = null;
     }
 
 
