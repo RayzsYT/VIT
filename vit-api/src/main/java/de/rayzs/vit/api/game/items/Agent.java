@@ -94,7 +94,7 @@ public enum Agent {
      * @return DisplayImage.
      */
     public DisplayImage getImage() {
-        return VIT.get().getImageProvider().getTiers().getImage(this.agentId);
+        return VIT.get().getImageProvider().getAgents().getImage(this.agentId);
     }
 
     /**
