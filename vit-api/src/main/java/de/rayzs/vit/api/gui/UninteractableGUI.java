@@ -5,7 +5,7 @@ import de.rayzs.vit.api.image.SystemImages;
 import javax.swing.*;
 import java.awt.*;
 
-public class UninterpretableGUI extends GUI {
+public class UninteractableGUI extends GUI {
 
 
     /**
@@ -16,14 +16,14 @@ public class UninterpretableGUI extends GUI {
      *
      * @return Created gui.
      */
-    public static UninterpretableGUI create(final String title, final String... text) {
-        return new UninterpretableGUI(title, text);
+    public static UninteractableGUI create(final String title, final String... text) {
+        return new UninteractableGUI(title, text);
     }
 
 
     private final JTextArea textArea;
 
-    private UninterpretableGUI(final String title, final String... text) {
+    private UninteractableGUI(final String title, final String... text) {
         super(title, 400, 120);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
