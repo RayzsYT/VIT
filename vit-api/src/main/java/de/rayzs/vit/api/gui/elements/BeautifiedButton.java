@@ -13,11 +13,30 @@ import java.awt.event.MouseEvent;
  */
 public class BeautifiedButton extends JButton {
 
-    public BeautifiedButton() {
-        this("");
+    public BeautifiedButton(
+            final GUI.Colors background,
+            final GUI.Colors foreground,
+            final GUI.Colors hoverBackground,
+            final GUI.Colors pressBackground,
+            final GUI.Colors releaseBackground
+    ) {
+        this("",
+                background,
+                foreground,
+                hoverBackground,
+                pressBackground,
+                releaseBackground
+        );
     }
 
-    public BeautifiedButton(final String text) {
+    public BeautifiedButton(
+            final String text,
+            final GUI.Colors background,
+            final GUI.Colors foreground,
+            final GUI.Colors hoverBackground,
+            final GUI.Colors pressBackground,
+            final GUI.Colors releaseBackground
+    ) {
         setBorderPainted(false);
         setFocusPainted(false);
 
@@ -27,28 +46,33 @@ public class BeautifiedButton extends JButton {
         setText(text);
 
         setFocusPainted(false);
-        setBackground(GUI.Colors.BUTTON_BACKGROUND.get());
-        setForeground(GUI.Colors.TEXT_FOREGROUND.get());
+        setBackground(background.get());
+        setForeground(foreground.get());
 
         setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(final MouseEvent event) {
-                setBackground(GUI.Colors.BUTTON_HOVER.get());
+                setBackground(hoverBackground.get());
             }
 
             @Override
             public void mouseExited(final MouseEvent event) {
-                setBackground(GUI.Colors.BUTTON_BACKGROUND.get());
+                setBackground(background.get());
             }
         });
 
         addChangeListener(event -> {
             setBackground(getModel().isPressed()
-                    ? GUI.Colors.BUTTON_PRESSED.get()
-                    : GUI.Colors.BUTTON_RELEASED.get()
+                    ? pressBackground.get()
+                    : releaseBackground.get()
             );
         });
+    }
+
+    @Override
+    public JToolTip createToolTip() {
+        return new BeautifiedToolTip(this);
     }
 }
