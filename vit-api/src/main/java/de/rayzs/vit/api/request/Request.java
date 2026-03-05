@@ -43,32 +43,80 @@ public class Request {
 
     private static String ACCESS_TOKEN, ENTITLEMENT_TOKEN, CLIENT_PLATFORM, CURRENT_VERSION;
 
+
     /**
-     * Set the headers. This can only be done once,
-     * since this should not be changed during runtime.
-     *
-     * Only condition for it to be reset is when calling
-     * the {@link #unsetHeaders()} method.
-     *
-     * It's required for headers when creating a request.
+     * Set the access token. This can only be called
+     * once and cannot be used again, since the access token
+     * has been set.
+     * <p>
+     * Access token must be unset first using the {@link #unsetAccessToken()} method
+     * in order for it to be set again.
+     * <p>
+     * The access token is required for creating {@link RequestDest#LOCAL},
+     * {@link RequestDest#PD}, {@link RequestDest#GLZ},
+     * and {@link RequestDest#SHARED} requests.
      *
      * @param accessToken Access token.
+     */
+    public static void setAccessToken(final String accessToken) {
+
+        if (ACCESS_TOKEN != null) {
+            throw new IllegalStateException("Access token is already set!");
+        }
+
+        ACCESS_TOKEN = accessToken;
+
+    }
+
+    /**
+     * Unsets the access token. Can only be
+     * done when it's set.
+     */
+    public static void unsetAccessToken() {
+
+        if (ACCESS_TOKEN == null) {
+            throw new IllegalStateException("Access token is not set!");
+        }
+
+        ACCESS_TOKEN = null;
+
+    }
+
+
+    /**
+     * Set the headers. This can only be called
+     * once and cannot be used again, since the access token
+     * has been set.
+     * <p>
+     * Access token must be unset first using the {@link #unsetAccessToken()} method
+     * in order for it to be set again.
+     * <p>
+     * The headers are required for creating {@link RequestDest#PD},
+     * {@link RequestDest#GLZ}, and {@link RequestDest#SHARED}
+     * requests.
+     *
      * @param entitlementToken Entitlement token.
      * @param clientPlatform Client platform.
      * @param currentVersion Version.
      */
     public static void setHeaders(
-            final String accessToken,
             final String entitlementToken,
             final String clientPlatform,
             final String currentVersion
     ) {
 
-        if (ACCESS_TOKEN != null) {
-            throw new IllegalStateException("Headers are already set!");
+        if (ENTITLEMENT_TOKEN != null) {
+            throw new IllegalStateException("Header 'Entitlement Token' is already set!");
         }
 
-        ACCESS_TOKEN = accessToken;
+        if (CLIENT_PLATFORM != null) {
+            throw new IllegalStateException("Header 'Client Platform' is already set!");
+        }
+
+        if (CURRENT_VERSION != null) {
+            throw new IllegalStateException("Header 'Current Version' is already set!");
+        }
+
         ENTITLEMENT_TOKEN = entitlementToken;
         CLIENT_PLATFORM = clientPlatform;
         CURRENT_VERSION = currentVersion;
@@ -76,14 +124,21 @@ public class Request {
 
     /**
      * Unsets all the headers. Can only be
-     * done when they have been set before.
+     * done when they are all set.
      */
     public static void unsetHeaders() {
-        if (ACCESS_TOKEN == null) {
-            throw new IllegalStateException("Headers are not set!");
+        if (ENTITLEMENT_TOKEN == null) {
+            throw new IllegalStateException("Header 'Entitlement Token' is not set!");
         }
 
-        ACCESS_TOKEN = null;
+        if (CLIENT_PLATFORM == null) {
+            throw new IllegalStateException("Header 'Client Platform' is not set!");
+        }
+
+        if (CURRENT_VERSION == null) {
+            throw new IllegalStateException("Header 'Current Version' is not set!");
+        }
+
         ENTITLEMENT_TOKEN = null;
         CLIENT_PLATFORM = null;
         CURRENT_VERSION = null;
@@ -158,10 +213,20 @@ public class Request {
         final HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(dest.from(urlPath)));
 
+
         if (dest != RequestDest.API) {
+            if (ACCESS_TOKEN == null) {
+                throw new NullPointerException("Cannot create " + dest.name() + " request because the Access Token is not set!");
+            }
+
             builder.header("Authorization", "Bearer " + ACCESS_TOKEN);
 
+
             if (dest != RequestDest.LOCAL) {
+                if (ENTITLEMENT_TOKEN == null || CLIENT_PLATFORM == null || CURRENT_VERSION == null) {
+                    throw new NullPointerException("Cannot create " + dest.name() + " request because headers are not set!");
+                }
+
                 builder.header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
                         .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
                         .header("X-Riot-ClientVersion", CURRENT_VERSION);
