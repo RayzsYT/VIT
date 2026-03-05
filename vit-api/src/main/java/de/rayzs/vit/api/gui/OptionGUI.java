@@ -123,7 +123,22 @@ public class OptionGUI extends GUI {
     }
 
     private JButton createButton(final String text) {
-        final JButton button = new BeautifiedButton(text);
+        /**
+         * public BeautifiedButton(     String text,
+         *     @NotNull GUI. Colors background,
+         *     @NotNull GUI. Colors foreground,
+         *     GUI. Colors hoverBackground,
+         *     GUI. Colors pressBackground,
+         *     GUI. Colors releaseBackground )
+         */
+        final JButton button = new BeautifiedButton(
+                text,
+                Colors.BUTTON_OPTION_BACKGROUND,
+                Colors.TEXT_FOREGROUND,
+                Colors.BUTTON_OPTION_HOVER,
+                Colors.BUTTON_OPTION_PRESSED,
+                Colors.BUTTON_OPTION_RELEASED
+        );
 
         button.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
 
