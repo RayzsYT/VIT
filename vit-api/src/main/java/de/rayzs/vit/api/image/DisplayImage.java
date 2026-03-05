@@ -185,4 +185,42 @@ public class DisplayImage {
 
         return this.image.getScaledInstance(width, height, hints);
     }
+
+    /**
+     * Resizes a copy of the image icon by a multiplier.
+     *
+     * @param multiplier Multiplier.
+     *
+     * @return Resized image.
+     */
+    public ImageIcon resizeIcon(final float multiplier) {
+        if (this.image == null) {
+            throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
+        }
+
+        final Image cpy = this.image;
+        return getIcon(
+                (int) (cpy.getWidth(null) * multiplier),
+                (int) (cpy.getHeight(null) * multiplier),
+                Image.SCALE_SMOOTH);
+    }
+
+    /**
+     * Resizes a copy of the image by a multiplier.
+     *
+     * @param multiplier Multiplier.
+     *
+     * @return Resized image.
+     */
+    public Image resizeImage(final float multiplier) {
+        if (this.image == null) {
+            throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
+        }
+
+        final Image cpy = this.image;
+        return getImage(
+                (int) (cpy.getWidth(null) * multiplier),
+                (int) (cpy.getHeight(null) * multiplier),
+                Image.SCALE_SMOOTH);
+    }
 }
