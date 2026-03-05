@@ -79,28 +79,24 @@ public class AssetPreparer {
         loadingGUI.updateText("Fetching all weapons...");
         System.out.println("Fetching all weapons...");
         loadWeapons(client);
-        System.out.println("Fetched all weapons!");
 
 
         // Loading all agents...
         loadingGUI.updateText("Fetching all agents...");
         System.out.println("Fetching all agents...");
         loadAgents(client);
-        System.out.println("Fetched all agents!");
 
 
         // Loading all maps...
         loadingGUI.updateText("Fetching all maps...");
         System.out.println("Fetching all maps...");
         loadMaps(client);
-        System.out.println("Fetched all maps!");
 
 
         // Loading all tiers...
         loadingGUI.updateText("Fetching all tiers...");
         System.out.println("Fetching all tiers...");
         loadTiers(client);
-        System.out.println("Fetched all tiers!");
 
 
         // Not required anymore, therefore closing the client.
