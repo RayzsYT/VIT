@@ -12,6 +12,7 @@ import java.util.TimerTask;
 public class Bootstrap {
 
     public static void main(String[] args) {
+        System.out.println("Starting VIT...");
 
         try {
             OutputLogger.initialize();
@@ -19,6 +20,8 @@ public class Bootstrap {
             start();
         } catch (Exception exception) {
             exception.printStackTrace();
+
+            System.out.println("\n\nSomething went wrong! Program will terminate.");
             System.exit(0);
         }
 
