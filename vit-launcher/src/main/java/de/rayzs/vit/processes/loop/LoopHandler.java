@@ -1,7 +1,6 @@
 package de.rayzs.vit.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.processes.screen.InactiveScreen;
 import de.rayzs.vit.processes.screen.LiveScreen;
@@ -25,7 +24,7 @@ public class LoopHandler {
         gui.setAlwaysOnTop(true);
         gui.setAlwaysOnTop(false);
 
-        inactiveScreen.load(api, gui);
+        this.inactiveScreen.load(api, gui);
     }
 
     public void handle() {
