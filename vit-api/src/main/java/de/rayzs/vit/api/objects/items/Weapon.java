@@ -10,6 +10,7 @@ public enum Weapon {
 
     // Short-handed weapons.
     CLASSIC     ("Classic"),
+    BANDIT      ("Bandit"),
     GHOST       ("Ghost"),
     FRENZY      ("Frenzy"),
     SHERIFF     ("Sheriff"),
