@@ -1,5 +1,8 @@
 package de.rayzs.vit.api.game.items;
 
+import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.image.DisplayImage;
+
 public enum Weapon {
 
     // Melee
@@ -36,6 +39,7 @@ public enum Weapon {
     BUCKY       ("Bucky");
 
 
+    private String defaultSkinId;
     private final String weaponName;
 
     Weapon(final String weaponName) {
@@ -49,6 +53,45 @@ public enum Weapon {
      */
     public String getWeaponName() {
         return this.weaponName;
+    }
+
+
+    /**
+     * Update default skin id. Should only be called once
+     * during runtime to set the default weapon skin id fetched from
+     * the valorant-api.
+     *
+     * @param defaultSkinId Default skin id.
+     */
+    public void updateDefaultWeaponId(final String defaultSkinId) {
+        if (this.defaultSkinId != null) {
+            throw new IllegalStateException("Default Skin ID is already set!");
+        }
+
+        this.defaultSkinId = defaultSkinId;
+    }
+
+    /**
+     * Get the default skin id. This one needs to be set first after
+     * fetching the agent uuid from the valorant-api.
+     *
+     * @return Default skin id.
+     */
+    public String getDefaultSkinId() {
+        if (this.defaultSkinId == null) {
+            throw new IllegalStateException("Default Skin ID is not set yet!");
+        }
+
+        return this.defaultSkinId;
+    }
+
+    /**
+     * Returns the DisplayImage of the default skin.
+     *
+     * @return DisplayImage.
+     */
+    public DisplayImage getDefaultSkin() {
+        return VIT.get().getImageProvider().getWeaponSkins().getImage(this.defaultSkinId);
     }
 
 
