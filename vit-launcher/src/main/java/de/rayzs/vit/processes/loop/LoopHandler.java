@@ -24,7 +24,7 @@ public class LoopHandler {
         gui.setAlwaysOnTop(true);
         gui.setAlwaysOnTop(false);
 
-        this.liveScreen.load(api, gui);
+        this.inactiveScreen.load(api, gui);
     }
 
     public void handle() {
