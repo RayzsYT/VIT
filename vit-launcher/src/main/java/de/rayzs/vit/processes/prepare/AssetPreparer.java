@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.game.items.Weapon;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
 import de.rayzs.vit.api.gui.UninteractableGUI;
@@ -429,6 +430,13 @@ public class AssetPreparer {
 
             api.getImageProvider().getWeaponSkins().putName(id, name);
             api.getImageProvider().getWeaponSkins().putImage(id, displayIcon);
+
+            final Weapon weapon = Weapon.getWeaponByName(name);
+            if (weapon == null) {
+                throw new NullPointerException("Weapon " + name + " not found!");
+            }
+
+            weapon.updateDefaultWeaponId(id);
 
             for (final Object skinObj : gun.getJSONArray("skins")) {
                 final JSONObject skin = (JSONObject) skinObj;
