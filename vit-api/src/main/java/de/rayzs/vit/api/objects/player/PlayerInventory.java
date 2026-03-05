@@ -1,8 +1,8 @@
-package de.rayzs.vit.api.game.player;
+package de.rayzs.vit.api.objects.player;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.game.items.Weapon;
+import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.image.DisplayImage;
 
 import java.util.HashMap;

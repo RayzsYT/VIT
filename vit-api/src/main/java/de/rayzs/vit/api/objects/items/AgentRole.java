@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.game.items;
+package de.rayzs.vit.api.objects.items;
 
 public enum AgentRole {
 

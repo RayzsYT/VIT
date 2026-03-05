@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.game.player;
+package de.rayzs.vit.api.objects.player;
 
 public record PlayerSettings(
         boolean levelHidden,

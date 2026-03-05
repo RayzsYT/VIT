@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.game.items;
+package de.rayzs.vit.api.objects.items;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.image.DisplayImage;

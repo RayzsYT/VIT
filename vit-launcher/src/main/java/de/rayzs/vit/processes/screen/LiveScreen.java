@@ -1,12 +1,12 @@
 package de.rayzs.vit.processes.screen;
 
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.game.items.Agent;
-import de.rayzs.vit.api.game.items.Team;
-import de.rayzs.vit.api.game.items.Tier;
-import de.rayzs.vit.api.game.items.Weapon;
-import de.rayzs.vit.api.game.player.Player;
-import de.rayzs.vit.api.game.player.PlayerInventory;
+import de.rayzs.vit.api.objects.items.Agent;
+import de.rayzs.vit.api.objects.items.Team;
+import de.rayzs.vit.api.objects.items.Tier;
+import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.player.Player;
+import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;

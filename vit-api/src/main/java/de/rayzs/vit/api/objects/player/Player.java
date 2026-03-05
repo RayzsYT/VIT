@@ -1,8 +1,8 @@
-package de.rayzs.vit.api.game.player;
+package de.rayzs.vit.api.objects.player;
 
-import de.rayzs.vit.api.game.items.Agent;
-import de.rayzs.vit.api.game.items.Team;
-import de.rayzs.vit.api.game.items.Tier;
+import de.rayzs.vit.api.objects.items.Agent;
+import de.rayzs.vit.api.objects.items.Team;
+import de.rayzs.vit.api.objects.items.Tier;
 
 public record Player(
         String name,
