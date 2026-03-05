@@ -1,9 +1,16 @@
 package de.rayzs.vit.api;
 
 import de.rayzs.vit.api.image.ImageProvider;
+import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.items.Weapon;
 
 public interface VITAPI {
 
+    /**
+     * Get current VIT version.
+     *
+     * @return VIT version.
+     */
     default String getVersion() { return "0.0.1"; }
 
     /**
@@ -13,4 +20,35 @@ public interface VITAPI {
      * @return ImageProvider.
      */
     ImageProvider getImageProvider();
+
+    /**
+     * Get the current game
+     * which is being played.
+     *
+     * @return Game being played.
+     */
+    Game getGame();
+
+    /**
+     * Set the game being played.
+     *
+     * @param game Game being played.
+     */
+    void setGame(final Game game);
+
+    /**
+     * Get the currently selected weapon being
+     * shown by default on the live gui.
+     *
+     * @return Weapon.
+     */
+    Weapon getSelectedWeapon();
+
+    /**
+     * Set the selected weapon which is being
+     * shown by default on the live gui.
+     *
+     * @param weapon Weapon.
+     */
+    void setSelectedWeapon(final Weapon weapon);
 }
