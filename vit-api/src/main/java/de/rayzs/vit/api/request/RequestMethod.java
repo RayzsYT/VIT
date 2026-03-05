@@ -4,7 +4,7 @@ public enum RequestMethod {
 
         GET     ("GET"), 
         POST    ("POST"),
-        PUT    ("PUT");
+        PUT     ("PUT");
         
         
         private final String name;
