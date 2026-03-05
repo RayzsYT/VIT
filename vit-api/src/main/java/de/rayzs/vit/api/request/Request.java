@@ -159,10 +159,13 @@ public class Request {
                 .uri(URI.create(dest.from(urlPath)));
 
         if (dest != RequestDest.API) {
-            builder.header("Authorization", "Bearer " + ACCESS_TOKEN)
-                    .header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
-                    .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
-                    .header("X-Riot-ClientVersion", CURRENT_VERSION);
+            builder.header("Authorization", "Bearer " + ACCESS_TOKEN);
+
+            if (dest != RequestDest.LOCAL) {
+                builder.header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
+                        .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
+                        .header("X-Riot-ClientVersion", CURRENT_VERSION);
+            }
         }
 
         switch (method) {
