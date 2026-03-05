@@ -39,7 +39,7 @@ public class LiveScreen extends Screen {
 
         final JPanel topLayerPanel = createTopLayer(
                 api,
-                "2bee0dc9-4ffe-519b-1cbd-7fbe763a6047" // Placeholder map id
+                api.getGame().getMapId()
         );
 
 
@@ -48,23 +48,7 @@ public class LiveScreen extends Screen {
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
 
-        // Placeholder players
-        boolean b = false;
-        for (int i = 0; i < 10; i++) {
-            b = !b;
-
-            final Player player = Player.createPlayer(
-                    "Player#" + i,
-                    i,
-                    "CardId-" + i,
-                    "TitleId-" + i,
-                    new PlayerInventory(Map.of()),
-                    b ? Team.DEFEND : Team.ATTACK,
-                    Agent.values()[i % Agent.values().length],
-                    Tier.BRONZE_III,
-                    Tier.IMMORTAL_II
-            );
-
+        for (Player player : api.getGame().getPlayers()) {
             playersPanel.add(createPlayerBanner(api, player));
         }
 
@@ -148,10 +132,8 @@ public class LiveScreen extends Screen {
 
         center.add(Box.createVerticalGlue());
 
-        final ImageIcon weaponImage = api
-                .getImageProvider()
-                .getWeaponSkins()
-                .getImage("000ad7b1-44b0-9345-ea47-9cbd7dcdbb38") // Placeholder weapon
+        final ImageIcon weaponImage = player.inventory()
+                .getWeaponSkin(api.getSelectedWeapon())
                 .resizeIcon(0.3f);
 
 
@@ -164,10 +146,9 @@ public class LiveScreen extends Screen {
 
         weaponLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        weaponLabel.setToolTipText(api
-                .getImageProvider()
-                .getWeaponSkins()
-                .getName("000ad7b1-44b0-9345-ea47-9cbd7dcdbb38")
+        weaponLabel.setToolTipText(player
+                .inventory()
+                .getWeaponSkinName(api.getSelectedWeapon())
         );
 
         center.add(weaponLabel);
@@ -299,9 +280,10 @@ public class LiveScreen extends Screen {
         weaponSelector.setFocusable(false);
         weaponSelector.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        weaponSelector.addActionListener(e ->
-                System.out.println("Selected: " + weaponSelector.getSelectedItem())
-        );
+        weaponSelector.addActionListener(e -> {
+            final Weapon selectedWeapon = Weapon.getWeaponByName((String) weaponSelector.getSelectedItem());
+            api.setSelectedWeapon(selectedWeapon);
+        });
 
         controls.add(refreshButton);
         controls.add(weaponSelector);
