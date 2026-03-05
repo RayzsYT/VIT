@@ -11,7 +11,7 @@ public class VITAPIImpl implements VITAPI {
     private final ImageProvider imageProvider;
 
     private Game game;
-    private Weapon selectedWeapon;
+    private Weapon selectedWeapon = Weapon.VANDAL;
 
     public VITAPIImpl() {
         this.imageProvider = new ImageProviderImpl();
