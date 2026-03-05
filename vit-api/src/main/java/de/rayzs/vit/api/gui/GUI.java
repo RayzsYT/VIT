@@ -28,30 +28,42 @@ public class GUI extends JFrame {
 
     public enum Colors {
 
-        BACKGROUND                      (41, 41, 61),
+        BACKGROUND                          (41, 41, 61),
+        BORDER                              (64, 64, 64),
 
-        BORDER                          (64, 64, 64),
+        TOOLTIP_FOREGROUND                  (Color.WHITE),
+        TOOLTIP_BACKGROUND                  (36, 36, 53),
 
+        TEXT_FOREGROUND                     (Color.WHITE),
+        SELECTION_BACKGROUND                (Color.WHITE),
 
-        TEXT_FOREGROUND                 (Color.WHITE),
-        SELECTION_BACKGROUND            (Color.WHITE),
-
-
-        PROGRESS_BAR_SELECTED_TEXT      (74, 8, 12),
-        PROGRESS_BAR_FOREGROUND         (236, 97, 108),
-        PROGRESS_BAR_BACKGROUND         (BACKGROUND),
+        STATS_TEXT_FOREGROUND              (204, 204, 204),
 
 
-        BANNER_ATTACKER                 (206, 62, 62),
-        BANNER_DEFENDER                 (59, 110, 245),
-        BANNER_BACKGROUND               (47, 47, 67),
-        BANNER_BORDER                   (0, 0, 0, 120),
+        PROGRESS_BAR_SELECTED_TEXT          (74, 8, 12),
+        PROGRESS_BAR_FOREGROUND             (236, 97, 108),
+        PROGRESS_BAR_BACKGROUND             (BACKGROUND),
 
 
-        BUTTON_HOVER                    (255, 93, 104),
-        BUTTON_PRESSED                  (80, 80, 96),
-        BUTTON_RELEASED                 (64, 64, 96),
-        BUTTON_BACKGROUND               (64, 64, 96);
+        MAIN_CONTROL_BUTTON                 (206, 62, 62),
+
+
+        BANNER_ATTACKER                     (206, 62, 62),
+        BANNER_DEFENDER                     (59, 110, 245),
+        BANNER_BACKGROUND                   (47, 47, 67),
+        BANNER_BORDER                       (0, 0, 0, 120),
+
+
+        BUTTON_OPTION_HOVER                 (255, 93, 104),
+        BUTTON_OPTION_PRESSED               (80, 80, 96),
+        BUTTON_OPTION_RELEASED              (64, 64, 96),
+        BUTTON_OPTION_BACKGROUND            (64, 64, 96),
+
+
+        BUTTON_MAIN_HOVER                    (255, 93, 104),
+        BUTTON_MAIN_PRESSED                  (80, 80, 96),
+        BUTTON_MAIN_RELEASED                 (64, 64, 96),
+        BUTTON_MAIN_BACKGROUND               (64, 64, 96);
 
 
         private final Color color;
