@@ -24,7 +24,15 @@ public class PlayerInventory {
         }
     }
 
+    /**
+     * Get the image of the skin the player
+     * has for the following weapon.
+     *
+     * @param weapon Weapon.
+     *
+     * @return DisplayImage of the weapon skin.
+     */
     public DisplayImage getWeaponSkin(final Weapon weapon) {
-        return weaponSkins.getOrDefault(weapon, null);
+        return weaponSkins.getOrDefault(weapon, weapon.getDefaultSkin());
     }
 }
