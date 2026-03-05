@@ -31,6 +31,6 @@ public class Bootstrap {
             }
         };
 
-        new Timer().scheduleAtFixedRate(task, 0, 2000);
+        new Timer().scheduleAtFixedRate(task, 0, 1000);
     }
 }
