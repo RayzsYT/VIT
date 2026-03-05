@@ -13,6 +13,16 @@ public class Bootstrap {
 
     public static void main(String[] args) {
 
+        try {
+            start();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            System.exit(0);
+        }
+
+    }
+
+    private static void start() {
         final VITAPIImpl api = new VITAPIImpl();
         VIT.set(api);
 
