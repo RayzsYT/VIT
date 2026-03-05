@@ -14,6 +14,8 @@ public class Bootstrap {
     public static void main(String[] args) {
 
         try {
+            OutputLogger.initialize();
+
             start();
         } catch (Exception exception) {
             exception.printStackTrace();
