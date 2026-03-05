@@ -6,6 +6,7 @@ import de.rayzs.vit.api.game.items.Team;
 import de.rayzs.vit.api.game.items.Tier;
 import de.rayzs.vit.api.game.items.Weapon;
 import de.rayzs.vit.api.game.player.Player;
+import de.rayzs.vit.api.game.player.PlayerInventory;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
@@ -14,6 +15,7 @@ import de.rayzs.vit.api.utils.ImageUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Map;
 
 public class LiveScreen extends Screen {
 
@@ -56,8 +58,9 @@ public class LiveScreen extends Screen {
                     i,
                     "CardId-" + i,
                     "TitleId-" + i,
+                    new PlayerInventory(Map.of()),
                     b ? Team.DEFEND : Team.ATTACK,
-                    Agent.PHOENIX,
+                    Agent.values()[i % Agent.values().length],
                     Tier.BRONZE_III,
                     Tier.IMMORTAL_II
             );
@@ -181,10 +184,7 @@ public class LiveScreen extends Screen {
         rankPanel.setOpaque(false);
         rankPanel.setLayout(new BoxLayout(rankPanel, BoxLayout.X_AXIS));
 
-        final ImageIcon currentRankImage = api
-                .getImageProvider()
-                .getTiers()
-                .getImage(player.currentTier().getTierId())
+        final ImageIcon currentRankImage = player.currentTier().getImage()
                 .getIcon(70, 70, Image.SCALE_SMOOTH);
 
         final JLabel currentRankLabel = new JLabel(currentRankImage) {
@@ -197,10 +197,7 @@ public class LiveScreen extends Screen {
         currentRankLabel.setToolTipText("Current Rank: " + player.currentTier().getTierName());
 
         if (player.peakTier() != null) {
-            final ImageIcon peakRankImage = api
-                    .getImageProvider()
-                    .getTiers()
-                    .getImage(player.peakTier().getTierId())
+            final ImageIcon peakRankImage = player.peakTier().getImage()
                     .getIcon(38, 38, Image.SCALE_SMOOTH);
 
             final JLabel peakRankLabel = new JLabel(peakRankImage) {
