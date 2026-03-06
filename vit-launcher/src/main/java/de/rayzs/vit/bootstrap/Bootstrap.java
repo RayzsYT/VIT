@@ -35,7 +35,7 @@ public class Bootstrap {
         final AssetPreparer prep = new AssetPreparer(api);
 
 
-        final MainGUI gui = new MainGUI("Waiting");
+        final MainGUI gui = new MainGUI("Initializing...");
         gui.setVisible(true);
 
         final LoopHandler loop = new LoopHandler(api, gui);
