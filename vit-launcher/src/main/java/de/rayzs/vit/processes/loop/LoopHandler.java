@@ -44,7 +44,7 @@ public class LoopHandler {
     private final LoadingScreen loadingScreen = new LoadingScreen();
     private final LiveScreen liveScreen = new LiveScreen();
 
-    private State state = State.WAITING;
+    private State state = State.INACTIVE;
 
 
     public LoopHandler(final VITAPI api, final MainGUI gui) {
@@ -54,14 +54,26 @@ public class LoopHandler {
         gui.setAlwaysOnTop(true);
         gui.setAlwaysOnTop(false);
 
-        api.getSession().initialize();
-        loadingScreen.load(api, gui);
+        inactiveScreen.load(api, gui);
     }
 
     public void handle() {
+
+        if (!Request.areHeadersSet()) {
+            state = State.INACTIVE;
+
+            System.out.println("Waiting 'til VALORANT is enabled");
+            api.getSession().initialize();
+            return;
+        }
+
+
         final SessionState sessionState = api.getSession().getSessionState();
 
+        System.out.println(sessionState);
+
         if (!state.isInactive() && !sessionState.isValorantStarted()) {
+            System.out.println("Set state to inactive");
             state = State.INACTIVE;
 
             Request.unsetHeaders();
@@ -71,10 +83,10 @@ public class LoopHandler {
         }
 
         if (state.isInactive() && sessionState.isValorantStarted()) {
+            System.out.println("Detected game. Set state to waiting");
             state = State.WAITING;
 
             loadingScreen.resetText();
-            api.getSession().initialize();
 
             loadingScreen.load(this.api, this.gui);
             return;
@@ -84,6 +96,7 @@ public class LoopHandler {
         final boolean preparing = state.isLive() || state.isLoading();
 
         if (!preparing && sessionState.isInsideMatch()) {
+            System.out.println("Found live match");
             state = State.LOADING;
 
             loadLiveScreen();
