@@ -165,7 +165,23 @@ public class LiveScreen extends Screen {
         rankPanel.setOpaque(false);
         rankPanel.setLayout(new BoxLayout(rankPanel, BoxLayout.X_AXIS));
 
-        final ImageIcon currentRankImage = player.currentTier().getImage()
+
+        // Get current tiers. If one of them does not exist,
+        // it will be simply ignored.
+
+        final boolean hasCompetitive = player.competitive() != null;
+
+        final Tier currentTier = hasCompetitive
+                ? player.competitive().currentTier()
+                : Tier.UNRANKED;
+
+        final Tier peakTier = hasCompetitive
+                ? player.competitive().seasonTiers().getPeakTier()
+                : Tier.UNRANKED;
+
+
+
+        final ImageIcon currentRankImage = currentTier.getImage()
                 .getIcon(70, 70, Image.SCALE_SMOOTH);
 
         final JLabel currentRankLabel = new JLabel(currentRankImage) {
@@ -175,10 +191,11 @@ public class LiveScreen extends Screen {
             }
         };
 
-        currentRankLabel.setToolTipText("Current Rank: " + player.currentTier().getTierName());
 
-        if (player.peakTier() != null) {
-            final ImageIcon peakRankImage = player.peakTier().getImage()
+        currentRankLabel.setToolTipText("Current Rank: " + currentTier.getTierName());
+
+        if (peakTier != Tier.UNRANKED) {
+            final ImageIcon peakRankImage = peakTier.getImage()
                     .getIcon(38, 38, Image.SCALE_SMOOTH);
 
             final JLabel peakRankLabel = new JLabel(peakRankImage) {
@@ -188,7 +205,7 @@ public class LiveScreen extends Screen {
                 }
             };
 
-            peakRankLabel.setToolTipText("Peak Rank: " + player.peakTier().getTierName());
+            peakRankLabel.setToolTipText("Peak Rank: " + peakTier.getTierName());
 
             rankPanel.add(peakRankLabel);
             rankPanel.add(Box.createHorizontalStrut(8));
