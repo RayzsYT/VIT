@@ -179,9 +179,10 @@ public class Session {
         }
 
 
-        RequestDest.GLZ.update(secondRegion, firstRegion);
-        RequestDest.PD.update(firstRegion);
         RequestDest.SHARED.update(firstRegion);
+        RequestDest.PD.update(firstRegion);
+
+        RequestDest.GLZ.update(secondRegion, firstRegion);
 
 
         // Sending request to receive the required headers
