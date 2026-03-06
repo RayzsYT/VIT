@@ -4,7 +4,12 @@ import java.io.File;
 
 public enum FileDir {
 
-    ROOT                (null,      System.getenv("LOCALAPPDATA") + "\\VIT"),
+    APP_DATA            (null, System.getenv("LOCALAPPDATA")),
+
+    VALORANT_CONF       (APP_DATA, "Riot Games/Riot Client/Config"),
+    VALORANT_LOGS       (APP_DATA, "VALORANT/Saved/Logs"),
+
+    ROOT                (APP_DATA, "VIT"),
 
     SCRIPTS             (ROOT,      "scripts"),
     LOGS                (ROOT,      "logs"),
