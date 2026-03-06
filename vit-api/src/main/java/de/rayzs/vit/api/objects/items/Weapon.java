@@ -64,7 +64,7 @@ public enum Weapon {
      *
      * @param defaultSkinId Default skin id.
      */
-    public void updateDefaultWeaponId(final String defaultSkinId) {
+    public void updateDefaultSkinId(final String defaultSkinId) {
         if (this.defaultSkinId != null) {
             throw new IllegalStateException("Default Skin ID is already set!");
         }

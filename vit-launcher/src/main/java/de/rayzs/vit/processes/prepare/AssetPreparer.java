@@ -432,7 +432,7 @@ public class AssetPreparer {
                 throw new NullPointerException("Weapon " + name + " not found!");
             }
 
-            weapon.updateDefaultWeaponId(id);
+            weapon.updateDefaultSkinId(id);
 
             for (final Object skinObj : gun.getJSONArray("skins")) {
                 final JSONObject skin = (JSONObject) skinObj;
