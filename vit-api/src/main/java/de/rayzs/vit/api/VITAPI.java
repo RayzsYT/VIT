@@ -3,6 +3,7 @@ package de.rayzs.vit.api;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.session.Session;
 
 public interface VITAPI {
 
@@ -12,6 +13,15 @@ public interface VITAPI {
      * @return VIT version.
      */
     default String getVersion() { return "0.0.1"; }
+
+    /**
+     * Get the session to reload or fetch
+     * VALORANT related information and create
+     * a {@link Game} object.
+     *
+     * @return Session.
+     */
+    Session getSession();
 
     /**
      * Get the ImageProvider to create

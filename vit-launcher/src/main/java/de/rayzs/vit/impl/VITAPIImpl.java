@@ -4,17 +4,25 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.session.Session;
 import de.rayzs.vit.impl.image.ImageProviderImpl;
 
 public class VITAPIImpl implements VITAPI {
 
     private final ImageProvider imageProvider;
+    private final Session session;
 
     private Game game;
     private Weapon selectedWeapon = Weapon.VANDAL;
 
     public VITAPIImpl() {
+        this.session = new Session();
         this.imageProvider = new ImageProviderImpl();
+    }
+
+    @Override
+    public Session getSession() {
+        return this.session;
     }
 
     @Override
