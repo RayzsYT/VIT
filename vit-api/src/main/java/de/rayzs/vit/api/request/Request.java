@@ -7,13 +7,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 import java.util.Optional;
 
 public class Request {
 
+    // Constant client platform. Will transform using Base64 right below.
+    // Just some basic info pretending to be Windows 11 hehe.
+    private static String CLIENT_PLATFORM =  "{\"platformType\":\"PC\",\"platformOS\":\"Windows\",\"platformOSVersion\":\"11\",\"platformChipset\":\"Intel\"}";
     private static SSLContext SSL_CONTEXT;
+
 
     static {
         // Creating a dummy TrustManager to bypass SSL certified connections.
@@ -35,50 +41,53 @@ public class Request {
             // Applying custom TrustManager to create SSL connections.
             SSL_CONTEXT = SSLContext.getInstance("TLS");
             SSL_CONTEXT.init(null, dummy, new SecureRandom());
+
+
+            CLIENT_PLATFORM = Base64.getEncoder().encodeToString(CLIENT_PLATFORM.getBytes(StandardCharsets.UTF_8));
+
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
 
-    private static String ACCESS_TOKEN, ENTITLEMENT_TOKEN, CLIENT_PLATFORM, CURRENT_VERSION;
+    private static String AUTH_TOKEN, ACCESS_TOKEN, ENTITLEMENT_TOKEN, CURRENT_VERSION;
 
 
     /**
-     * Set the access token. This can only be called
+     * Set the auth token. This can only be called
      * once and cannot be used again, since the access token
      * has been set.
      * <p>
-     * Access token must be unset first using the {@link #unsetAccessToken()} method
+     * Access token must be unset first using the {@link #unsetAuthToken()} method
      * in order for it to be set again.
      * <p>
-     * The access token is required for creating {@link RequestDest#LOCAL},
+     * The auth token is required for creating {@link RequestDest#LOCAL},
      * {@link RequestDest#PD}, {@link RequestDest#GLZ},
      * and {@link RequestDest#SHARED} requests.
      *
-     * @param accessToken Access token.
+     * @param authToken Auth token.
      */
-    public static void setAccessToken(final String accessToken) {
+    public static void setAuthToken(final String authToken) {
 
-        if (ACCESS_TOKEN != null) {
+        if (AUTH_TOKEN != null) {
             throw new IllegalStateException("Access token is already set!");
         }
 
-        ACCESS_TOKEN = accessToken;
-
+        AUTH_TOKEN = authToken;
     }
 
     /**
-     * Unsets the access token. Can only be
+     * Unsets the auth token. Can only be
      * done when it's set.
      */
-    public static void unsetAccessToken() {
+    public static void unsetAuthToken() {
 
-        if (ACCESS_TOKEN == null) {
-            throw new IllegalStateException("Access token is not set!");
+        if (AUTH_TOKEN == null) {
+            throw new IllegalStateException("Auth token is not set!");
         }
 
-        ACCESS_TOKEN = null;
+        AUTH_TOKEN = null;
 
     }
 
@@ -88,37 +97,37 @@ public class Request {
      * once and cannot be used again, since the access token
      * has been set.
      * <p>
-     * Access token must be unset first using the {@link #unsetAccessToken()} method
+     * Access token must be unset first using the {@link #unsetHeaders()} method
      * in order for it to be set again.
      * <p>
      * The headers are required for creating {@link RequestDest#PD},
      * {@link RequestDest#GLZ}, and {@link RequestDest#SHARED}
      * requests.
      *
+     * @param accessToken Access token.
      * @param entitlementToken Entitlement token.
-     * @param clientPlatform Client platform.
      * @param currentVersion Version.
      */
     public static void setHeaders(
+            final String accessToken,
             final String entitlementToken,
-            final String clientPlatform,
             final String currentVersion
     ) {
 
-        if (ENTITLEMENT_TOKEN != null) {
-            throw new IllegalStateException("Header 'Entitlement Token' is already set!");
+        if (ACCESS_TOKEN != null) {
+            throw new IllegalStateException("Access token is already set!");
         }
 
-        if (CLIENT_PLATFORM != null) {
-            throw new IllegalStateException("Header 'Client Platform' is already set!");
+        if (ENTITLEMENT_TOKEN != null) {
+            throw new IllegalStateException("Header 'Entitlement Token' is already set!");
         }
 
         if (CURRENT_VERSION != null) {
             throw new IllegalStateException("Header 'Current Version' is already set!");
         }
 
+        ACCESS_TOKEN = accessToken;
         ENTITLEMENT_TOKEN = entitlementToken;
-        CLIENT_PLATFORM = clientPlatform;
         CURRENT_VERSION = currentVersion;
     }
 
@@ -127,20 +136,21 @@ public class Request {
      * done when they are all set.
      */
     public static void unsetHeaders() {
-        if (ENTITLEMENT_TOKEN == null) {
-            throw new IllegalStateException("Header 'Entitlement Token' is not set!");
+
+        if (ACCESS_TOKEN == null) {
+            throw new IllegalStateException("Header 'Access token' is not set!");
         }
 
-        if (CLIENT_PLATFORM == null) {
-            throw new IllegalStateException("Header 'Client Platform' is not set!");
+        if (ENTITLEMENT_TOKEN == null) {
+            throw new IllegalStateException("Header 'Entitlement Token' is not set!");
         }
 
         if (CURRENT_VERSION == null) {
             throw new IllegalStateException("Header 'Current Version' is not set!");
         }
 
+        ACCESS_TOKEN = null;
         ENTITLEMENT_TOKEN = null;
-        CLIENT_PLATFORM = null;
         CURRENT_VERSION = null;
     }
 
