@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Optional;
 
 public class Session {
 
@@ -25,6 +26,7 @@ public class Session {
 
     public Session() {
         this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
+        fetchAuthToken();
     }
 
 
@@ -37,7 +39,6 @@ public class Session {
     public void initialize() {
         this.client = Request.createClient();
 
-        fetchAuthToken();
         fetchRequestHeaders(this.client);
     }
 
@@ -52,26 +53,12 @@ public class Session {
         return this.client;
     }
 
-    /**
-     * If VALORANT is currently open.
-     *
-     * @return True if VALORANT is open. False otherwise.
-     */
-    public boolean isOpen() {
-        return this.lockfile.exists();
-    }
-
 
 
     /**
      * Fetch and set the auth token.
      */
     private void fetchAuthToken() {
-
-        if (!isOpen()) {
-            throw new IllegalStateException("Cannot set access token while VALORANT isn't open...");
-        }
-
         try {
             String[] lockData = new String(Files.readAllBytes(lockfile.toPath())).split(":");
 
@@ -97,12 +84,6 @@ public class Session {
      * @param client HttpClient sending the request.
      */
     private void fetchRequestHeaders(final HttpClient client) {
-
-        if (!isOpen()) {
-            throw new IllegalStateException("Cannot fetch the request regions while VALORANT isn't even open... I mean I could, but what's the point?");
-        }
-
-
         String firstRegion = null;
         String secondRegion = null;
         String currentVersion = null;
@@ -189,7 +170,13 @@ public class Session {
                 "entitlements/v1/token"
         );
 
-        final JSONObject json = new JSONObject(request.sendAndGet(client));
+        final Optional<String> result = request.sendAndGet(client);
+
+        if (result.isEmpty()) {
+            throw new NullPointerException("Request failed!");
+        }
+
+        final JSONObject json = new JSONObject(result.get());
 
         final String accessToken = json.getString("accessToken");
         final String entitlementToken = json.getString("token");
@@ -202,49 +189,64 @@ public class Session {
 
 
     /**
-     * Check if the client is currently in-game
-     * or not.
+     * Get the session state by sending a
+     * request.
+     * <p>
+     * Returns a SessionState indicating whether
+     * the client is currently in the menu, in a match,
+     * of if VALORANT is even started.
      *
-     * @return True if the client is in a match. False otherwise.
+     * @return SessionState.
      */
-    public boolean insideMatch() {
-
-        if (!isOpen()) {
-            return false;
-        }
-
-
+    public SessionState getSessionState() {
         final Request request = Request.createRequest(
                 RequestMethod.GET,
                 RequestDest.LOCAL,
                 "chat/v4/presences"
         );
 
-        final JSONArray presences = new JSONObject(request.sendAndGet(client)).getJSONArray("presences");
+
+        final Optional<String> result = request.sendAndGet(client);
+
+        if (result.isEmpty()) {
+            throw new NullPointerException("Request failed!");
+        }
+
+
+        final JSONArray presences = new JSONObject(result.get()).getJSONArray("presences");
 
         for (Object presenceObj : presences) {
             final JSONObject presence = (JSONObject) presenceObj;
 
             final String product = presence.getString("product");
-            final String playerId = presence.getString("playerId");
+            final String playerId = presence.getString("puuid");
 
             if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(selfPlayerId)) {
                 continue;
             }
 
-            final String encodedPrivate = presence.getString("private");
+
+            // Sometimes exactly when VALORANT boots and the tracker
+            // is enabled, the private key isn't fully build yet.
+            // So to avoid any confusions or any issues, we'll simply ignore
+            // it in that exact time and wait for the next iteration.
+            final Object encodedPrivateObj = presence.get("private");
+            if (! (encodedPrivateObj instanceof String encodedPrivate)) {
+                continue;
+            }
+
             final String decodedPrivate = new String(Base64.getDecoder().decode(encodedPrivate), StandardCharsets.UTF_8);
 
             final JSONObject presenceData = new JSONObject(decodedPrivate);
+            final JSONObject matchPresenceData = presenceData.getJSONObject("matchPresenceData");
 
-            try {
-                final JSONObject matchPresenceData = presence.getJSONObject("matchPresenceData");
-                return !matchPresenceData.getString("sessionLoopState").equalsIgnoreCase("MENUS");
-            } catch (JSONException exception) {
-                return !presenceData.getString("sessionLoopState").equalsIgnoreCase("MENUS");
-            }
+            final String sessionLoopState = matchPresenceData.getString("sessionLoopState");
+
+            return sessionLoopState.equalsIgnoreCase("menus")
+                    ? SessionState.IN_MENU
+                    : SessionState.IN_GAME;
         }
 
-        return false;
+        return SessionState.VALORANT_NOT_OPEN;
     }
 }
