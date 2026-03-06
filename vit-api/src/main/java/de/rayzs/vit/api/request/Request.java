@@ -137,6 +137,15 @@ public class Request {
         CURRENT_VERSION = null;
     }
 
+    /**
+     * Returns if all the headers have been set or not.
+     *
+     * @return True if all headers are set. False otherwise.
+     */
+    public static boolean areHeadersSet() {
+        return ACCESS_TOKEN != null && ENTITLEMENT_TOKEN != null && CURRENT_VERSION != null;
+    }
+
 
     /**
      * Create a HttpClient.
@@ -196,6 +205,7 @@ public class Request {
 
 
     private final HttpRequest request;
+    private final RequestDest dest;
 
     private Request(
             final RequestMethod method,
@@ -203,6 +213,8 @@ public class Request {
             final String urlPath,
             final String body
     ) {
+        this.dest = dest;
+
         final HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(dest.from(urlPath)));
 
@@ -254,8 +266,15 @@ public class Request {
      * @return Body.
      */
     public Optional<String> sendAndGet(final HttpClient client) {
+
+        System.out.println("Sending request to: " + request.uri());
+        System.out.println("With headers: " + request.headers().toString());
+
         try {
-            final HttpResponse<String> contentResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            final HttpResponse<String> contentResponse = client.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
 
             if (contentResponse.statusCode() != 200) {
                 return Optional.empty();
@@ -264,7 +283,16 @@ public class Request {
             return Optional.of(contentResponse.body());
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+
+            // Only printing the exception when the destination
+            // is not LOCAL, since the presence check, which
+            // uses the LOCAL url, will fail when VALORANT
+            // isn't open. So for the sake of a clean console,
+            // it's just going to be ignored.
+            if (dest != RequestDest.LOCAL) {
+                exception.printStackTrace();
+            }
+
         }
 
         return Optional.empty();
