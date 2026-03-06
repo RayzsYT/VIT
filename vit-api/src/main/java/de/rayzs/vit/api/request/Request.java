@@ -56,11 +56,8 @@ public class Request {
 
     /**
      * Set the auth token. This can only be called
-     * once and cannot be used again, since the access token
+     * once and cannot be used again, since the auth token
      * has been set.
-     * <p>
-     * Access token must be unset first using the {@link #unsetAuthToken()} method
-     * in order for it to be set again.
      * <p>
      * The auth token is required for creating {@link RequestDest#LOCAL},
      * {@link RequestDest#PD}, {@link RequestDest#GLZ},
@@ -71,24 +68,10 @@ public class Request {
     public static void setAuthToken(final String authToken) {
 
         if (AUTH_TOKEN != null) {
-            throw new IllegalStateException("Access token is already set!");
+            throw new IllegalStateException("Auth token is already set!");
         }
 
         AUTH_TOKEN = authToken;
-    }
-
-    /**
-     * Unsets the auth token. Can only be
-     * done when it's set.
-     */
-    public static void unsetAuthToken() {
-
-        if (AUTH_TOKEN == null) {
-            throw new IllegalStateException("Auth token is not set!");
-        }
-
-        AUTH_TOKEN = null;
-
     }
 
 
@@ -225,21 +208,26 @@ public class Request {
 
 
         if (dest != RequestDest.API) {
-            if (ACCESS_TOKEN == null) {
-                throw new NullPointerException("Cannot create " + dest.name() + " request because the Access Token is not set!");
-            }
 
-            builder.header("Authorization", "Bearer " + ACCESS_TOKEN);
+            if (dest == RequestDest.LOCAL) {
 
+                if (AUTH_TOKEN == null) {
+                    throw new NullPointerException("Cannot create " + dest.name() + " request because the Access Token is not set!");
+                }
 
-            if (dest != RequestDest.LOCAL) {
-                if (ENTITLEMENT_TOKEN == null || CLIENT_PLATFORM == null || CURRENT_VERSION == null) {
+                builder.header("Authorization", "Basic " + AUTH_TOKEN);
+
+            } else {
+
+                if (ACCESS_TOKEN == null || ENTITLEMENT_TOKEN == null || CLIENT_PLATFORM == null || CURRENT_VERSION == null) {
                     throw new NullPointerException("Cannot create " + dest.name() + " request because headers are not set!");
                 }
 
-                builder.header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
+                builder.header("Authorization", "Bearer " + ACCESS_TOKEN)
+                        .header("X-Riot-Entitlements-JWT", ENTITLEMENT_TOKEN)
                         .header("X-Riot-ClientPlatform", CLIENT_PLATFORM)
                         .header("X-Riot-ClientVersion", CURRENT_VERSION);
+
             }
         }
 
