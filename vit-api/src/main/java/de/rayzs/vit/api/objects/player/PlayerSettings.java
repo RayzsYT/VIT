@@ -1,7 +1,6 @@
 package de.rayzs.vit.api.objects.player;
 
 public record PlayerSettings(
-        boolean levelHidden,
-        boolean nameHidden,
-        boolean incognito
+        boolean levelHidden,    // Are levels hidden?
+        boolean incognito       // Is player in incognito? (Hides level + name)
 ) { }
