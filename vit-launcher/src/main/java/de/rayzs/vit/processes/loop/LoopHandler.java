@@ -2,6 +2,7 @@ package de.rayzs.vit.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.processes.screen.InactiveScreen;
@@ -99,6 +100,14 @@ public class LoopHandler {
     }
 
     private void loadLiveScreen() {
-        // Create game object...
+        final Game game = api.getSession().constructGame(n -> {
+            loadingScreen.updateText("Loaded " + n + " players...");
+        });
+
+        if (game == null) {
+            return;
+        }
+
+        api.setGame(game);
     }
 }
