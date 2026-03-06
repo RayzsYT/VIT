@@ -2,6 +2,7 @@ package de.rayzs.vit.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.objects.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.processes.screen.InactiveScreen;
 import de.rayzs.vit.processes.screen.LiveScreen;
@@ -42,7 +43,7 @@ public class LoopHandler {
     private final LoadingScreen loadingScreen = new LoadingScreen();
     private final LiveScreen liveScreen = new LiveScreen();
 
-    private State state = State.INACTIVE;
+    private State state = State.WAITING;
 
 
     public LoopHandler(final VITAPI api, final MainGUI gui) {
@@ -51,21 +52,24 @@ public class LoopHandler {
 
         gui.setAlwaysOnTop(true);
         gui.setAlwaysOnTop(false);
+
+        api.getSession().initialize();
+        loadingScreen.load(api, gui);
     }
 
     public void handle() {
+        final SessionState sessionState = api.getSession().getSessionState();
 
-        if (!state.isInactive() && !this.api.getSession().isOpen()) {
+        if (!state.isInactive() && !sessionState.isValorantStarted()) {
             state = State.INACTIVE;
 
-            Request.unsetAuthToken();
             Request.unsetHeaders();
 
-            inactiveScreen.load(this.api, this.gui);
+            inactiveScreen.load(api, gui);
             return;
         }
 
-        if (state.isInactive() && this.api.getSession().isOpen()) {
+        if (state.isInactive() && sessionState.isValorantStarted()) {
             state = State.WAITING;
 
             loadingScreen.resetText();
@@ -76,10 +80,9 @@ public class LoopHandler {
         }
 
 
-        final boolean insideMatch = this.api.getSession().insideMatch();
         final boolean preparing = state.isLive() || state.isLoading();
 
-        if (!preparing && insideMatch) {
+        if (!preparing && sessionState.isInsideMatch()) {
             state = State.LOADING;
 
             loadLiveScreen();
@@ -87,7 +90,7 @@ public class LoopHandler {
         }
 
 
-        if (preparing && !insideMatch) {
+        if (preparing && !sessionState.isInsideMatch()) {
             state = State.WAITING;
 
             loadingScreen.resetText();
