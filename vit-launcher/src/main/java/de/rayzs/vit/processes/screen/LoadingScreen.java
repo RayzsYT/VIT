@@ -12,10 +12,12 @@ public class LoadingScreen extends Screen {
 
     private JLabel textLabel;
 
+    private final String defaultText = "Waiting";
+
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
         gui.reset();
-        gui.setTitle("Loading...");
+        gui.setTitle(this.defaultText);
 
 
         final JPanel contentPane = gui.getContentPane();
@@ -34,7 +36,7 @@ public class LoadingScreen extends Screen {
 
 
 
-        this.textLabel = new JLabel("Loading...");
+        this.textLabel = new JLabel(this.defaultText);
         this.textLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
         this.textLabel.setForeground(Color.WHITE);
         this.textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -61,6 +63,10 @@ public class LoadingScreen extends Screen {
 
         contentPane.add(panel, BorderLayout.CENTER);
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
+    }
+
+    public void resetText() {
+        this.textLabel.setText(this.defaultText);
     }
 
     public void updateText(final String text) {
