@@ -5,6 +5,8 @@ import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
 import de.rayzs.vit.api.utils.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -18,10 +20,36 @@ public class Session {
 
     private final File lockfile;
 
+    private HttpClient client;
     private String selfPlayerId;
 
     public Session() {
         this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
+    }
+
+
+    /**
+     * Initializes all required information
+     * to send requests. Should not be called
+     * during runtime once it already has been called,
+     * unless VALORANT has been restarted.
+     */
+    public void initialize() {
+        this.client = Request.createClient();
+
+        fetchAuthToken();
+        fetchRequestHeaders(this.client);
+    }
+
+
+    /**
+     * Get the client to send requests
+     * to the VALORANT servers.
+     *
+     * @return HttpClient.
+     */
+    public HttpClient getClient() {
+        return this.client;
     }
 
     /**
@@ -170,5 +198,53 @@ public class Session {
         this.selfPlayerId = json.getString("subject");
 
         Request.setHeaders(accessToken, entitlementToken, currentVersion);
+    }
+
+
+    /**
+     * Check if the client is currently in-game
+     * or not.
+     *
+     * @return True if the client is in a match. False otherwise.
+     */
+    public boolean insideMatch() {
+
+        if (!isOpen()) {
+            return false;
+        }
+
+
+        final Request request = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.LOCAL,
+                "chat/v4/presences"
+        );
+
+        final JSONArray presences = new JSONObject(request.sendAndGet(client)).getJSONArray("presences");
+
+        for (Object presenceObj : presences) {
+            final JSONObject presence = (JSONObject) presenceObj;
+
+            final String product = presence.getString("product");
+            final String playerId = presence.getString("playerId");
+
+            if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(selfPlayerId)) {
+                continue;
+            }
+
+            final String encodedPrivate = presence.getString("private");
+            final String decodedPrivate = new String(Base64.getDecoder().decode(encodedPrivate), StandardCharsets.UTF_8);
+
+            final JSONObject presenceData = new JSONObject(decodedPrivate);
+
+            try {
+                final JSONObject matchPresenceData = presence.getJSONObject("matchPresenceData");
+                return !matchPresenceData.getString("sessionLoopState").equalsIgnoreCase("MENUS");
+            } catch (JSONException exception) {
+                return !presenceData.getString("sessionLoopState").equalsIgnoreCase("MENUS");
+            }
+        }
+
+        return false;
     }
 }
