@@ -12,6 +12,7 @@ public enum RequestDest {
         
         private final String unformattedUrl;
         private String formattedUrl;
+
         RequestDest(final String url) {
             this.unformattedUrl = url;
 
@@ -59,7 +60,7 @@ public enum RequestDest {
             if (this.formattedUrl == null) {
                 // In case the url hasn't been updated yet,
                 // it will stop the call and report an error.
-                throw new IllegalStateException("URL hasn't been formatted yet. Please do that first!");
+                throw new IllegalStateException("URL hasn't been formatted yet. Please do that first! (" + name() + ")");
             }
             
             return this.formattedUrl + urlPath;
