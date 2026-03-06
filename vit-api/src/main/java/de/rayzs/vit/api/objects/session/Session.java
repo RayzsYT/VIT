@@ -1,6 +1,7 @@
 package de.rayzs.vit.api.objects.session;
 
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Session {
 
@@ -248,5 +250,19 @@ public class Session {
         }
 
         return SessionState.VALORANT_NOT_OPEN;
+    }
+
+
+    /**
+     * Construct the game object which loads
+     * all players and the map being played on.
+     *
+     * @param playerLoadConsumer A consumer with the amount of currently loaded players.
+     *
+     * @return Constructed {@link Game} object.
+     */
+    public Game constructGame(final Consumer<Integer> playerLoadConsumer) {
+        // ...
+        return new Game(null, null, null);
     }
 }
