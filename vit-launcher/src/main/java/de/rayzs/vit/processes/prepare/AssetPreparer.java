@@ -15,6 +15,7 @@ import de.rayzs.vit.api.image.SystemImages;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
+import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -160,8 +161,7 @@ public class AssetPreparer {
                 // Creates a DownloadProcess for the directory and all
                 // its assets that still need to be downloaded.
                 final DownloadProcess downloadProcess = new DownloadProcess(dir,
-                        images.getOrDefault(dir,
-                                HashSet.newHashSet(0)
+                        images.getOrDefault(dir, HashSet.newHashSet(0)
                         ).toArray(new DownloadElement[0])
                 );
 
@@ -322,10 +322,9 @@ public class AssetPreparer {
             final JSONObject map = (JSONObject) mapObj;
 
             final String url = map.getString("mapUrl"); // Using for blacklist
-            final String name = map.getString("displayName");
             final String id = map.getString("uuid");
 
-            api.getImageProvider().getMaps().putName(id, name);
+            api.getImageProvider().getMaps().putName(id, url);
 
             api.getImageProvider().getMaps().putImage(id,
                     IMAGE_URL.formatted(IMAGE_TARGET_MAPS, id, IMAGE_SIZE_BIG)
@@ -443,6 +442,17 @@ public class AssetPreparer {
 
                 if (skinName.equals(name)) {
                     continue;
+                }
+
+                // Check if skin name is something like 'Standard Vandal'.
+                // If so, then I'll just use the default weapon as image.
+                final int removalIndex = StringUtils.searchIndex("Standard ", skinName);
+                if (removalIndex != -1) {
+                    final String tmpName = skinName.substring(removalIndex);
+
+                    if (Weapon.getWeaponByName(tmpName) != null) {
+                        api.getImageProvider().getWeaponSkins().putImage(skinId, displayIcon);
+                    }
                 }
 
                 api.getImageProvider().getWeaponSkins().putName(skinId, skinName);
