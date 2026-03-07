@@ -398,9 +398,6 @@ public class Session {
                 : Map.of();
 
 
-        System.out.println(match.toString());
-
-
         // Get list of all players.
         final JSONArray players = (gameState == GameState.LOBBY
                 // Since it's the lobby, enemy team won't be shared yet.
