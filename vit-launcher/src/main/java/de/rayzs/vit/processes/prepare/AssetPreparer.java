@@ -228,7 +228,7 @@ public class AssetPreparer {
 
             if (startNowGUI.getResponse() == -1) {
 
-                System.out.println("Chose to now run VIT right away!");
+                System.out.println("Chose to not run VIT right away!");
 
                 System.exit(0);
                 return;
