@@ -37,7 +37,7 @@ public class OptionGUI extends GUI {
             final String deny,
             final String... text
     ) {
-        super(title, 400, 220);
+        super(title, 400, 200);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 

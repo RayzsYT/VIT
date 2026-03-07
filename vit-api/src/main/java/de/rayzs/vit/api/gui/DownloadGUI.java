@@ -25,7 +25,7 @@ public class DownloadGUI extends GUI {
     private final JProgressBar progressBar;
 
     private DownloadGUI(final String title, final String... text) {
-        super(title, 400, 220);
+        super(title, 400, 200);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
