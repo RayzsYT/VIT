@@ -1,15 +1,14 @@
 package de.rayzs.vit.api.objects.session;
 
+import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.game.GameState;
-import de.rayzs.vit.api.objects.items.Season;
-import de.rayzs.vit.api.objects.items.Team;
-import de.rayzs.vit.api.objects.items.Tier;
-import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerCompetitive;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
+import de.rayzs.vit.api.objects.player.PlayerSettings;
 import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
 import de.rayzs.vit.api.objects.player.competitive.MatchData;
 import de.rayzs.vit.api.objects.player.competitive.SeasonStats;
@@ -122,9 +121,13 @@ public class Session {
 
                     if (versionIndex != -1) {
                         parts = line.substring(versionIndex).split("-");
-                        parts[2] = "shipping";
 
-                        currentVersion = String.join("-", parts);
+                        final List<String> partsList = new ArrayList<>(Arrays.asList(parts));
+                        if (partsList.size() >= 2) {
+                            partsList.add(2, "shipping");
+                        }
+
+                        currentVersion = String.join("-", partsList);
                         continue;
                     }
                 }
@@ -295,7 +298,7 @@ public class Session {
         List<Player> registeredPlayers = new ArrayList<>();
 
         GameState gameState;
-        String matchId;
+        String matchId, mapId, server;
 
         PlayerCompetitive playerCompetitive;
 
@@ -346,10 +349,19 @@ public class Session {
         }
 
 
+        // Fetch match information
         final JSONObject match = new JSONObject(matchDetailsResult.get());
-        // Check what old Game object did with this json
+
+        final String mapName = match.getString("MapID");
+        mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapName);
 
 
+        String tmpServer = match.getString("GamePodID");
+        tmpServer = tmpServer.substring(0, tmpServer.lastIndexOf("-"));
+        tmpServer = tmpServer.substring(tmpServer.lastIndexOf("-") + 1);
+        tmpServer = Character.toUpperCase(tmpServer.charAt(0)) + tmpServer.substring(1);
+
+        server = tmpServer;
 
 
 
@@ -444,9 +456,7 @@ public class Session {
 
 
         for (int i = 0; i < players.length(); i++) {
-            final JSONObject playerJson = playerNames.getJSONObject(i);
-
-            System.out.println(playerJson);
+            final JSONObject playerJson = players.getJSONObject(i);
 
             final String playerId = playerJson.getString("Subject");
             final String playerName = playerNamesMap.getOrDefault(playerId, "");
@@ -490,6 +500,50 @@ public class Session {
                         compRequirements,
                         competitive
                 );
+
+
+                final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
+
+                final boolean incognito = incognitoPlayerIds.contains(playerId);
+                final boolean levelHidden = identity.getBoolean("HideAccountLevel");
+                final int level = identity.getInt("AccountLevel");
+
+                final String playerCardId = identity.getString("PlayerCardID");
+                final String playerTitleId = identity.getString("PlayerTitleID");
+
+                final Team team = playerJson.getString("TeamID").equalsIgnoreCase("blue")
+                        ? Team.DEFEND
+                        : Team.ATTACK;
+
+                final PlayerSettings settings = new PlayerSettings(
+                        levelHidden,
+                        incognito
+                );
+
+                final PlayerInventory inventory = playerInventories.get(playerId);
+
+
+                final String agentId = gameState == GameState.IN_GAME
+                        ? playerJson.getString("CharacterID")
+                        : null;
+
+                final Agent agent =  gameState == GameState.IN_GAME
+                        ? Agent.getAgentById(agentId)
+                        : null;
+
+
+                registeredPlayers.add(new Player(
+                        playerId,
+                        team,
+                        playerName,
+                        agent,
+                        level,
+                        playerCardId,
+                        playerTitleId,
+                        settings,
+                        inventory,
+                        playerCompetitive
+                ));
 
             } else {
                 System.err.println("Failed to fetch competitive information of player: " + playerName + ". ( " + playerId + " )");
@@ -541,7 +595,20 @@ public class Session {
              */
             }
 
-        return null;
+
+        final Player selfPlayer = registeredPlayers.stream()
+                .filter(player -> player.id().equalsIgnoreCase(selfPlayerId))
+                .findFirst()
+                .get();
+
+
+        return new Game(
+                selfPlayer,
+                gameState,
+                registeredPlayers.toArray(new Player[0]),
+                mapId,
+                server
+        );
     }
 
 
@@ -676,21 +743,19 @@ public class Session {
 
 
                 // Read and set all seasons and tiers for the player.
-                for (Object seasonIdObj : seasonInfo.names()) {
-                    final String seasonId = seasonIdObj.toString();
+                for (final String seasonId : seasonInfo.keySet()) {
+                    final JSONObject seasonJson = seasonInfo.getJSONObject(seasonId);
                     final Season season = seasons.get(seasonId);
 
-                    if (season == null) {
+
+                    if (seasonJson == null) {
                         throw new RuntimeException("Failed to find season with ID: " + seasonId);
                     }
 
 
-                    final JSONObject currentSeasonInfo = seasonInfo.getJSONObject(seasonId);
-
-
-                    final int rr = seasonInfo.getInt("RankedRating");
-                    final int playedGames = seasonInfo.getInt("NumberOfGames");
-                    final int wonGames = seasonInfo.getInt("NumberOfWins");
+                    final int rr = seasonJson.getInt("RankedRating");
+                    final int playedGames = seasonJson.getInt("NumberOfGames");
+                    final int wonGames = seasonJson.getInt("NumberOfWins");
                     final int lostGames = playedGames - wonGames;
 
                     final float winRate = 100f * ((float) wonGames / (float) playedGames);
@@ -706,13 +771,13 @@ public class Session {
                     );
 
 
-                    if (currentSeasonInfo.has("CompetitiveTier")) {
-                        final int tierId = currentSeasonInfo.getInt("CompetitiveTier");
+                    if (seasonJson.has("CompetitiveTier")) {
+                        final int tierId = seasonJson.getInt("CompetitiveTier");
                         seasonTierIdsMap.put(seasonStats, tierId);
                     }
 
-                    if (currentSeasonInfo.has("Rank")) {
-                        final int competitiveRankId = currentSeasonInfo.getInt("Rank");
+                    if (seasonJson.has("Rank")) {
+                        final int competitiveRankId = seasonJson.getInt("Rank");
                         seasonTierIdsMap.put(seasonStats, competitiveRankId);
                     }
 
