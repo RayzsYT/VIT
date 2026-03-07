@@ -1,6 +1,7 @@
 package de.rayzs.vit.processes.screen;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
@@ -13,7 +14,8 @@ import de.rayzs.vit.api.utils.ImageUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LiveScreen extends Screen {
 
@@ -45,6 +47,7 @@ public class LiveScreen extends Screen {
 
         final JPanel topLayerPanel = createTopLayer(
                 api,
+                gui,
                 api.getGame().mapId()
         );
 
@@ -250,11 +253,16 @@ public class LiveScreen extends Screen {
      * the default weapon skin which is being shown.
      *
      * @param api VITAPI.
+     * @param gui GUI. Required for reloading.
      * @param mapImageId Id of the map being played on.
      *
      * @return Created top layer.
      */
-    private JPanel createTopLayer(final VITAPI api, final String mapImageId) {
+    private JPanel createTopLayer(
+            final VITAPI api,
+            final MainGUI gui,
+            final String mapImageId
+    ) {
 
         // Top map image. Will be behind the control boxes
         // like reload and weapon selection.
@@ -264,7 +272,8 @@ public class LiveScreen extends Screen {
                         .getImage(mapImageId)
                         .getImage(),
                 1000,
-                200);
+                200
+        );
 
         final JPanel banner = new JPanel() {
             @Override
@@ -287,22 +296,40 @@ public class LiveScreen extends Screen {
         controls.setOpaque(false);
 
 
-        final JButton refreshButton = new JButton("Refresh");
+        final JButton refreshButton = new BeautifiedButton(
+                "Refresh",
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND,
+                GUI.Colors.TEXT_FOREGROUND,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_PRESSED,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_RELEASED
+        );
+        
         refreshButton.setFocusPainted(false);
         refreshButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        refreshButton.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
-        refreshButton.setBackground(GUI.Colors.BANNER_ATTACKER.get());
         refreshButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
 
-        refreshButton.addActionListener(e ->
-                System.out.println("Refresh button clicked")
-        );
+        refreshButton.addActionListener(e -> {
+            reload(api, gui);
+        });
 
+
+        // Preparing weapon selection items, by first adding the currently
+        // selected weapon and then the rest. Otherwise, it will feel off.
+        // Trust me. I'm a professional UX designer #nofake
+        final List<String> weaponSelectionOptions = new ArrayList<>();
+        weaponSelectionOptions.add(api.getSelectedWeapon().getWeaponName());
+
+        for (final Weapon weapon : Weapon.values()) {
+            if (weaponSelectionOptions.contains(weapon.getWeaponName())) {
+                continue;
+            }
+
+            weaponSelectionOptions.add(weapon.getWeaponName());
+        }
 
         final JComboBox<String> weaponSelector = new JComboBox<>(
-                Arrays.stream(Weapon.values())
-                        .map(Weapon::getWeaponName)
-                        .toArray(String[]::new)
+                weaponSelectionOptions.toArray(new String[0])
         );
 
         weaponSelector.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -314,6 +341,7 @@ public class LiveScreen extends Screen {
         weaponSelector.addActionListener(e -> {
             final Weapon selectedWeapon = Weapon.getWeaponByName((String) weaponSelector.getSelectedItem());
             api.setSelectedWeapon(selectedWeapon);
+            reload(api, gui);
         });
 
         controls.add(refreshButton);
@@ -348,5 +376,22 @@ public class LiveScreen extends Screen {
             case ATTACK -> playerNameDisplay.formatted(255, 99, 71, player.name());
             case DEFEND -> playerNameDisplay.formatted(0, 255, 255, player.name());
         };
+    }
+
+    /**
+     * Reloads the GUI.
+     *
+     * @param api VITAPI.
+     * @param gui MainGUI.
+     */
+    private void reload(final VITAPI api, final MainGUI gui) {
+        new Thread(() -> {
+            SwingUtilities.invokeLater(() -> {
+                load(api, gui);
+
+                gui.revalidate();
+                gui.repaint();
+            });
+        }).start();
     }
 }
