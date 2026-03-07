@@ -223,4 +223,17 @@ public class DisplayImage {
                 (int) (cpy.getHeight(null) * multiplier),
                 Image.SCALE_SMOOTH);
     }
+
+    @Override
+    public String toString() {
+        return "DisplayImage{" +
+                "url='" + url + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", downloadElement=" + downloadElement +
+                ", dir=" + dir +
+                ", image=" + image +
+                ", icon=" + icon +
+                ", isIcon=" + isIcon +
+                '}';
+    }
 }
