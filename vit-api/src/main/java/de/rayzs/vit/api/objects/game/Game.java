@@ -2,25 +2,13 @@ package de.rayzs.vit.api.objects.game;
 
 import de.rayzs.vit.api.objects.player.Player;
 
-public class Game {
-
-    private final Player self;
-    private final GameState gameState;
-
-    private final Player[] players;
-    private final String mapId;
-
-    public Game(
-            final Player self,
-            final GameState gameState,
-            final Player[] players,
-            final String mapId
-    ) {
-        this.self = self;
-        this.gameState = gameState;
-        this.players = players;
-        this.mapId = mapId;
-    }
+public record Game(
+        Player self,
+        GameState gameState,
+        Player[] players,
+        String mapId,
+        String server
+) {
 
 
     /**
@@ -29,7 +17,8 @@ public class Game {
      *
      * @return Id of the map being played on.
      */
-    public String getMapId() {
+    @Override
+    public String mapId() {
         return this.mapId;
     }
 
@@ -39,7 +28,8 @@ public class Game {
      *
      * @return Player.
      */
-    public Player getSelf() {
+    @Override
+    public Player self() {
         return this.self;
     }
 
@@ -48,7 +38,8 @@ public class Game {
      *
      * @return Array of all players.
      */
-    public Player[] getPlayers() {
+    @Override
+    public Player[] players() {
         return this.players;
     }
 
@@ -59,7 +50,8 @@ public class Game {
      *
      * @return State of the game.
      */
-    public GameState getGameState() {
+    @Override
+    public GameState gameState() {
         return gameState;
     }
 }
