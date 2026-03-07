@@ -10,8 +10,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
-import java.util.Optional;
+import java.util.*;
 
 public class Request {
 
@@ -267,9 +266,6 @@ public class Request {
      */
     public Optional<String> sendAndGet(final HttpClient client) {
 
-        System.out.println("Sending request to: " + request.uri());
-        System.out.println("With headers: " + request.headers().toString());
-
         try {
             final HttpResponse<String> contentResponse = client.send(
                     request,
@@ -277,6 +273,9 @@ public class Request {
             );
 
             if (contentResponse.statusCode() != 200) {
+                System.err.println("Failed request to " + request.uri());
+                System.err.println("Response: " + contentResponse.body());
+
                 return Optional.empty();
             }
 
