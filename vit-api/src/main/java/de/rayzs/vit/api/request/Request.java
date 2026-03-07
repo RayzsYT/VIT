@@ -273,7 +273,7 @@ public class Request {
             );
 
             if (contentResponse.statusCode() != 200) {
-                System.err.println("Failed request to " + request.uri());
+                System.err.println("Request denied! (" + request.uri() + ")");
                 System.err.println("Response: " + contentResponse.body());
 
                 return Optional.empty();
@@ -282,6 +282,8 @@ public class Request {
             return Optional.of(contentResponse.body());
 
         } catch (Exception exception) {
+
+            System.err.println("Request failed! (" + request.uri() + ")");
 
             // Only printing the exception when the destination
             // is not LOCAL, since the presence check, which
