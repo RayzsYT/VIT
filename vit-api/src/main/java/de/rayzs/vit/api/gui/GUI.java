@@ -48,8 +48,13 @@ public class GUI extends JFrame {
         MAIN_CONTROL_BUTTON                 (206, 62, 62),
 
 
-        LOBBY_ROLE_ATTACKING                (new Color(248, 155, 155)),
-        LOBBY_ROLE_DEFENDING                (new Color(161, 196, 255)),
+        LOBBY_ROLE_ATTACKING                (248, 155, 155),
+        LOBBY_ROLE_DEFENDING                (161, 196, 255),
+
+        CONTROL_BUTTON_BACKGROUND           (206, 62, 62),
+        CONTROL_BUTTON_BACKGROUND_PRESSED   (new Color(126, 2, 2)),
+        CONTROL_BUTTON_BACKGROUND_RELEASED  (CONTROL_BUTTON_BACKGROUND),
+        CONTROL_BUTTON_BACKGROUND_HOVER     (new Color(129, 27, 27)),
 
         BANNER_ATTACKER                     (206, 62, 62),
         BANNER_DEFENDER                     (59, 110, 245),
