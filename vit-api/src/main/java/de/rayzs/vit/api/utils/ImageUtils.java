@@ -65,4 +65,51 @@ public class ImageUtils {
                 Image.SCALE_SMOOTH
         );
     }
+
+    /**
+     * Darkens a copy of a. image and returns the darkened
+     * version of the image back.
+     *
+     * @param sourceImage  The original image
+     * @param factor How strong to darken (Black = 0.0 --- 1.0 = Nothing)
+     *
+     * @return Darkened image
+     */
+    public static Image darkenImage(final Image sourceImage, final float factor) {
+
+        final int height = sourceImage.getHeight(null);
+        final int width = sourceImage.getWidth(null);
+
+        // Creates an empty image with the same size as the original.
+        final BufferedImage cpyImage = new BufferedImage(
+                sourceImage.getWidth(null),
+                sourceImage.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB
+        );
+
+        // Draws source image onto the copy.
+        final Graphics graphics = cpyImage.getGraphics();
+        graphics.drawImage(sourceImage, 0, 0, null);
+        graphics.dispose();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                final int rgba = cpyImage.getRGB(x, y);
+
+                final int alpha = (rgba >> 24) & 0xff;
+
+                //Darkens each part based on the factor.
+                final int red   = (int) (factor * ((rgba >> 16) & 0xff));
+                final int green = (int) (factor * ((rgba >> 8) & 0xff));
+                final int blue  = (int) (factor * (rgba & 0xff));
+
+                // Set new darken color
+                final int newColor = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                cpyImage.setRGB(x, y, newColor);
+            }
+        }
+
+        return cpyImage;
+    }
 }
