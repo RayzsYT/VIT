@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class ImageIdMap {
 
+    private final Map<String, String> idNames = new HashMap<>();
     private final Map<String, String> names = new HashMap<>();
     private final Map<String, DisplayImage> images = new HashMap<>();
     private final Map<String, DisplayImage> miniImages = new HashMap<>();
@@ -39,7 +40,8 @@ public class ImageIdMap {
             final String id,
             final String name
     ) {
-        names.put(id, name);
+        names.putIfAbsent(id, name);
+        idNames.putIfAbsent(name, id);
     }
 
     /**
@@ -88,6 +90,16 @@ public class ImageIdMap {
      */
     public String getName(final String id) {
         return this.names.get(id);
+    }
+
+    /**
+     * Get the by its associated name.
+     *
+     * @param name Name.
+     * @return Id.
+     */
+    public String getIdByName(final String name) {
+        return this.idNames.get(name);
     }
 
     /**
