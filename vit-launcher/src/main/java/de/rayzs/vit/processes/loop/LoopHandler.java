@@ -38,12 +38,17 @@ public class LoopHandler {
     public void handle() {
 
         if (!Request.areHeadersSet()) {
-            System.out.println("Waiting 'til VALORANT is enabled");
-            api.getSession().initialize();
-            return;
+            try {
+                api.getSession().initialize();
+            } catch (final Exception exception) {
+                System.out.println("It seems VALORANT isn't launched yet. Waiting... (" + exception.getMessage() + ")");
+                return;
+            }
         }
 
+
         final SessionState sessionState = api.getSession().getSessionState();
+
 
         if (priorState == sessionState) {
             return;
