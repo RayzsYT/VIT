@@ -7,6 +7,12 @@ import java.util.*;
 
 public class SeasonTiers {
 
+    // Empty SeasonStats as dummy in case none was found
+    private static final SeasonStats EMPTY_SEASON_STATS = new SeasonStats(
+            null, 0, 0, 0, 0,0
+    );
+
+
     // Season, Stats
     private final HashMap<Season, SeasonStats> seasonStats = new HashMap<>();
 
@@ -78,7 +84,7 @@ public class SeasonTiers {
      * @return Mapped {@link SeasonStats} if it exist. Returns null otherwise.
      */
     public SeasonStats getSessionStats(final Season season) {
-        return this.seasonStats.get(season);
+        return this.seasonStats.getOrDefault(season, EMPTY_SEASON_STATS);
     }
 
     /**
