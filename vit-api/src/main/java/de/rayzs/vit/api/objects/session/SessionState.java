@@ -3,6 +3,7 @@ package de.rayzs.vit.api.objects.session;
 public enum SessionState {
     VALORANT_NOT_OPEN   (false, false),
     IN_MENU             (true, false),
+    IN_LOBBY            (true, true),
     IN_GAME             (true, true);
 
 
@@ -30,5 +31,30 @@ public enum SessionState {
      */
     public boolean isInsideMatch() {
         return insideMatch;
+    }
+
+
+    /**
+     * Get the SessionState from the loop state.
+     *
+     * @param loopState Loop state
+     * @return SessionState or null.
+     */
+    public static SessionState from(final String loopState) {
+
+        switch (loopState) {
+            case "MENUS" -> {
+                return SessionState.IN_MENU;
+            }
+
+            case "PREGAME" -> {
+                return SessionState.IN_LOBBY;
+            }
+            case "INGAME" -> {
+                return SessionState.IN_GAME;
+            }
+        }
+
+        return null;
     }
 }
