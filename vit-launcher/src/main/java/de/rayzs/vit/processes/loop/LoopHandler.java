@@ -70,7 +70,6 @@ public class LoopHandler {
 
         final SessionState sessionState = api.getSession().getSessionState();
 
-        System.out.println(sessionState);
 
         if (!state.isInactive() && !sessionState.isValorantStarted()) {
             System.out.println("Set state to inactive");
@@ -122,5 +121,7 @@ public class LoopHandler {
         }
 
         api.setGame(game);
+
+        liveScreen.load(api, gui);
     }
 }
