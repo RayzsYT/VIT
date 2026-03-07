@@ -265,10 +265,8 @@ public class Session {
 
             final JSONObject presenceData = new JSONObject(decodedPrivate);
             final JSONObject matchPresenceData = presenceData.getJSONObject("matchPresenceData");
-
             final String sessionLoopState = matchPresenceData.getString("sessionLoopState");
 
-            System.out.println("=> " + sessionLoopState);
 
             return sessionLoopState.equalsIgnoreCase("menus")
                     ? SessionState.IN_MENU
