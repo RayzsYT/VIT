@@ -267,10 +267,7 @@ public class Session {
             final JSONObject matchPresenceData = presenceData.getJSONObject("matchPresenceData");
             final String sessionLoopState = matchPresenceData.getString("sessionLoopState");
 
-
-            return sessionLoopState.equalsIgnoreCase("menus")
-                    ? SessionState.IN_MENU
-                    : SessionState.IN_GAME;
+            return SessionState.from(sessionLoopState);
         }
 
         return SessionState.VALORANT_NOT_OPEN;
@@ -282,11 +279,15 @@ public class Session {
      * Construct the game object which loads
      * all players and the map being played on.
      *
+     * @param sessionState Current session state.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
      * @return Constructed {@link Game} object.
      */
-    public Game constructGame(final Consumer<Integer> playerLoadConsumer) {
+    public Game constructGame(
+            final SessionState sessionState,
+            final Consumer<Integer> playerLoadConsumer
+    ) {
 
         fetchSeasons(); // Fetches all available seasons first, in case they were not fetched yet.
 
@@ -295,43 +296,56 @@ public class Session {
         List<String> incognitoPlayerIds = new ArrayList<>();
         List<Player> registeredPlayers = new ArrayList<>();
 
-        GameState gameState;
-        String matchId, mapId, server;
+        GameState gameState = null;
+        String matchId = null;
+
+        String mapId, server;
 
         PlayerCompetitive playerCompetitive;
 
 
         // Fetch match id
+        switch (sessionState) {
+            case IN_GAME -> {
+                final Request matchRequest = Request.createRequest(
+                        RequestMethod.GET,
+                        RequestDest.GLZ,
+                        "core-game/v1/players/" + selfPlayerId
+                );
 
-        final Request matchRequest = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.GLZ,
-                "core-game/v1/players/" + selfPlayerId
-        );
 
-
-        final Optional<String> matchResult = matchRequest.sendAndGet(client);
-        if (matchResult.isPresent()) {
-            gameState = GameState.IN_GAME;
-            matchId = new JSONObject(matchResult.get()).getString("MatchID");
-        } else {
-
-            // Checking their pre-game match. This is practically just
-            // the lobby where just select your agents usually.
-
-            final Request pregameRequest = Request.createRequest(
-                    RequestMethod.GET,
-                    RequestDest.GLZ,
-                    "pregame/v1/players/" + selfPlayerId
-            );
-
-            final Optional<String> pregameResult = pregameRequest.sendAndGet(client);
-            if (pregameResult.isEmpty()) {
-                throw new NullPointerException("Failed to construct game object! Failed to fetch match id.");
+                final Optional<String> matchResult = matchRequest.sendAndGet(client);
+                if (matchResult.isPresent()) {
+                    gameState = GameState.IN_GAME;
+                    matchId = new JSONObject(matchResult.get()).getString("MatchID");
+                }
             }
 
-            gameState = GameState.LOBBY;
-            matchId = new JSONObject(pregameResult.get()).getString("MatchID");
+
+            case IN_MENU -> {
+
+                // Checking their pre-game match. This is practically just
+                // the lobby where just select your agents usually.
+
+                final Request pregameRequest = Request.createRequest(
+                        RequestMethod.GET,
+                        RequestDest.GLZ,
+                        "pregame/v1/players/" + selfPlayerId
+                );
+
+                final Optional<String> pregameResult = pregameRequest.sendAndGet(client);
+                if (pregameResult.isEmpty()) {
+                    throw new NullPointerException("Failed to construct game object! Failed to fetch match id.");
+                }
+
+                gameState = GameState.LOBBY;
+                matchId = new JSONObject(pregameResult.get()).getString("MatchID");
+            }
+
+            default -> {
+                // Well, kinda makes no sense at all. But who knows?
+                throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + sessionState.name() + ")");
+            }
         }
 
 
@@ -384,18 +398,23 @@ public class Session {
                 : Map.of();
 
 
+        System.out.println(match.toString());
+
+
         // Get list of all players.
         final JSONArray players = (gameState == GameState.LOBBY
-                ? match.getJSONObject("AllyTeam") // Since it's the lobby, enemy team won't be shared yet.
+                // Since it's the lobby, enemy team won't be shared yet.
+                ? match.getJSONArray("Teams").getJSONObject(0)
                 : match
         ).getJSONArray("Players");
 
 
-        Team ownTeam;
+        Team ownTeam = null;
 
         if (gameState == GameState.LOBBY) {
             final String teamId = match
-                    .getJSONObject("AllyTeam")
+                    .getJSONArray("Teams")
+                    .getJSONObject(0)
                     .getString("TeamID");
 
             ownTeam = teamId.equalsIgnoreCase("blue")
@@ -457,7 +476,7 @@ public class Session {
             final JSONObject playerJson = players.getJSONObject(i);
 
             final String playerId = playerJson.getString("Subject");
-            final String playerName = playerNamesMap.getOrDefault(playerId, "");
+            final String playerName = playerNamesMap.get(playerId);
 
 
             // Competitive information about the player...
@@ -509,9 +528,9 @@ public class Session {
                 final String playerCardId = identity.getString("PlayerCardID");
                 final String playerTitleId = identity.getString("PlayerTitleID");
 
-                final Team team = playerJson.getString("TeamID").equalsIgnoreCase("blue")
-                        ? Team.DEFEND
-                        : Team.ATTACK;
+                final Team team = gameState == GameState.LOBBY
+                        ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
+                        ? Team.DEFEND : Team.ATTACK;
 
                 final PlayerSettings settings = new PlayerSettings(
                         levelHidden,
@@ -533,7 +552,9 @@ public class Session {
                 registeredPlayers.add(new Player(
                         playerId,
                         team,
-                        playerName,
+                        Objects.requireNonNullElse(playerName,
+                                agent == null ? "Hidden" : agent.getAgentName()
+                        ),
                         agent,
                         level,
                         playerCardId,
