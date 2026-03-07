@@ -49,13 +49,13 @@ public class LiveScreen extends Screen {
         );
 
 
-        final JPanel playersPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        final JPanel playersPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         playersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
 
         for (Player player : api.getGame().players()) {
-            playersPanel.add(createPlayerBanner(api, player));
+            playersPanel.add(createPlayerBanner(api, game, player));
         }
 
 
@@ -69,10 +69,16 @@ public class LiveScreen extends Screen {
      * Create JPanel for a player banner
      * showing information of a player.
      *
+     * @param api VITAPI.
+     * @param game Game.
      * @param player Player.
      * @return Created player banner.
      */
-    private JPanel createPlayerBanner(final VITAPI api, final Player player) {
+    private JPanel createPlayerBanner(
+            final VITAPI api,
+            final Game game,
+            final Player player
+    ) {
 
         final JPanel banner = new JPanel(new BorderLayout()) {
             @Override
@@ -95,6 +101,7 @@ public class LiveScreen extends Screen {
             case ATTACK -> GUI.Colors.BANNER_ATTACKER.get();
             case DEFEND -> GUI.Colors.BANNER_DEFENDER.get();
         };
+
         final JPanel stripe = new JPanel();
         stripe.setPreferredSize(new Dimension(4, 0));
         stripe.setBackground(teamColor);
@@ -123,7 +130,7 @@ public class LiveScreen extends Screen {
         center.setOpaque(false);
 
 
-        final JLabel nameLabel = new JLabel(formatPlayerName(player));
+        final JLabel nameLabel = new JLabel(formatPlayerName(game, player));
         nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         nameLabel.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
         center.add(nameLabel);
@@ -175,7 +182,8 @@ public class LiveScreen extends Screen {
         // Get current tiers. If one of them does not exist,
         // it will be simply ignored.
 
-        final boolean hasCompetitive = player.competitive() != null;
+        final boolean hasCompetitive = player.competitive() != null
+                && player.competitive().seasonTiers() != null;
 
         final Tier currentTier = hasCompetitive
                 ? player.competitive().currentTier()
@@ -320,16 +328,17 @@ public class LiveScreen extends Screen {
     /**
      * Format the player name.
      *
+     * @param game Game.
      * @param player Player.
      * @return Formatted player name.
      */
-    private String formatPlayerName(final Player player) {
+    private String formatPlayerName(final Game game, final Player player) {
         final Team team = player.team();
         final String playerName = player.name();
 
         // In case the player being formatted is the
         // user of the program.
-        if (playerName.equalsIgnoreCase("missingname")) {
+        if (playerName.equalsIgnoreCase(game.self().name())) {
             return playerNameDisplay.formatted(250, 255, 181, "You");
         }
 
