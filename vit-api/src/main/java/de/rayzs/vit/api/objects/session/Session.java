@@ -35,14 +35,18 @@ public class Session {
     // SeasonId, Season
     private final Map<String, Season> seasons = new HashMap<>();
 
+    private String currentVersion;
+
     private Season currentSeason;
     private HttpClient client;
     private String selfPlayerId;
 
     public Session() {
         this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
+        this.client = Request.createClient();
 
         fetchAuthToken();
+        fetchRequestUrls();
     }
 
 
@@ -94,12 +98,12 @@ public class Session {
     }
 
     /**
-     * Fetches and sets the headers for creating requests
-     * to the VALORANT servers.
-     *
-     * @param client HttpClient sending the request.
+     * Fetches all the necessary information
+     * to send the requests to the correct servers
+     * by reading and applying the correct regions
+     * and ports for creating local connections.
      */
-    private void fetchRequestHeaders(final HttpClient client) {
+    private void fetchRequestUrls(){
         String firstRegion = null;
         String secondRegion = null;
         String currentVersion = null;
@@ -182,11 +186,23 @@ public class Session {
         }
 
 
+        this.currentVersion = currentVersion;
+
+
         RequestDest.SHARED.update(firstRegion);
         RequestDest.PD.update(firstRegion);
 
         RequestDest.GLZ.update(secondRegion, firstRegion);
+    }
 
+
+    /**
+     * Fetches and sets the headers for creating requests
+     * to the VALORANT servers.
+     *
+     * @param client HttpClient sending the request.
+     */
+    private void fetchRequestHeaders(final HttpClient client) {
 
         // Sending request to receive the required headers
         // for sending requests towards the VALORANT servers.
@@ -199,7 +215,13 @@ public class Session {
         final Optional<String> result = request.sendAndGet(client);
 
         if (result.isEmpty()) {
+            System.out.println("Failed lol #1");
             throw new NullPointerException("Request failed!");
+        }
+
+        if (this.currentVersion == null) {
+            System.out.println("Failed lol #2");
+            throw new NullPointerException("Current version is not set yet! Please only call this method here once 'fetchRequestUrls' has been called first.");
         }
 
         final JSONObject json = new JSONObject(result.get());
@@ -210,7 +232,12 @@ public class Session {
         // Own player's id.
         this.selfPlayerId = json.getString("subject");
 
-        Request.setHeaders(accessToken, entitlementToken, currentVersion);
+
+        // 'currentVersion' is loaded in advance inside the 'fetchRequestUrls'
+        // since in there the same file, which already includes the client version,
+        // is there as well. I mean, better than doing things twice a row, right?
+        // Also, I doubt the version is gonna change while the tracker is live.
+        Request.setHeaders(accessToken, entitlementToken, this.currentVersion);
     }
 
 
@@ -225,6 +252,13 @@ public class Session {
      * @return SessionState.
      */
     public SessionState getSessionState() {
+
+
+        if (this.selfPlayerId == null) {
+            throw new NullPointerException("Self player id is not set yet! Please ensure to only call this method until 'fetchRequestHeaders' has been called first.");
+        }
+
+
         final Request request = Request.createRequest(
                 RequestMethod.GET,
                 RequestDest.LOCAL,
@@ -232,7 +266,7 @@ public class Session {
         );
 
 
-        final Optional<String> result = request.sendAndGet(client);
+        final Optional<String> result = request.sendAndGet(this.client);
 
         if (result.isEmpty()) {
             return SessionState.VALORANT_NOT_OPEN;
@@ -247,7 +281,7 @@ public class Session {
             final String product = presence.getString("product");
             final String playerId = presence.getString("puuid");
 
-            if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(selfPlayerId)) {
+            if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(this.selfPlayerId)) {
                 continue;
             }
 
@@ -322,7 +356,7 @@ public class Session {
             }
 
 
-            case IN_MENU -> {
+            case IN_LOBBY -> {
 
                 // Checking their pre-game match. This is practically just
                 // the lobby where just select your agents usually.
