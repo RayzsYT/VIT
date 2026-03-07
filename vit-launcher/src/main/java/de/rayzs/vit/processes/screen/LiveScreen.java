@@ -1,12 +1,11 @@
 package de.rayzs.vit.processes.screen;
 
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.objects.items.Agent;
+import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
@@ -15,11 +14,11 @@ import de.rayzs.vit.api.utils.ImageUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Map;
 
 public class LiveScreen extends Screen {
 
 
+    private final String title = "v%s [%s]";
     private final String playerStats = "WR: %s%% | HS: %s%%";
 
     private final String playerNameDisplay = String.join("", new String[] {
@@ -31,7 +30,14 @@ public class LiveScreen extends Screen {
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
         gui.reset();
-        gui.setTitle("In Game");
+
+
+        final Game game = api.getGame();
+
+        gui.setTitle(title.formatted(
+                api.getVersion(),
+                game.server()
+        ));
 
 
         final JPanel contentPane = gui.getContentPane();
@@ -39,7 +45,7 @@ public class LiveScreen extends Screen {
 
         final JPanel topLayerPanel = createTopLayer(
                 api,
-                api.getGame().getMapId()
+                api.getGame().mapId()
         );
 
 
@@ -48,7 +54,7 @@ public class LiveScreen extends Screen {
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
 
-        for (Player player : api.getGame().getPlayers()) {
+        for (Player player : api.getGame().players()) {
             playersPanel.add(createPlayerBanner(api, player));
         }
 
