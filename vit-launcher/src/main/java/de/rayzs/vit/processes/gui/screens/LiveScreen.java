@@ -39,7 +39,6 @@ public class LiveScreen extends Screen {
 
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
-        playerWindows.clear(); // clears up player windows in case it has been reloaded.
         gui.reset();
 
 
@@ -364,6 +363,12 @@ public class LiveScreen extends Screen {
     private void reload(final VITAPI api, final MainGUI gui) {
         new Thread(() ->
                 SwingUtilities.invokeLater(() -> {
+
+                    // clears up player windows in case it has been reloaded.
+                    playerWindows.values().forEach(Window::dispose);
+                    playerWindows.clear();
+
+                    // Reload gui.
                     load(api, gui);
                     gui.revalidate();
                     gui.repaint();
