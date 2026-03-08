@@ -6,9 +6,9 @@ import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.impl.VITAPIImpl;
 import de.rayzs.vit.processes.loop.LoopHandler;
 import de.rayzs.vit.processes.prepare.AssetPreparer;
-import de.rayzs.vit.processes.screen.LiveScreen;
-import de.rayzs.vit.processes.screen.LobbyScreen;
-import de.rayzs.vit.processes.screen.Screen;
+import de.rayzs.vit.processes.gui.screens.LiveScreen;
+import de.rayzs.vit.processes.gui.screens.LobbyScreen;
+import de.rayzs.vit.processes.gui.screens.Screen;
 
 import java.util.Locale;
 import java.util.Timer;
