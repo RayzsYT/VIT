@@ -11,7 +11,7 @@ import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
 import de.rayzs.vit.api.objects.player.competitive.MatchStats;
-import de.rayzs.vit.processes.screen.Screen;
+import de.rayzs.vit.processes.gui.screens.Screen;
 
 import java.util.*;
 
