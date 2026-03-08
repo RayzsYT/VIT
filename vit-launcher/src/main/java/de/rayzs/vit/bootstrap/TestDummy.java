@@ -10,6 +10,7 @@ import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
+import de.rayzs.vit.api.objects.player.competitive.MatchStats;
 import de.rayzs.vit.processes.screen.Screen;
 
 import java.util.*;
@@ -71,7 +72,8 @@ public class TestDummy {
                 "PlayerTitle-" + random.nextInt(100),
                 settings,
                 inventory,
-                null
+                null,
+                new MatchStats[0]
         );
     }
 }
