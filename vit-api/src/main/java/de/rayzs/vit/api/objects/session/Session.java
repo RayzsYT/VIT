@@ -3,7 +3,6 @@ package de.rayzs.vit.api.objects.session;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.game.GameState;
 import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerCompetitive;
@@ -314,34 +313,30 @@ public class Session {
      * Construct the game object which loads
      * all players and the map being played on.
      *
-     * @param sessionState Current session state.
+     * @param state Current session state.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
      * @return Constructed {@link Game} object.
      */
     public Game constructGame(
-            final SessionState sessionState,
+            final SessionState state,
             final Consumer<Integer> playerLoadConsumer
     ) {
 
         fetchSeasons(); // Fetches all available seasons first, in case they were not fetched yet.
 
 
-        // Players that are in incognito mode.
-        final List<String> incognitoPlayerIds = new ArrayList<>();
-        final List<Player> registeredPlayers = new ArrayList<>();
-        final List<MatchStats> playedMatchesList = new ArrayList<>();
-
-        GameState gameState = null;
-        String matchId = null;
-
-        String mapId, server;
+        final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
+        final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
+        final List<MatchStats> playedMatchesList = new ArrayList<>(); // Match history
 
         PlayerCompetitive playerCompetitive = null;
+        String matchId = null;
+        String mapId, server;
 
 
         // Fetch match id
-        switch (sessionState) {
+        switch (state) {
             case IN_GAME -> {
                 final Request matchRequest = Request.createRequest(
                         RequestMethod.GET,
@@ -352,7 +347,6 @@ public class Session {
 
                 final Optional<String> matchResult = matchRequest.sendAndGet(client);
                 if (matchResult.isPresent()) {
-                    gameState = GameState.IN_GAME;
                     matchId = new JSONObject(matchResult.get()).getString("MatchID");
                 }
             }
@@ -374,13 +368,12 @@ public class Session {
                     throw new NullPointerException("Failed to construct game object! Failed to fetch match id.");
                 }
 
-                gameState = GameState.LOBBY;
                 matchId = new JSONObject(pregameResult.get()).getString("MatchID");
             }
 
             default -> {
                 // Well, kinda makes no sense at all. But who knows?
-                throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + sessionState.name() + ")");
+                throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + state.name() + ")");
             }
         }
 
@@ -388,7 +381,7 @@ public class Session {
         final Request matchDetailsRequest = Request.createRequest(
                 RequestMethod.GET,
                 RequestDest.GLZ,
-                gameState.getInternalName() + "/v1/matches/" + matchId
+                state.getInternalName() + "/v1/matches/" + matchId
         );
 
         final Optional<String> matchDetailsResult = matchDetailsRequest.sendAndGet(client);
@@ -418,7 +411,7 @@ public class Session {
         final Request loadoutsRequest = Request.createRequest(
                 RequestMethod.GET,
                 RequestDest.GLZ,
-                gameState.getInternalName() + "/v1/matches/" + matchId + "/loadouts"
+                state.getInternalName() + "/v1/matches/" + matchId + "/loadouts"
         );
 
         final Optional<String> loadoutsResult = loadoutsRequest.sendAndGet(client);
@@ -429,13 +422,13 @@ public class Session {
 
         final JSONArray loadouts = new JSONObject(loadoutsResult.get()).getJSONArray("Loadouts");
         // Player id, Skin inventory
-        final Map<String, PlayerInventory> playerInventories = gameState == GameState.IN_GAME
+        final Map<String, PlayerInventory> playerInventories = state == SessionState.IN_GAME
                 ? fetchInventory(loadouts)
                 : Map.of();
 
 
         // Get list of all players.
-        final JSONArray players = (gameState == GameState.LOBBY
+        final JSONArray players = (state == SessionState.IN_LOBBY
                 // Since it's the lobby, enemy team won't be shared yet.
                 ? match.getJSONArray("Teams").getJSONObject(0)
                 : match
@@ -444,7 +437,7 @@ public class Session {
 
         Team ownTeam = null;
 
-        if (gameState == GameState.LOBBY) {
+        if (state == SessionState.IN_LOBBY) {
             final String teamId = match
                     .getJSONArray("Teams")
                     .getJSONObject(0)
@@ -618,7 +611,7 @@ public class Session {
             final String playerCardId = identity.getString("PlayerCardID");
             final String playerTitleId = identity.getString("PlayerTitleID");
 
-            final Team team = gameState == GameState.LOBBY
+            final Team team = state == SessionState.IN_LOBBY
                     ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
                     ? Team.DEFEND : Team.ATTACK;
 
@@ -630,11 +623,11 @@ public class Session {
             final PlayerInventory inventory = playerInventories.get(playerId);
 
 
-            final String agentId = gameState == GameState.IN_GAME
+            final String agentId = state == SessionState.IN_GAME
                     ? playerJson.getString("CharacterID")
                     : null;
 
-            final Agent agent =  gameState == GameState.IN_GAME
+            final Agent agent =  state == SessionState.IN_GAME
                     ? Agent.getAgentById(agentId)
                     : null;
 
@@ -657,15 +650,23 @@ public class Session {
         }
 
 
-        final Player selfPlayer = registeredPlayers.stream()
-                .filter(player -> player.id().equalsIgnoreCase(selfPlayerId))
-                .findFirst()
-                .get();
+        Player selfPlayer = null;
+        for (final Player registeredPlayer : registeredPlayers) {
+            if (registeredPlayer.id().equalsIgnoreCase(selfPlayerId)) {
+                selfPlayer = registeredPlayer;
+                break;
+            }
+        }
+
+
+        if (selfPlayer == null) {
+            throw new NullPointerException("Self Player could not be found! (" + registeredPlayers.size() + " players)");
+        }
 
 
         return new Game(
                 selfPlayer,
-                gameState,
+                state,
                 registeredPlayers.toArray(new Player[0]),
                 mapId,
                 server
