@@ -27,7 +27,7 @@ public class TestDummy {
         final String mapId = mapsArray[random.nextInt(mapsArray.length)];
 
         final List<Player> players = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 12; i++) {
             players.add(createRandomPlayer(i % 2 == 0 ? Team.ATTACK : Team.DEFEND));
         }
 
