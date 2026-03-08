@@ -77,8 +77,8 @@ public class LiveScreen extends Screen {
         };
 
         banner.setOpaque(false);
-        banner.setPreferredSize(new Dimension(450, 400));
-        banner.setMinimumSize(new Dimension(450, 400));
+        banner.setPreferredSize(new Dimension(450, 170));
+        banner.setMinimumSize(new Dimension(450, 170));
         banner.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
         final Color teamColor = switch (player.team()) {
