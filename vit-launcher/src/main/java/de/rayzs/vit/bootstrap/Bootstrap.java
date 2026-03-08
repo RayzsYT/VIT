@@ -45,19 +45,29 @@ public class Bootstrap {
 
 
         // Test screen
-        if (args.length == 1) {
+        if (args.length >= 1) {
 
-            final int removalIndex = StringUtils.searchIndex("--test=", args[0]);
+            final int testIndex = StringUtils.searchIndex("--test=", args[0]);
 
-            if (removalIndex != -1) {
-                final String name = args[0].substring(removalIndex).toLowerCase(Locale.ROOT);
+            if (testIndex != -1) {
+
+                int num = 12;
+                if (args.length > 1) {
+
+                    final int numIndex = StringUtils.searchIndex("--num=", args[1]);
+                    if (numIndex != -1) {
+                        num = Integer.parseInt(args[1].substring(numIndex));
+                    }
+                }
+
+                final String name = args[0].substring(testIndex).toLowerCase(Locale.ROOT);
                 final Screen screen = switch (name) {
                     case "live" -> new LiveScreen();
                     case "lobby" -> new LobbyScreen();
                     default -> throw new IllegalStateException("Invalid screen name! (" + name + ")");
                 };
 
-                TestDummy.apply(gui, screen);
+                TestDummy.apply(gui, screen, num);
             }
 
             return;
