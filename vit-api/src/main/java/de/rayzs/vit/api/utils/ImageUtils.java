@@ -112,4 +112,33 @@ public class ImageUtils {
 
         return cpyImage;
     }
+
+    /**
+     * Scale an image to a certain size and still respect it's
+     * previous size, so it won't be corrupted.
+     *
+     * @param image Source image.
+     * @param maxWidth Target width.
+     * @param maxHeight Target height.
+     *
+     * @return Rescaled image.
+     */
+    public static Image rescale(
+            final Image image,
+            final int maxWidth,
+            final int maxHeight
+    ) {
+        final int originalWidth = image.getWidth(null);
+        final int originalHeight = image.getHeight(null);
+
+        final double widthScale = (double) maxWidth / originalWidth;
+        final double heightScale = (double) maxHeight / originalHeight;
+
+        final double scale = Math.min(widthScale, heightScale);
+
+        final int newWidth = (int) (originalWidth * scale);
+        final int newHeight = (int) (originalHeight * scale);
+
+        return image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+    }
 }

@@ -2,6 +2,7 @@ package de.rayzs.vit.api.image;
 
 import de.rayzs.vit.api.file.FileDir;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,15 @@ public class ImageIdMap {
         this.provider = provider;
         this.normalDir = normalDir;
         this.miniDir = miniDir;
+    }
+
+    /**
+     * Get a collection of all ids.
+     *
+     * @return Collection of all ids.
+     */
+    public Collection<String> getIds() {
+        return images.keySet();
     }
 
     /**
