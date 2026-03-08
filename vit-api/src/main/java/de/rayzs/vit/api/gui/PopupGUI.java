@@ -31,7 +31,7 @@ public class PopupGUI extends GUI {
             final String ok,
             final String... text
     ) {
-        super(title, 400, 180);
+        super(title, 350, 180);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
