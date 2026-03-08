@@ -9,10 +9,7 @@ import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerCompetitive;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
-import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
-import de.rayzs.vit.api.objects.player.competitive.MatchData;
-import de.rayzs.vit.api.objects.player.competitive.SeasonStats;
-import de.rayzs.vit.api.objects.player.competitive.SeasonTiers;
+import de.rayzs.vit.api.objects.player.competitive.*;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
@@ -29,6 +26,10 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Session {
+
+
+    private static final int MATCH_HISTORY_NUM = 5;
+
 
     private final File lockfile;
 
@@ -327,15 +328,16 @@ public class Session {
 
 
         // Players that are in incognito mode.
-        List<String> incognitoPlayerIds = new ArrayList<>();
-        List<Player> registeredPlayers = new ArrayList<>();
+        final List<String> incognitoPlayerIds = new ArrayList<>();
+        final List<Player> registeredPlayers = new ArrayList<>();
+        final List<MatchStats> playedMatchesList = new ArrayList<>();
 
         GameState gameState = null;
         String matchId = null;
 
         String mapId, server;
 
-        PlayerCompetitive playerCompetitive;
+        PlayerCompetitive playerCompetitive = null;
 
 
         // Fetch match id
@@ -521,7 +523,7 @@ public class Session {
 
             final Optional<String> competitiveResult = competitiveRequest.sendAndGet(client);
             if (competitiveResult.isPresent()) {
-                final JSONObject rank =  new JSONObject(competitiveResult.get());
+                final JSONObject rank = new JSONObject(competitiveResult.get());
 
                 final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
 
@@ -529,12 +531,12 @@ public class Session {
                 final int requiredRankGames = competitive.getInt("TotalGamesNeededForRating");
                 final boolean rankedIn = requiredRankGames == 0;
 
-                MatchData lastMatch = null;
+                MatchResult lastMatch = null;
                 if (latestCompGameObj instanceof JSONObject latestCompGame) {
                     final String lastPlayedMapId = latestCompGame.getString("MapID");
                     final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
 
-                    lastMatch = new MatchData(lastReceivedRR, lastPlayedMapId);
+                    lastMatch = new MatchResult(lastPlayedMapId, lastReceivedRR);
                 }
 
 
@@ -549,101 +551,110 @@ public class Session {
                         competitive
                 );
 
-
-                final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
-
-                final boolean incognito = incognitoPlayerIds.contains(playerId);
-                final boolean levelHidden = identity.getBoolean("HideAccountLevel");
-                final int level = identity.getInt("AccountLevel");
-
-                final String playerCardId = identity.getString("PlayerCardID");
-                final String playerTitleId = identity.getString("PlayerTitleID");
-
-                final Team team = gameState == GameState.LOBBY
-                        ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
-                        ? Team.DEFEND : Team.ATTACK;
-
-                final PlayerSettings settings = new PlayerSettings(
-                        levelHidden,
-                        incognito
-                );
-
-                final PlayerInventory inventory = playerInventories.get(playerId);
-
-
-                final String agentId = gameState == GameState.IN_GAME
-                        ? playerJson.getString("CharacterID")
-                        : null;
-
-                final Agent agent =  gameState == GameState.IN_GAME
-                        ? Agent.getAgentById(agentId)
-                        : null;
-
-
-                registeredPlayers.add(new Player(
-                        playerId,
-                        team,
-                        Objects.requireNonNullElse(playerName,
-                                agent == null ? "Hidden" : agent.getAgentName()
-                        ),
-                        agent,
-                        level,
-                        playerCardId,
-                        playerTitleId,
-                        settings,
-                        inventory,
-                        playerCompetitive
-                ));
-
             } else {
                 System.err.println("Failed to fetch competitive information of player: " + playerName + ". ( " + playerId + " )");
             }
 
-            /*
-            JSONArray playedMatches = new JSONArray();
 
-            List<String> playedMatchesIds = new ArrayList<>();
-            JSONArray matches;
 
-            HttpRequest lastMatchesRequest = RequestHelper.createRequest(RequestHelper.RequestType.PD, "mmr/v1/players/" + otherPlayerId + "/competitiveupdates?startIndex=0&endIndex=" + 1 + "&queue=competitive");
-            HttpResponse<String> lastMatchesResponse = client.send(lastMatchesRequest, HttpResponse.BodyHandlers.ofString());
+            // Only fetches 15 matches of the player. Should be enough.
+            final Request matchHistoryRequest = Request.createRequest(
+                    RequestMethod.GET,
+                    RequestDest.PD,
+                    "mmr/v1/players/" + playerId + "/competitiveupdates?startIndex=0&endIndex=" + MATCH_HISTORY_NUM + "&queue=competitive"
+            );
 
-            if (lastMatchesResponse.statusCode() == 200) {
-                JSONObject matchHistoryStart = new JSONObject(lastMatchesResponse.body());
 
-                if (matchHistoryStart.has("Matches")) {
-                    matches = matchHistoryStart.getJSONArray("Matches");
+            // Fetch match history by starting with played match ids
 
-                    for (Object matchObj : matches) {
-                        JSONObject match = (JSONObject) matchObj;
-                        String matchID = match.getString("MatchID");
-                        playedMatchesIds.add(matchID);
-                    }
-                }
+            final Optional<String> matchHistoryResult = matchHistoryRequest.sendAndGet(client);
 
-            } else System.out.println("Failed to get player headshot information for " + otherPlayerId + "!");
+            if (matchHistoryResult.isPresent()) {
+                final JSONObject matchHistory = new JSONObject(matchHistoryResult.get());
 
-            if (!playedMatchesIds.isEmpty()) {
+                if (matchHistory.has("Matches")) {
+                    final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
 
-                for (String playedMatchId : playedMatchesIds) {
+                    for (final Object playedMatchObj : playedMatches) {
+                        final JSONObject playedMatch = (JSONObject) playedMatchObj;
+                        final String playedMatchId = playedMatch.getString("MatchID");
 
-                    HttpRequest playedMatchDetailsRequest = RequestHelper.createRequest(RequestHelper.RequestType.PD, "match-details/v1/matches/" + playedMatchId);
-                    HttpResponse<String> playedMatchDetailsResponses = client.send(playedMatchDetailsRequest, HttpResponse.BodyHandlers.ofString());
 
-                    if (lastMatchesResponse.statusCode() == 200) {
+                        // Now trying to get the match information
 
-                        if (playedMatchDetailsResponses.body().charAt(0) == '{') {
-                            JSONObject playedMatchDetails = new JSONObject(playedMatchDetailsResponses.body());
-                            playedMatches.put(playedMatchDetails);
+                        final Request matchDataRequest = Request.createRequest(
+                                RequestMethod.GET,
+                                RequestDest.PD,
+                                "match-details/v1/matches/" + playedMatchId
+                        );
+
+                        final Optional<String> matchDataResult = matchDataRequest.sendAndGet(client);
+
+                        if (matchDataResult.isPresent()) {
+
+                            System.out.println("Match: " + matchDataResult.get()); // For debug reasons
+
+                            if (matchDataResult.get().charAt(0) == '{') {
+
+                                // Construct match stats to add in the list of match history.
+
+                                final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
+                                final MatchStats matchStats = constructMatchStats(playedMatchId, playedMatchDetails);
+
+                                if (matchStats != null) playedMatchesList.add(matchStats);
+                            }
                         }
-
                     }
-
-                    Thread.sleep(200);
                 }
-
-             */
             }
+
+
+            final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
+
+            final boolean incognito = incognitoPlayerIds.contains(playerId);
+            final boolean levelHidden = identity.getBoolean("HideAccountLevel");
+            final int level = identity.getInt("AccountLevel");
+
+            final String playerCardId = identity.getString("PlayerCardID");
+            final String playerTitleId = identity.getString("PlayerTitleID");
+
+            final Team team = gameState == GameState.LOBBY
+                    ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
+                    ? Team.DEFEND : Team.ATTACK;
+
+            final PlayerSettings settings = new PlayerSettings(
+                    levelHidden,
+                    incognito
+            );
+
+            final PlayerInventory inventory = playerInventories.get(playerId);
+
+
+            final String agentId = gameState == GameState.IN_GAME
+                    ? playerJson.getString("CharacterID")
+                    : null;
+
+            final Agent agent =  gameState == GameState.IN_GAME
+                    ? Agent.getAgentById(agentId)
+                    : null;
+
+
+            registeredPlayers.add(new Player(
+                    playerId,
+                    team,
+                    Objects.requireNonNullElse(playerName,
+                            agent == null ? "Hidden" : agent.getAgentName()
+                    ),
+                    agent,
+                    level,
+                    playerCardId,
+                    playerTitleId,
+                    settings,
+                    inventory,
+                    playerCompetitive,
+                    playedMatchesList.toArray(new MatchStats[0])
+            ));
+        }
 
 
         final Player selfPlayer = registeredPlayers.stream()
@@ -660,6 +671,25 @@ public class Session {
                 server
         );
     }
+
+
+    /**
+     * Construct a {@link MatchStats} object.
+     *
+     * @param playedMatchId Match id.
+     * @param playedMatchDetails JSONObject containing match details.
+     *
+     * @return Constructed {@link MatchStats} object.
+     */
+    public static MatchStats constructMatchStats(
+            final String playedMatchId,
+            final JSONObject playedMatchDetails
+    ) {
+
+        return null;
+
+    }
+
 
 
     /**
@@ -764,6 +794,8 @@ public class Session {
         }
     }
 
+
+
     /**
      * Constructs the {@link PlayerCompetitive} object.
      *
@@ -774,7 +806,7 @@ public class Session {
      * @return Constructed PlayerCompetitive.
      */
     private PlayerCompetitive constructPlayerCompetitive(
-            final MatchData lastMatch,
+            final MatchResult lastMatch,
             final CompRequirements compRequirements,
             final JSONObject competitive
     ) {
