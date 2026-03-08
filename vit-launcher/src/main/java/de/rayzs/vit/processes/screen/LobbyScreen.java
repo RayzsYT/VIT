@@ -30,7 +30,7 @@ public class LobbyScreen extends Screen {
 
     private final String playerNameDisplay = String.join("", new String[] {
             "<html><div style='color: rgba(%d, %d, %d, 1)",
-            "; font-size: 13px;'><b>%s</b></div></html>"
+            "; font-size: 15px;'><b>%s</b></div></html>"
     });
 
 
@@ -273,7 +273,6 @@ public class LobbyScreen extends Screen {
                 api.getGame().self().team().getTeamAdjective().toUpperCase(Locale.ROOT)
         ));
 
-        roleInfo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         roleInfo.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
         roleInfo.setOpaque(false);
 
