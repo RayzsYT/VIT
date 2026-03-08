@@ -9,6 +9,10 @@ import de.rayzs.vit.api.objects.player.PlayerCompetitive;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
 import de.rayzs.vit.api.objects.player.competitive.*;
+import de.rayzs.vit.api.objects.player.match.LastCompMatch;
+import de.rayzs.vit.api.objects.player.match.Match;
+import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
+import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
@@ -328,7 +332,7 @@ public class Session {
 
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
-        final List<MatchStats> playedMatchesList = new ArrayList<>(); // Match history
+        final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
         PlayerCompetitive playerCompetitive = null;
         String matchId = null;
@@ -524,12 +528,15 @@ public class Session {
                 final int requiredRankGames = competitive.getInt("TotalGamesNeededForRating");
                 final boolean rankedIn = requiredRankGames == 0;
 
-                MatchResult lastMatch = null;
+                LastCompMatch lastMatch = null;
                 if (latestCompGameObj instanceof JSONObject latestCompGame) {
                     final String lastPlayedMapId = latestCompGame.getString("MapID");
                     final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
 
-                    lastMatch = new MatchResult(lastPlayedMapId, lastReceivedRR);
+                    lastMatch = new LastCompMatch(
+                            lastPlayedMapId,
+                            new CompMatchResult(lastReceivedRR)
+                    );
                 }
 
 
@@ -583,19 +590,17 @@ public class Session {
 
                         final Optional<String> matchDataResult = matchDataRequest.sendAndGet(client);
 
-                        if (matchDataResult.isPresent()) {
+                        if (matchDataResult.isPresent() && matchDataResult.get().charAt(0) == '{') {
+                            // Construct match stats to add in the list of match history.
 
-                            System.out.println("Match: " + matchDataResult.get()); // For debug reasons
+                            final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
+                            final Match historyMatch = constructMatch(
+                                    playerId,
+                                    playedMatchId,
+                                    playedMatchDetails
+                            );
 
-                            if (matchDataResult.get().charAt(0) == '{') {
-
-                                // Construct match stats to add in the list of match history.
-
-                                final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
-                                final MatchStats matchStats = constructMatchStats(playedMatchId, playedMatchDetails);
-
-                                if (matchStats != null) playedMatchesList.add(matchStats);
-                            }
+                            playedMatchesList.add(historyMatch);
                         }
                     }
                 }
@@ -645,7 +650,7 @@ public class Session {
                     settings,
                     inventory,
                     playerCompetitive,
-                    playedMatchesList.toArray(new MatchStats[0])
+                    playedMatchesList.toArray(new Match[0])
             ));
         }
 
@@ -675,20 +680,80 @@ public class Session {
 
 
     /**
-     * Construct a {@link MatchStats} object.
+     * Constructs a {@link Match} object for the match history
+     * of a certain player.
      *
-     * @param playedMatchId Match id.
+     * @param playerId ID of the player playing in that match whose information is relevant.
+     * @param matchId Match id.
      * @param playedMatchDetails JSONObject containing match details.
      *
-     * @return Constructed {@link MatchStats} object.
+     * @return Constructed {@link Match} object.
      */
-    public static MatchStats constructMatchStats(
-            final String playedMatchId,
+    private Match constructMatch(
+            final String playerId,
+            final String matchId,
             final JSONObject playedMatchDetails
     ) {
 
-        return null;
+        int headshots = 0;
+        int landedShots = 0;
 
+        final JSONObject matchInfo = playedMatchDetails.getJSONObject("matchInfo");
+
+        final boolean ranked = matchInfo.getBoolean("isRanked");
+
+        // e.g: /Game/GameModes/Bomb/BombGameMode.BombGameMode_C
+        // I'm not sure what exactly that means, but let's check it
+        // some other day idk. Maybe it's on the valorant-api page?
+        final String gameMode = matchInfo.getString("gameMode");
+
+
+        final String mapUrl = matchInfo.getString("mapId");
+        final String mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapUrl);
+
+        final String seasonId = matchInfo.getString("seasonId");
+        final Season season = seasons.get(seasonId);
+
+        final JSONArray roundResults = matchInfo.getJSONArray("roundResults");
+
+        for (final Object roundObj : roundResults) {
+            final JSONObject round = (JSONObject) roundObj;
+            final JSONArray playerStats = round.getJSONArray("playerStats");
+
+
+            for (final Object statsObj : playerStats) {
+                final JSONObject stats = (JSONObject) statsObj;
+                final String matchPlayerId = stats.getString("subject");
+
+
+                if (matchPlayerId.equalsIgnoreCase(playerId)) {
+                    continue;
+                }
+
+
+                final JSONArray damageDetails = stats.getJSONArray("damage");
+
+                for (final Object damageDetailObj : damageDetails) {
+                    final JSONObject damageDetail = (JSONObject) damageDetailObj;
+
+
+                    headshots += damageDetail.getInt("headshots");
+
+                    landedShots += damageDetail.getInt("headshots")
+                            + damageDetail.getInt("bodyshots")
+                            + damageDetail.getInt("legshots");
+
+                }
+            }
+        }
+
+
+        return new Match(
+                matchId,
+                mapId,
+                new MatchInfo((float) (headshots / landedShots)),
+                null
+        );
     }
 
 
@@ -807,7 +872,7 @@ public class Session {
      * @return Constructed PlayerCompetitive.
      */
     private PlayerCompetitive constructPlayerCompetitive(
-            final MatchResult lastMatch,
+            final LastCompMatch lastMatch,
             final CompRequirements compRequirements,
             final JSONObject competitive
     ) {
