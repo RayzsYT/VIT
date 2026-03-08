@@ -17,9 +17,9 @@ import java.util.*;
 public class TestDummy {
 
     private static final Random random = new Random();
-    private static Game game;
 
-    static {
+
+    public static void apply(final MainGUI gui, final Screen screen) {
 
         final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
         final String[] mapsArray = maps.toArray(new String[0]);
@@ -33,17 +33,15 @@ public class TestDummy {
 
         final Player self = players.getFirst();
 
-        game = new Game(
+        final Game game = new Game(
                 self,
-                GameState.LOBBY,
+                GameState.LOBBY, // Does not matter anyway
                 players.toArray(new Player[0]),
                 mapId,
                 "Wambooo" // Only legends will understand
         );
 
-    }
 
-    public static void apply(final MainGUI gui, final Screen screen) {
         VIT.get().setGame(game);
 
         screen.load(VIT.get(), gui);
