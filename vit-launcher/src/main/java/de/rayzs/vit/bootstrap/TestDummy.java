@@ -9,7 +9,9 @@ import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
-import de.rayzs.vit.api.objects.player.competitive.MatchStats;
+import de.rayzs.vit.api.objects.player.match.Match;
+import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
+import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
 import de.rayzs.vit.api.objects.session.SessionState;
 import de.rayzs.vit.processes.gui.screens.Screen;
 
@@ -62,6 +64,11 @@ public class TestDummy {
         final PlayerSettings settings = new PlayerSettings(false, false);
         final PlayerInventory inventory = new PlayerInventory(skinMap);
 
+        final List<Match> matches = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            matches.add(createRandomMatch());
+        }
+
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
                 team,
@@ -73,7 +80,25 @@ public class TestDummy {
                 settings,
                 inventory,
                 null,
-                new MatchStats[0]
+                matches.toArray(new Match[0])
+        );
+    }
+
+    private static Match createRandomMatch() {
+        final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
+        final String[] mapsArray = maps.toArray(new String[0]);
+
+        final String mapId = mapsArray[random.nextInt(mapsArray.length)];
+
+        return new Match(
+                String.valueOf(Math.abs(random.nextLong())),
+                mapId,
+                new MatchInfo(
+                        random.nextFloat(2)
+                ),
+                new CompMatchResult(
+                        random.nextInt(33)
+                )
         );
     }
 }
