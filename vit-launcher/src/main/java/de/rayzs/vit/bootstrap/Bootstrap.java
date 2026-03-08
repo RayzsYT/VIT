@@ -2,10 +2,15 @@ package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.impl.VITAPIImpl;
 import de.rayzs.vit.processes.loop.LoopHandler;
 import de.rayzs.vit.processes.prepare.AssetPreparer;
+import de.rayzs.vit.processes.screen.LiveScreen;
+import de.rayzs.vit.processes.screen.LobbyScreen;
+import de.rayzs.vit.processes.screen.Screen;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,7 +22,7 @@ public class Bootstrap {
         try {
             OutputLogger.initialize();
 
-            start();
+            start(args);
         } catch (Exception exception) {
             exception.printStackTrace();
 
@@ -27,7 +32,7 @@ public class Bootstrap {
 
     }
 
-    private static void start() {
+    private static void start(final String[] args) {
         final VITAPIImpl api = new VITAPIImpl();
         VIT.set(api);
 
@@ -37,6 +42,27 @@ public class Bootstrap {
 
         final MainGUI gui = new MainGUI("Initializing...");
         gui.setVisible(true);
+
+
+        // Test screen
+        if (args.length == 1) {
+
+            final int removalIndex = StringUtils.searchIndex("--test=", args[0]);
+
+            if (removalIndex != -1) {
+                final String name = args[0].substring(removalIndex).toLowerCase(Locale.ROOT);
+                final Screen screen = switch (name) {
+                    case "live" -> new LiveScreen();
+                    case "lobby" -> new LobbyScreen();
+                    default -> throw new IllegalStateException("Invalid screen name! (" + name + ")");
+                };
+
+                TestDummy.apply(gui, screen);
+            }
+
+            return;
+        }
+
 
         final LoopHandler loop = new LoopHandler(api, gui);
 
