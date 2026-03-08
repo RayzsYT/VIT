@@ -3,7 +3,6 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.game.GameState;
 import de.rayzs.vit.api.objects.items.Agent;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Weapon;
@@ -11,6 +10,7 @@ import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
 import de.rayzs.vit.api.objects.player.competitive.MatchStats;
+import de.rayzs.vit.api.objects.session.SessionState;
 import de.rayzs.vit.processes.gui.screens.Screen;
 
 import java.util.*;
@@ -36,7 +36,7 @@ public class TestDummy {
 
         final Game game = new Game(
                 self,
-                GameState.LOBBY, // Does not matter anyway
+                SessionState.IN_LOBBY, // Does not matter anyway
                 players.toArray(new Player[0]),
                 mapId,
                 "Wambooo" // Only legends will understand
