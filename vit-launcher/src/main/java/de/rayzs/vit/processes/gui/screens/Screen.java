@@ -1,4 +1,4 @@
-package de.rayzs.vit.processes.screen;
+package de.rayzs.vit.processes.gui.screens;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.MainGUI;

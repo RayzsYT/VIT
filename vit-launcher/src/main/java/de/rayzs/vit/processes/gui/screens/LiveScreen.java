@@ -1,4 +1,4 @@
-package de.rayzs.vit.processes.screen;
+package de.rayzs.vit.processes.gui.screens;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
@@ -11,11 +11,16 @@ import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
+import de.rayzs.vit.processes.gui.PlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LiveScreen extends Screen {
 
@@ -27,9 +32,16 @@ public class LiveScreen extends Screen {
             "; font-size: 13px;'><b>%s</b></div></html>"
     });
 
+
+    // Map of all players and their player windows.
+    private final Map<Player, PlayerWindow> playerWindows = new HashMap<>();
+
+
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
+        playerWindows.clear(); // clears up player windows in case it has been reloaded.
         gui.reset();
+
 
         final Game game = api.getGame();
 
@@ -65,6 +77,10 @@ public class LiveScreen extends Screen {
      */
     private JPanel createPlayerBanner(final VITAPI api, final Game game, final Player player) {
 
+        // Create player window and map it with the player.
+        playerWindows.put(player, new PlayerWindow(player));
+
+
         final JPanel banner = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(final Graphics graphics) {
@@ -75,6 +91,16 @@ public class LiveScreen extends Screen {
                 g.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
             }
         };
+
+
+        // Open Player window on click
+        banner.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent event) {
+                playerWindows.get(player).show(event.getXOnScreen(), event.getYOnScreen());
+            }
+        });
+
 
         banner.setOpaque(false);
         banner.setPreferredSize(new Dimension(450, 170));
