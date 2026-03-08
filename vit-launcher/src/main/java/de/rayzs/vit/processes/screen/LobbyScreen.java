@@ -57,7 +57,7 @@ public class LobbyScreen extends Screen {
         );
 
 
-        final JPanel playersPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        final JPanel playersPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         playersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
