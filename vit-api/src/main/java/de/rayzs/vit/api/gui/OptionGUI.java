@@ -123,14 +123,6 @@ public class OptionGUI extends GUI {
     }
 
     private JButton createButton(final String text) {
-        /**
-         * public BeautifiedButton(     String text,
-         *     @NotNull GUI. Colors background,
-         *     @NotNull GUI. Colors foreground,
-         *     GUI. Colors hoverBackground,
-         *     GUI. Colors pressBackground,
-         *     GUI. Colors releaseBackground )
-         */
         final JButton button = new BeautifiedButton(
                 text,
                 Colors.BUTTON_OPTION_BACKGROUND,
