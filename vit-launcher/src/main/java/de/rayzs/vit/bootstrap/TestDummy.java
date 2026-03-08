@@ -19,7 +19,7 @@ public class TestDummy {
     private static final Random random = new Random();
 
 
-    public static void apply(final MainGUI gui, final Screen screen) {
+    public static void apply(final MainGUI gui, final Screen screen, final int playerNum) {
 
         final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
         final String[] mapsArray = maps.toArray(new String[0]);
@@ -27,7 +27,7 @@ public class TestDummy {
         final String mapId = mapsArray[random.nextInt(mapsArray.length)];
 
         final List<Player> players = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < playerNum; i++) {
             players.add(createRandomPlayer(i % 2 == 0 ? Team.ATTACK : Team.DEFEND));
         }
 
