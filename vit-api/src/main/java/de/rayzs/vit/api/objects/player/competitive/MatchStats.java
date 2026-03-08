@@ -1,8 +1,7 @@
 package de.rayzs.vit.api.objects.player.competitive;
 
 /**
- * What the player gained from that match.
- *
+ * Match statistics.
  * @param matchId ID of the match.
  * @param mapId ID of map played there.
  * @param headshots Headshots.
