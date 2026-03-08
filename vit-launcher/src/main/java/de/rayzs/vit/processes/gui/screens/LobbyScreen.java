@@ -112,8 +112,13 @@ public class LobbyScreen extends Screen {
         };
 
 
+        // Set cursor when entering banner panel
+        banner.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+
         // Open Player window on click
         banner.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(final MouseEvent event) {
                 playerWindows.get(player).show(event.getXOnScreen(), event.getYOnScreen());
