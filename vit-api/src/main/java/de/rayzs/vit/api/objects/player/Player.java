@@ -2,7 +2,7 @@ package de.rayzs.vit.api.objects.player;
 
 import de.rayzs.vit.api.objects.items.Agent;
 import de.rayzs.vit.api.objects.items.Team;
-import de.rayzs.vit.api.objects.player.competitive.MatchStats;
+import de.rayzs.vit.api.objects.player.match.Match;
 
 public record Player(
         String id,                          // Player id
@@ -15,5 +15,5 @@ public record Player(
         PlayerSettings settings,            // Player settings,
         PlayerInventory inventory,          // Skin inventory
         PlayerCompetitive competitive,      // Stored competitive information
-        MatchStats[] playedMatches          // Played matches
+        Match[] playedMatches          // Played matches
 ) { }
