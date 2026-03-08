@@ -123,8 +123,8 @@ public class LiveScreen extends Screen {
 
         final Image weaponImage = ImageUtils.rescale(
                 player.inventory().getWeaponSkin(api.getSelectedWeapon()).getImage(),
-                160,
-                60
+                140,
+                40
         );
 
         final JLabel weaponLabel = new JLabel(new ImageIcon(weaponImage)) {
