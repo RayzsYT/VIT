@@ -1,4 +1,4 @@
-package de.rayzs.vit.processes.gui;
+package de.rayzs.vit.launch.processes.gui;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.GUI;

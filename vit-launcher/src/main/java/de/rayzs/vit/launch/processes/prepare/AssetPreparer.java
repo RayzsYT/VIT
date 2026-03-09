@@ -1,4 +1,4 @@
-package de.rayzs.vit.processes.prepare;
+package de.rayzs.vit.launch.processes.prepare;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;

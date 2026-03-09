@@ -3,12 +3,12 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.impl.VITAPIImpl;
-import de.rayzs.vit.processes.loop.LoopHandler;
-import de.rayzs.vit.processes.prepare.AssetPreparer;
-import de.rayzs.vit.processes.gui.screens.LiveScreen;
-import de.rayzs.vit.processes.gui.screens.LobbyScreen;
-import de.rayzs.vit.processes.gui.screens.Screen;
+import de.rayzs.vit.launch.VITAPIImpl;
+import de.rayzs.vit.launch.processes.loop.LoopHandler;
+import de.rayzs.vit.launch.processes.prepare.AssetPreparer;
+import de.rayzs.vit.launch.processes.gui.screens.LiveScreen;
+import de.rayzs.vit.launch.processes.gui.screens.LobbyScreen;
+import de.rayzs.vit.launch.processes.gui.screens.Screen;
 
 import java.util.Locale;
 import java.util.Timer;

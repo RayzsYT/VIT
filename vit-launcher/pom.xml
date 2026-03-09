@@ -46,10 +46,15 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
+
                         <goals>
                             <goal>shade</goal>
                         </goals>
+
                         <configuration>
+
+                            <finalName>VIT-${project.version}</finalName>
+
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>de.rayzs.vit.bootstrap.Bootstrap</mainClass>

@@ -1,12 +1,10 @@
-package de.rayzs.vit.impl;
+package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
-import de.rayzs.vit.impl.image.ImageProviderImpl;
-import de.rayzs.vit.impl.session.SessionImpl;
 
 public class VITAPIImpl implements VITAPI {
 

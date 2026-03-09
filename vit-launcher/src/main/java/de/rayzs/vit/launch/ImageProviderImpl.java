@@ -1,4 +1,4 @@
-package de.rayzs.vit.impl.image;
+package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.image.DisplayImage;

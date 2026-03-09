@@ -15,7 +15,7 @@ import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
 import de.rayzs.vit.api.session.SessionState;
-import de.rayzs.vit.processes.gui.screens.Screen;
+import de.rayzs.vit.launch.processes.gui.screens.Screen;
 
 import java.util.*;
 
