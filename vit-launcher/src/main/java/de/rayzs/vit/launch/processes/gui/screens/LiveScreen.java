@@ -17,12 +17,13 @@ import de.rayzs.vit.launch.processes.gui.PlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.event.MouseListener;
+import java.net.URI;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class LiveScreen extends Screen {
 
@@ -101,7 +102,35 @@ public class LiveScreen extends Screen {
         banner.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent event) {
-                playerWindows.get(player).show(event.getXOnScreen(), event.getYOnScreen());
+                switch (event.getButton()) {
+                    case MouseEvent.BUTTON1 -> {
+                        playerWindows.get(player).show(event.getXOnScreen(), event.getYOnScreen());
+                    }
+
+                    // Double right-click to copy players' name and tag.
+                    case MouseEvent.BUTTON3 -> {
+                        if (player.settings().incognito() && event.getClickCount() >= 2) return;
+
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                                new StringSelection(player.name()),
+                                null
+                        );
+
+                    }
+
+                    // Open player stats on tracker.gg
+                    case MouseEvent.BUTTON2 -> {
+                        if (player.settings().incognito()) return;
+
+                        final String[] nameSplit = player.name().split("#");
+
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://tracker.gg/valorant/profile/riot/" + nameSplit[0] + "%23" + nameSplit[1] + "/"));
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                }
             }
         });
 
@@ -171,6 +200,13 @@ public class LiveScreen extends Screen {
 
         weaponLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         weaponLabel.setToolTipText(player.inventory().getWeaponSkinName(api.getSelectedWeapon()));
+
+
+        for (final MouseListener mouseListener : banner.getMouseListeners()) {
+            weaponLabel.addMouseListener(mouseListener);
+        }
+
+
 
         center.add(weaponLabel);
         inner.add(center, BorderLayout.CENTER);
