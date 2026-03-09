@@ -14,10 +14,10 @@ public class SeasonTiers {
 
 
     // Season, Stats
-    private final HashMap<Season, SeasonStats> seasonStats = new HashMap<>();
+    private final Map<Season, SeasonStats> seasonStats = new LinkedHashMap<>();
 
     // Season, Tier
-    private final HashMap<Season, Tier> seasonTiers = new HashMap<>();
+    private final Map<Season, Tier> seasonTiers = new LinkedHashMap<>();
 
     private final SeasonStats peakSeasonStats;
     private final Season peakSeason;
