@@ -51,15 +51,22 @@ public class BeautifiedButton extends JButton {
 
         setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
 
+
+        final JButton thisButton = this;
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(final MouseEvent event) {
-                setBackground(hoverBackground.get());
+                if (thisButton.isEnabled()) {
+                    setBackground(hoverBackground.get());
+                }
             }
 
             @Override
             public void mouseExited(final MouseEvent event) {
-                setBackground(background.get());
+                if (thisButton.isEnabled()) {
+                    setBackground(background.get());
+                }
             }
         });
 
