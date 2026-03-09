@@ -39,8 +39,6 @@ public class GUI extends JFrame {
 
         STATS_TEXT_FOREGROUND               (204, 204, 204),
 
-        SCROLLBAR                           (67, 67, 99),
-
         PROGRESS_BAR_SELECTED_TEXT          (74, 8, 12),
         PROGRESS_BAR_FOREGROUND             (236, 97, 108),
         PROGRESS_BAR_BACKGROUND             (BACKGROUND),
@@ -61,6 +59,8 @@ public class GUI extends JFrame {
 
         PLAYER_MATCH_WON                    (209, 254, 200),
         PLAYER_MATCH_LOST                   (248, 170, 170),
+
+        PLAYER_SCROLLBAR                    (67, 67, 99),
 
         PLAYER_BUTTON_BACKGROUND            (206, 62, 62),
         PLAYER_BUTTON_BACKGROUND_HOVER      (129, 27, 27),

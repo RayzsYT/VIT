@@ -143,7 +143,7 @@ public class PlayerWindow extends GUI {
 
             @Override
             protected void configureScrollBarColors() {
-                this.thumbColor = Colors.SCROLLBAR.get();
+                this.thumbColor = Colors.PLAYER_SCROLLBAR.get();
                 this.trackColor = Colors.BACKGROUND.get();
             }
 
@@ -200,7 +200,7 @@ public class PlayerWindow extends GUI {
 
             @Override
             protected void configureScrollBarColors() {
-                this.thumbColor = Colors.SCROLLBAR.get();
+                this.thumbColor = Colors.PLAYER_SCROLLBAR.get();
                 this.trackColor = Colors.BACKGROUND.get();
             }
 
