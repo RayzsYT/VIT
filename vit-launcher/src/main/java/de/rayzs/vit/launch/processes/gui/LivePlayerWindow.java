@@ -12,7 +12,7 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 
-public class PlayerWindow extends GUI {
+public class LivePlayerWindow extends GUI {
 
 
     private final String matchDisplay = String.join("", new String[] {
@@ -31,7 +31,7 @@ public class PlayerWindow extends GUI {
     private final Player player;
     private boolean swapView = false;
 
-    public PlayerWindow(final Player player) {
+    public LivePlayerWindow(final Player player) {
         super(player.name(), 500, 600);
 
         this.player = player;
@@ -178,12 +178,15 @@ public class PlayerWindow extends GUI {
 
             historyPanel.add(emptyLabel);
         } else {
-            historyPanel = new JPanel(new GridLayout(0, 1, 10, 10));
+            historyPanel = new JPanel();
+            historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
+
             historyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             historyPanel.setBackground(Colors.BACKGROUND.get());
 
             for (final Match match : player.playedMatches()) {
                 historyPanel.add(createMatchBanner(match));
+                historyPanel.add(Box.createVerticalStrut(10));
             }
         }
 
@@ -266,7 +269,9 @@ public class PlayerWindow extends GUI {
         };
 
         banner.setOpaque(false);
+
         banner.setPreferredSize(new Dimension(450, 70));
+
         banner.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
 
         final JPanel inner = new JPanel(new BorderLayout());
@@ -318,6 +323,8 @@ public class PlayerWindow extends GUI {
         };
 
         banner.setPreferredSize(new Dimension(450, 120));
+        banner.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+
         banner.setLayout(new GridBagLayout());
 
 
