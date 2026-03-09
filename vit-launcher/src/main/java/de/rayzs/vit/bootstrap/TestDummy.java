@@ -91,7 +91,7 @@ public class TestDummy {
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
                 team,
-                "Player-" + random.nextInt(100000),
+                generateRandomPlayerName(),
                 Agent.values()[random.nextInt(Agent.values().length)],
                 random.nextInt(500),
                 "PlayerCard-" + random.nextInt(100),
@@ -130,5 +130,12 @@ public class TestDummy {
                         random.nextInt(33)
                 )
         );
+    }
+
+    private static String generateRandomPlayerName() {
+        return "Player-"
+                + UUID.randomUUID().toString().substring(0, random.nextInt(12))
+                + "#"
+                + random.nextInt(10000);
     }
 }
