@@ -222,12 +222,10 @@ public class SessionImpl implements Session {
         final Optional<String> result = request.sendAndGet(client);
 
         if (result.isEmpty()) {
-            System.out.println("Failed lol #1");
             throw new NullPointerException("Request failed!");
         }
 
         if (this.currentVersion == null) {
-            System.out.println("Failed lol #2");
             throw new NullPointerException("Current version is not set yet! Please only call this method here once 'fetchRequestUrls' has been called first.");
         }
 
