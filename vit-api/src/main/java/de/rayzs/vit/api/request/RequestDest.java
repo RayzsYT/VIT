@@ -2,6 +2,8 @@ package de.rayzs.vit.api.request;
 
 public enum RequestDest {
 
+        UPDATE          ("https://api.github.com/repos/rayzsyt/vit/releases/latest"),
+
         API             ("https://valorant-api.com/v1/"),
 
         LOCAL           ("https://127.0.0.1:%s/"),               // port

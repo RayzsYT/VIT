@@ -9,6 +9,7 @@ import de.rayzs.vit.launch.processes.prepare.AssetPreparer;
 import de.rayzs.vit.launch.processes.gui.screens.LiveScreen;
 import de.rayzs.vit.launch.processes.gui.screens.LobbyScreen;
 import de.rayzs.vit.launch.processes.gui.screens.Screen;
+import de.rayzs.vit.launch.processes.prepare.UpdateChecker;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -70,6 +71,14 @@ public class Bootstrap {
                 TestDummy.apply(gui, screen, num);
             }
 
+            return;
+        }
+
+
+        // Check if VIT is running on the latest version.
+        // It then asks if the user want to update. If so,
+        // then the rest of the code simply won't proceed.
+        if (new UpdateChecker().wantToUpdate()) {
             return;
         }
 
