@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -128,31 +129,41 @@ public class AssetPreparer {
         // actually something to download.
         if (requiresToDownload) {
 
-            System.out.println("Waiting for confirmation on if VIT should be installed or not...");
+            // Indicators if VIT was already installed or not. Depending on that,
+            // the popup messages will change.
+            final File installedFile = FileDir.ROOT.getFile(".installed");
+            final boolean installedBefore = FileDir.ROOT.getFile(".installed").exists();
 
-            final OptionGUI optionGUI = OptionGUI.create(
-                    "Confirmation required!",
-                    "Yes", "No",
-                    "You are about to install VIT. Are you sure you wish to proceed?"
-            );
 
-            // When denied, ignore action and close program.
-            if (optionGUI.getResponse() == -1) {
+            if (!installedBefore) {
+                System.out.println("Waiting for confirmation on if VIT should be installed or not...");
 
-                System.out.println("Cancelled installation setup!");
+                final OptionGUI optionGUI = OptionGUI.create(
+                        "Confirmation required!",
+                        "Yes", "No",
+                        "You are about to install VIT. Would you like to start the installation process?"
+                );
 
-                System.exit(0);
-                return;
+                // When denied, ignore action and close program.
+                if (optionGUI.getResponse() == -1) {
+
+                    System.out.println("Cancelled installation setup!");
+
+                    System.exit(0);
+                    return;
+                }
+
+
+                System.out.println("Started installation process...");
+            } else {
+                System.out.println("Downloading missing assets...");
             }
-
-
-            System.out.println("Started installation process...");
 
 
             // Prepare download gui.
             final DownloadGUI downloadGUI = DownloadGUI.create(
                     "Downloading...",
-                    "I'm not a very good programmer, but I'm certainly decent enough to call myself one."
+                    "Installing everything... This might take a while. 🙄"
             );
 
 
@@ -181,66 +192,82 @@ public class AssetPreparer {
             downloadGUI.dispose();
 
 
-            System.out.println("Finished installation process!");
-            System.out.println("Waiting for confirmation on if VIT should create a Desktop shortcut or not...");
+            System.out.println("Finished installation!");
 
 
-            // Create default shortcuts.
-            createShortcut(
-                    "VIT",
-                    "start.bat",
-                    System.getenv("APPDATA") + "/Microsoft/Windows/Start Menu/Programs"
-            );
+            if (!installedBefore) {
 
 
-            // Create shortcut on Desktop?
-            final OptionGUI createShortcutGUI = OptionGUI.create(
-                    "Create Desktop shortcut?",
-                    "yes", "no",
-                    "Would you like to create a shortcut on your Desktop?"
-            );
+                // Creating file which tells VIT that it has been installed before.
+                try {
+                    installedFile.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
 
-            if (createShortcutGUI.getResponse() == 1) {
+                System.out.println("Waiting for confirmation on if VIT should create a Desktop shortcut or not...");
+
+
+                // Create default shortcuts.
                 createShortcut(
                         "VIT",
                         "start.bat",
-                        System.getProperty("user.home") + "\\Desktop"
+                        System.getenv("APPDATA") + "/Microsoft/Windows/Start Menu/Programs"
                 );
 
-                System.out.println("Created Desktop shortcut!");
-            } else System.out.println("Denied Desktop shortcut!");
+
+                // Create shortcut on Desktop?
+                final OptionGUI createShortcutGUI = OptionGUI.create(
+                        "Create Desktop shortcut?",
+                        "yes", "no",
+                        "Would you like to create a shortcut on your Desktop?"
+                );
 
 
-            // Close the shortcut-option gui
-            createShortcutGUI.dispose();
+                if (createShortcutGUI.getResponse() == 1) {
+                    createShortcut(
+                            "VIT",
+                            "start.bat",
+                            System.getProperty("user.home") + "\\Desktop"
+                    );
+
+                    System.out.println("Created Desktop shortcut!");
+                } else System.out.println("Denied Desktop shortcut!");
 
 
-            System.out.println("Waiting for confirmation on if VIT should run right away or not...");
+                // Close the shortcut-option gui
+                createShortcutGUI.dispose();
 
 
-            // Create shortcut on Desktop?
-            final OptionGUI startNowGUI = OptionGUI.create(
-                    "Start VIT now?",
-                    "LET'S GO", "not now",
-                    "Would you like to start VIT now?"
-            );
+                System.out.println("Waiting for confirmation on if VIT should run right away or not...");
 
-            if (startNowGUI.getResponse() == -1) {
 
-                System.out.println("Chose to not run VIT right away!");
+                // Create shortcut on Desktop?
+                final OptionGUI startNowGUI = OptionGUI.create(
+                        "Start VIT now?",
+                        "LET'S GO", "not now",
+                        "Would you like to start VIT now?"
+                );
 
-                System.exit(0);
-                return;
+                if (startNowGUI.getResponse() == -1) {
+
+                    System.out.println("Chose to not run VIT right away!");
+
+                    System.exit(0);
+                    return;
+                }
+
+                System.out.println("Accepted to run VIT right away after!");
+
+            } else {
+
+                System.out.println("Skipped installation process, since everything is already installed.");
+
             }
 
-            System.out.println("Accepted to run VIT right away after!");
-
-        } else {
-
-            System.out.println("Skipped installation process, since everything is already installed.");
-
         }
+
 
 
         System.out.println("Finished loading assets!");
