@@ -2,8 +2,6 @@ package de.rayzs.vit.launch.processes.gui;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.GUI;
-import de.rayzs.vit.api.gui.elements.BeautifiedButton;
-import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.utils.ImageUtils;
@@ -109,7 +107,7 @@ public class LobbyPlayerWindow extends GUI {
 
 
         final JScrollPane historyScroll = new JScrollPane(historyPanel);
-        historyScroll.getVerticalScrollBar().setUnitIncrement(4);
+        historyScroll.getVerticalScrollBar().setUnitIncrement(10);
         historyScroll.getViewport().setBackground(Colors.BACKGROUND.get());
         historyScroll.setBorder(null);
 

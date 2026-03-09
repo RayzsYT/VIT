@@ -131,7 +131,7 @@ public class LivePlayerWindow extends GUI {
 
 
         final JScrollPane skinsScroll = new JScrollPane(skinsPanel);
-        skinsScroll.getVerticalScrollBar().setUnitIncrement(4);
+        skinsScroll.getVerticalScrollBar().setUnitIncrement(10);
         skinsScroll.getViewport().setBackground(Colors.BACKGROUND.get());
         skinsScroll.setBorder(null);
 
@@ -191,7 +191,7 @@ public class LivePlayerWindow extends GUI {
         }
 
         final JScrollPane historyScroll = new JScrollPane(historyPanel);
-        historyScroll.getVerticalScrollBar().setUnitIncrement(4);
+        historyScroll.getVerticalScrollBar().setUnitIncrement(10);
         historyScroll.getViewport().setBackground(Colors.BACKGROUND.get());
         historyScroll.setBorder(null);
 
