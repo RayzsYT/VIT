@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Agent;
+import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
@@ -94,7 +95,13 @@ public class TestDummy {
                 String.valueOf(Math.abs(random.nextLong())),
                 mapId,
                 new MatchInfo(
-                        random.nextFloat(2)
+                        new Season("", "", "", false),
+                        random.nextInt(10),
+                        random.nextInt(10),
+                        random.nextInt(10),
+                        random.nextInt(10),
+                        random.nextInt(10),
+                        random.nextBoolean()
                 ),
                 new CompMatchResult(
                         random.nextInt(33)
