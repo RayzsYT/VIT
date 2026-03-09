@@ -24,7 +24,7 @@ public class DownloadProcess {
 
     public DownloadProcess(
             final FileDir dir,
-            final DownloadElement[] elements
+            final DownloadElement... elements
     ) {
         this.dir = dir;
         this.elements = elements;
