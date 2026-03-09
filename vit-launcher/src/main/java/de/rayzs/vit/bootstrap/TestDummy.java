@@ -83,8 +83,8 @@ public class TestDummy {
             if (info.won()) wins++;
         }
 
-        final float headshotRate = (float) (headshotHits / shotHits);
-        final float winRate = (float) (wins / games);
+        final float headshotRate = (float) headshotHits / (float) shotHits;
+        final float winRate = (float) wins / (float) games;
 
         final PlayerStats playerStats = new PlayerStats(winRate, headshotRate);
 
@@ -110,6 +110,9 @@ public class TestDummy {
 
         final String mapId = mapsArray[random.nextInt(mapsArray.length)];
 
+        final int wonRounds = random.nextInt(10),
+                lostRounds = random.nextInt(10);
+
         return new Match(
                 String.valueOf(Math.abs(random.nextLong())),
                 mapId,
@@ -118,9 +121,9 @@ public class TestDummy {
                         random.nextInt(10),
                         random.nextInt(10),
                         random.nextInt(10),
-                        random.nextInt(10),
-                        random.nextInt(10),
-                        random.nextBoolean()
+                        wonRounds,
+                        lostRounds,
+                        wonRounds >= lostRounds
                 ),
                 new CompMatchResult(
                         random.nextInt(33)

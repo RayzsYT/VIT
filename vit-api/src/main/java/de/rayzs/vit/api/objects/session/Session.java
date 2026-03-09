@@ -647,8 +647,8 @@ public class Session {
                 if (info.won()) wins++;
             }
 
-            final float headshotRate = (float) (headshotHits / shotHits);
-            final float winRate = (float) (wins / games);
+            final float headshotRate = (float) headshotHits / (float) shotHits;
+            final float winRate = (float) wins / (float) games;
 
 
             registeredPlayers.add(new Player(
