@@ -52,8 +52,8 @@ public class GUI extends JFrame {
         CONTROL_COMBOBOX_ARROW                      (Color.BLACK),
         CONTROL_COMBOBOX_BACKGROUND                 (206, 62, 62),
         CONTROL_COMBOBOX_HOVER                      (218, 108, 108),
-        CONTROL_COMBOBOX_SCROLL_BACKGROUND          (new Color(206, 62, 62)),
-        CONTROL_COMBOBOX_SCROLL_FOREGROUND          (new Color(105, 30, 30)),
+        CONTROL_COMBOBOX_SCROLL_BACKGROUND          (206, 62, 62),
+        CONTROL_COMBOBOX_SCROLL_FOREGROUND          (105, 30, 30),
 
         CONTROL_BUTTON_BACKGROUND                   (206, 62, 62),
         CONTROL_BUTTON_BACKGROUND_HOVER             (129, 27, 27),
@@ -61,6 +61,7 @@ public class GUI extends JFrame {
         CONTROL_BUTTON_BACKGROUND_RELEASED          (CONTROL_BUTTON_BACKGROUND),
 
         PLAYER_MATCH_WON                            (209, 254, 200),
+        PLAYER_MATCH_TIE                            (245, 221, 162),
         PLAYER_MATCH_LOST                           (248, 170, 170),
 
         PLAYER_SCROLLBAR                            (67, 67, 99),
