@@ -4,6 +4,7 @@ import de.rayzs.vit.api.objects.items.Season;
 
 public record MatchInfo(
         Season season,
+        float headshotRate,
         int headshots,
         int bodyShots,
         int legShots,
