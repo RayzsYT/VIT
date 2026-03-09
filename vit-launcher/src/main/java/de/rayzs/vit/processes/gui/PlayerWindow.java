@@ -66,27 +66,26 @@ public class PlayerWindow extends GUI {
 
         final JPanel bannerInner = new JPanel(new BorderLayout());
         bannerInner.setOpaque(false);
-        bannerInner.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15));
+        bannerInner.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        final JPanel left = new JPanel(new BorderLayout());
+        final JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         left.setOpaque(false);
 
         final ImageIcon agentImage = player.agent().getImage().getIcon(70, 70, Image.SCALE_SMOOTH);
         final JLabel agentLabel = new JLabel(agentImage);
-        agentLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-        final JLabel nameLabel = new JLabel(player.name());
-        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        final JLabel nameLabel = new JLabel(shortenPlayerName(player));
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         nameLabel.setForeground(Color.WHITE);
 
-        left.add(agentLabel, BorderLayout.WEST);
-        left.add(nameLabel, BorderLayout.CENTER);
+        left.add(agentLabel);
+        left.add(nameLabel);
 
-        final JPanel center = new JPanel();
-        center.setOpaque(false);
-        center.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        final JPanel right = new JPanel(new GridBagLayout());
+        right.setOpaque(false);
 
-
+        final JPanel buttonContainer = new JPanel(new GridLayout(1, 2, 10, 8));
+        buttonContainer.setOpaque(false);
 
         final JButton skinsButton = new BeautifiedButton(
                 "View Skins",
@@ -106,13 +105,15 @@ public class PlayerWindow extends GUI {
                 GUI.Colors.PLAYER_BUTTON_BACKGROUND_RELEASED
         );
 
-        skinsButton.setEnabled(swapView); // Disabled by default since it's selected by default
+        skinsButton.setEnabled(swapView);
 
-        center.add(skinsButton, BorderLayout.EAST);
-        center.add(historyButton, BorderLayout.EAST);
+        buttonContainer.add(skinsButton);
+        buttonContainer.add(historyButton);
 
-        bannerInner.add(left, BorderLayout.WEST);
-        bannerInner.add(center, BorderLayout.CENTER);
+        right.add(buttonContainer);
+
+        bannerInner.add(left, BorderLayout.SOUTH);
+        bannerInner.add(right, BorderLayout.EAST);
 
         banner.add(bannerInner, BorderLayout.CENTER);
 
@@ -156,10 +157,6 @@ public class PlayerWindow extends GUI {
                 return createZeroButton();
             }
 
-            // Well, making it as small as possible is practically
-            // hiding it in this part. Since it just looks so ugly
-            // to have those arrows at the top and bottom of the
-            // scrollbar.
             private JButton createZeroButton() {
                 final JButton button = new JButton();
 
@@ -359,5 +356,24 @@ public class PlayerWindow extends GUI {
     public void show(final int x, final int y) {
         setLocation(x, y);
         setVisible(true);
+    }
+
+    /**
+     * Shortens a player name to a constant size.
+     * Used for names to guarantee that longs names
+     * don't move the buttons.
+     *
+     * @param player Player.
+     *
+     * @return Shorten player name.
+     */
+    private String shortenPlayerName(final Player player) {
+        final String name = player.name();
+        final int max = 18;
+
+        if (name.length() <= max)
+            return name;
+
+        return name.substring(0, max) + "...";
     }
 }
