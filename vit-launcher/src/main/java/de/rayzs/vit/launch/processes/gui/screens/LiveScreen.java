@@ -7,6 +7,7 @@ import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.gui.elements.BeautifiedJComboBox;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.items.Weapon;
@@ -222,7 +223,10 @@ public class LiveScreen extends Screen {
                 }
             };
 
-            peakRankLabel.setToolTipText("Peak Rank: " + peakTier.getTierName());
+
+            final Season peakSeason = player.competitive().seasonTiers().getPeakSeason();
+
+            peakRankLabel.setToolTipText("Peak Rank: " + peakTier.getTierName() + " (" + peakSeason.name() + ")");
 
             rankPanel.add(peakRankLabel);
             rankPanel.add(Box.createHorizontalStrut(8));
