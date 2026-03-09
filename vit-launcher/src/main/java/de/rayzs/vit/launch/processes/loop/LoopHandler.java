@@ -36,7 +36,6 @@ public class LoopHandler {
 
 
     public void handle() {
-
         if (!Request.areHeadersSet()) {
             try {
                 api.getSession().initialize();
