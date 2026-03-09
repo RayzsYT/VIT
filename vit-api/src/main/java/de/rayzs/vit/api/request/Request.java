@@ -55,8 +55,8 @@ public class Request {
 
     /**
      * Set the auth token. This can only be called
-     * once and cannot be used again, since the auth token
-     * has been set.
+     * once and cannot be used again, except when {@link #unsetAuthToken()}
+     * method has been called.
      * <p>
      * The auth token is required for creating {@link RequestDest#LOCAL},
      * {@link RequestDest#PD}, {@link RequestDest#GLZ},
@@ -71,6 +71,27 @@ public class Request {
         }
 
         AUTH_TOKEN = authToken;
+    }
+
+    /**
+     * Unsets the auth token, in case it has been set already.
+     */
+    public static void unsetAuthToken() {
+
+        if (AUTH_TOKEN == null) {
+            throw new IllegalStateException("Auth token is not set!");
+        }
+
+        AUTH_TOKEN = null;
+    }
+
+    /**
+     * If the auth token has been set already.
+     *
+     * @return True if the auth token is set. False otherwise.
+     */
+    public static boolean isAuthTokenSet() {
+        return AUTH_TOKEN != null;
     }
 
 
