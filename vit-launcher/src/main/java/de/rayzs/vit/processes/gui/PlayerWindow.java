@@ -15,7 +15,13 @@ import java.awt.*;
 public class PlayerWindow extends GUI {
 
 
-    private final String matchDisplay = "%d  -  %s  -  %d";
+    private final String matchDisplay = String.join("", new String[] {
+            "<html><div style='",
+            "color: rgba(%d, %d, %d, 1); ",
+            "font-size: 24px;'><b>",
+            "%d  -  %s  -  %d",
+            "</b></div></html>"
+    });
 
 
     private final Player player;
@@ -267,9 +273,15 @@ public class PlayerWindow extends GUI {
         banner.setLayout(new GridBagLayout());
 
 
+        final Color textColor = match.stats().won()
+                ? Colors.PLAYER_MATCH_WON.get()
+                : Colors.PLAYER_MATCH_LOST.get();
 
         final JLabel text = new JLabel(
                 matchDisplay.formatted(
+                        textColor.getRed(),
+                        textColor.getGreen(),
+                        textColor.getBlue(),
                         match.stats().wonRounds(),
                         match.stats().won() ? "WON" : "LOST",
                         match.stats().lostRounds()
