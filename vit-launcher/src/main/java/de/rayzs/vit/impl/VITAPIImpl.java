@@ -6,6 +6,7 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.session.Session;
 import de.rayzs.vit.impl.image.ImageProviderImpl;
+import de.rayzs.vit.impl.session.SessionImpl;
 
 public class VITAPIImpl implements VITAPI {
 
@@ -16,7 +17,7 @@ public class VITAPIImpl implements VITAPI {
     private Weapon selectedWeapon = Weapon.VANDAL;
 
     public VITAPIImpl() {
-        this.session = new Session();
+        this.session = new SessionImpl();
         this.imageProvider = new ImageProviderImpl();
     }
 
