@@ -568,6 +568,7 @@ public class Session {
             final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
             if (matchHistoryResult.isPresent()) {
+
                 final JSONObject matchHistory = new JSONObject(matchHistoryResult.get());
 
                 if (matchHistory.has("Matches")) {
@@ -575,7 +576,11 @@ public class Session {
 
                     for (final Object playedMatchObj : playedMatches) {
                         final JSONObject playedMatch = (JSONObject) playedMatchObj;
+
                         final String playedMatchId = playedMatch.getString("MatchID");
+                        final int gainedRR = playedMatch.has("RankedRatingEarned")
+                                ? playedMatch.getInt("RankedRatingEarned")
+                                : 0;
 
 
                         // Now trying to get the match information
@@ -594,6 +599,7 @@ public class Session {
                             final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
                             final Match historyMatch = constructMatch(
                                     playerId,
+                                    gainedRR,
                                     playedMatchId,
                                     playedMatchDetails
                             );
@@ -707,6 +713,7 @@ public class Session {
      * of a certain player.
      *
      * @param playerId ID of the player playing in that match whose information is relevant.
+     * @param gainedRR Gained RR during match.
      * @param matchId Match id.
      * @param matchDetails JSONObject containing match details.
      *
@@ -714,6 +721,7 @@ public class Session {
      */
     private Match constructMatch(
             final String playerId,
+            final int gainedRR,
             final String matchId,
             final JSONObject matchDetails
     ) {
@@ -805,14 +813,20 @@ public class Session {
         final boolean won = isTeam1 ? team1Won : team2Won;
 
 
+        final float headShotRate = (float) headShots / (float) (headShots + bodyShots + legShots);
+
+
         return new Match(
                 matchId,
                 mapId,
                 new MatchInfo(
-                        season, headShots, bodyShots, legShots,
+                        season, headShotRate,
+                        headShots, bodyShots, legShots,
                         wonRounds, lostRounds, won
                 ),
-                null
+                new CompMatchResult(
+                        gainedRR
+                )
         );
     }
 
