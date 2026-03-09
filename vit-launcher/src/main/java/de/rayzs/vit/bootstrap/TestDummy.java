@@ -91,7 +91,7 @@ public class TestDummy {
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
                 team,
-                "Player-" + random.nextInt(100),
+                "Player-" + random.nextInt(100000),
                 Agent.values()[random.nextInt(Agent.values().length)],
                 random.nextInt(500),
                 "PlayerCard-" + random.nextInt(100),
