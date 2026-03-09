@@ -56,8 +56,8 @@ public class GUI extends JFrame {
         CONTROL_BUTTON_BACKGROUND_PRESSED   (126, 2, 2),
         CONTROL_BUTTON_BACKGROUND_RELEASED  (CONTROL_BUTTON_BACKGROUND),
 
-        PLAYER_MATCH_WON                    (248, 170, 170),
-        PLAYER_MATCH_LOST                   (209, 254, 200),
+        PLAYER_MATCH_WON                    (209, 254, 200),
+        PLAYER_MATCH_LOST                   (248, 170, 170),
 
         PLAYER_BUTTON_BACKGROUND            (206, 62, 62),
         PLAYER_BUTTON_BACKGROUND_HOVER      (129, 27, 27),
