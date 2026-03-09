@@ -27,6 +27,11 @@
     </dependencies>
 
     <build>
+
+        <finalName>just-ignore-me</finalName>
+
+
+
         <plugins>
 
             <plugin>
@@ -64,7 +69,9 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>
