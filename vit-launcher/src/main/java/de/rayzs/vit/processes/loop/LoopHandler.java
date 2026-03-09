@@ -71,10 +71,12 @@ public class LoopHandler {
             }
 
             case IN_LOBBY -> {
+                loadingScreen.load(api, gui);
                 loadLobbyScreen();
             }
 
             case IN_GAME -> {
+                loadingScreen.load(api, gui);
                 loadLiveScreen();
             }
         }
