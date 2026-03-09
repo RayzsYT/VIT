@@ -67,7 +67,7 @@ public class TestDummy {
         final PlayerInventory inventory = new PlayerInventory(skinMap);
 
         final List<Match> matches = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < random.nextInt(15); i++) {
             matches.add(createRandomMatch());
         }
 
@@ -118,6 +118,7 @@ public class TestDummy {
                 mapId,
                 new MatchInfo(
                         new Season("", "", "", false),
+                        random.nextFloat(10),
                         random.nextInt(10),
                         random.nextInt(10),
                         random.nextInt(10),
