@@ -1,0 +1,1040 @@
+package de.rayzs.vit.impl.session;
+
+import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.items.*;
+import de.rayzs.vit.api.objects.player.*;
+import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
+import de.rayzs.vit.api.objects.player.competitive.SeasonStats;
+import de.rayzs.vit.api.objects.player.competitive.SeasonTiers;
+import de.rayzs.vit.api.objects.player.match.LastCompMatch;
+import de.rayzs.vit.api.objects.player.match.Match;
+import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
+import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
+import de.rayzs.vit.api.objects.session.Session;
+import de.rayzs.vit.api.objects.session.SessionState;
+import de.rayzs.vit.api.request.Request;
+import de.rayzs.vit.api.request.RequestDest;
+import de.rayzs.vit.api.request.RequestMethod;
+import de.rayzs.vit.api.utils.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.function.Consumer;
+
+public class SessionImpl implements Session {
+
+
+    private static final int MATCH_HISTORY_NUM = 5;
+
+
+    private final File lockfile;
+
+    // SeasonId, Season
+    private final Map<String, Season> seasons = new HashMap<>();
+
+    private String currentVersion;
+
+    private Season currentSeason;
+    private HttpClient client;
+    private String selfPlayerId;
+
+    public SessionImpl() {
+        this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
+        this.client = Request.createClient();
+
+        fetchAuthToken();
+        fetchRequestUrls();
+    }
+
+
+    /**
+     * Initializes all required information
+     * to send requests. Should not be called
+     * during runtime once it already has been called,
+     * unless VALORANT has been restarted.
+     */
+    @Override
+    public void initialize() {
+        this.client = Request.createClient();
+
+        fetchRequestHeaders(this.client);
+    }
+
+
+    /**
+     * Get the client to send requests
+     * to the VALORANT servers.
+     *
+     * @return HttpClient.
+     */
+    @Override
+    public HttpClient getClient() {
+        return this.client;
+    }
+
+
+
+    /**
+     * Fetch and set the auth token.
+     */
+    private void fetchAuthToken() {
+        try {
+            String[] lockData = new String(Files.readAllBytes(lockfile.toPath())).split(":");
+
+            final String port = lockData[2];
+            final String password = lockData[3];
+
+            final String authToken = Base64.getEncoder().encodeToString(
+                    ("riot:" + password).getBytes(StandardCharsets.UTF_8)
+            );
+
+            RequestDest.LOCAL.update(port);
+            Request.setAuthToken(authToken);
+
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to set access token! Failed to read the information inside the lock data file.", exception);
+        }
+    }
+
+    /**
+     * Fetches all the necessary information
+     * to send the requests to the correct servers
+     * by reading and applying the correct regions
+     * and ports for creating local connections.
+     */
+    private void fetchRequestUrls(){
+        String firstRegion = null;
+        String secondRegion = null;
+        String currentVersion = null;
+
+        try {
+            final File logFile = FileDir.VALORANT_LOGS.getFile("ShooterGame.log");
+
+            for (String line : Files.readAllLines(logFile.toPath())) {
+                if (currentVersion != null && firstRegion != null && secondRegion != null) {
+                    break;
+                }
+
+                String[] parts;
+
+
+                // Set 'CURRENT_VERSION':
+                if (currentVersion == null) {
+                    final int versionIndex = StringUtils.searchIndex("CI server version: ", line);
+
+                    if (versionIndex != -1) {
+                        parts = line.substring(versionIndex).split("-");
+
+                        final List<String> partsList = new ArrayList<>(Arrays.asList(parts));
+                        if (partsList.size() >= 2) {
+                            partsList.add(2, "shipping");
+                        }
+
+                        currentVersion = String.join("-", partsList);
+                        continue;
+                    }
+                }
+
+                // Set first region for requests.
+                if (firstRegion == null) {
+                    final int pdIndex = StringUtils.searchIndex("https://pd.", line);
+                    final int sharedIndex = StringUtils.searchIndex("https://shared.", line);
+
+                    if (pdIndex != -1) {
+                        parts = line.substring(pdIndex).split("\\.", 2);
+                        firstRegion = parts[0];
+                        continue;
+                    }
+
+                    if (sharedIndex != -1) {
+                        parts = line.substring(sharedIndex).split("\\.", 2);
+                        firstRegion = parts[0];
+                        continue;
+                    }
+                }
+
+                // Set first/second region for requests.
+                if (secondRegion == null) {
+                    final int glzIndex = StringUtils.searchIndex("https://glz-", line);
+
+                    if (glzIndex != -1) {
+                        parts = line.substring(glzIndex).split("\\.", 2);
+                        secondRegion = parts[0];
+                    }
+                }
+            }
+
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to fetch the regions!", exception);
+        }
+
+
+        // Safe-keeping checks just to ensure that everything was actually successful.
+        // I had my share of experience with programs that stop working
+        // just partially and still keep running. (I NEED TO KNOW :D)
+        if (firstRegion == null) {
+            throw new NullPointerException("Failed to fetch the first region!");
+        }
+
+        if (secondRegion == null) {
+            throw new NullPointerException("Failed to fetch the second region!");
+        }
+
+        if (currentVersion == null) {
+            throw new NullPointerException("Failed to fetch the current VALORANT client version!");
+        }
+
+
+        this.currentVersion = currentVersion;
+
+
+        RequestDest.SHARED.update(firstRegion);
+        RequestDest.PD.update(firstRegion);
+
+        RequestDest.GLZ.update(secondRegion, firstRegion);
+    }
+
+
+    /**
+     * Fetches and sets the headers for creating requests
+     * to the VALORANT servers.
+     *
+     * @param client HttpClient sending the request.
+     */
+    private void fetchRequestHeaders(final HttpClient client) {
+
+        // Sending request to receive the required headers
+        // for sending requests towards the VALORANT servers.
+        final Request request = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.LOCAL,
+                "entitlements/v1/token"
+        );
+
+        final Optional<String> result = request.sendAndGet(client);
+
+        if (result.isEmpty()) {
+            System.out.println("Failed lol #1");
+            throw new NullPointerException("Request failed!");
+        }
+
+        if (this.currentVersion == null) {
+            System.out.println("Failed lol #2");
+            throw new NullPointerException("Current version is not set yet! Please only call this method here once 'fetchRequestUrls' has been called first.");
+        }
+
+        final JSONObject json = new JSONObject(result.get());
+
+        final String accessToken = json.getString("accessToken");
+        final String entitlementToken = json.getString("token");
+
+        // Own player's id.
+        this.selfPlayerId = json.getString("subject");
+
+
+        // 'currentVersion' is loaded in advance inside the 'fetchRequestUrls'
+        // since in there the same file, which already includes the client version,
+        // is there as well. I mean, better than doing things twice a row, right?
+        // Also, I doubt the version is gonna change while the tracker is live.
+        Request.setHeaders(accessToken, entitlementToken, this.currentVersion);
+    }
+
+
+    /**
+     * Get the session state by sending a
+     * request.
+     * <p>
+     * Returns a SessionState indicating whether
+     * the client is currently in the menu, in a match,
+     * of if VALORANT is even started.
+     *
+     * @return SessionState.
+     */
+    @Override
+    public SessionState getSessionState() {
+
+
+        if (this.selfPlayerId == null) {
+            throw new NullPointerException("Self player id is not set yet! Please ensure to only call this method until 'fetchRequestHeaders' has been called first.");
+        }
+
+
+        final Request request = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.LOCAL,
+                "chat/v4/presences"
+        );
+
+
+        final Optional<String> result = request.sendAndGet(this.client);
+
+        if (result.isEmpty()) {
+            return SessionState.VALORANT_NOT_OPEN;
+        }
+
+
+        final JSONArray presences = new JSONObject(result.get()).getJSONArray("presences");
+
+        for (Object presenceObj : presences) {
+            final JSONObject presence = (JSONObject) presenceObj;
+
+            final String product = presence.getString("product");
+            final String playerId = presence.getString("puuid");
+
+            if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(this.selfPlayerId)) {
+                continue;
+            }
+
+
+            // Sometimes exactly when VALORANT boots and the tracker
+            // is enabled, the private key isn't fully build yet.
+            // So to avoid any confusions or any issues, we'll simply ignore
+            // it in that exact time and wait for the next iteration.
+            final Object encodedPrivateObj = presence.get("private");
+            if (! (encodedPrivateObj instanceof String encodedPrivate)) {
+                continue;
+            }
+
+            final String decodedPrivate = new String(Base64.getDecoder().decode(encodedPrivate), StandardCharsets.UTF_8);
+
+            final JSONObject presenceData = new JSONObject(decodedPrivate);
+            final JSONObject matchPresenceData = presenceData.getJSONObject("matchPresenceData");
+            final String sessionLoopState = matchPresenceData.getString("sessionLoopState");
+
+            return SessionState.from(sessionLoopState);
+        }
+
+        return SessionState.VALORANT_NOT_OPEN;
+    }
+
+
+
+    /**
+     * Construct the game object which loads
+     * all players and the map being played on.
+     *
+     * @param state Current session state.
+     * @param playerLoadConsumer A consumer with the amount of currently loaded players.
+     *
+     * @return Constructed {@link Game} object.
+     */
+    @Override
+    public Game constructGame(
+            final SessionState state,
+            final Consumer<Integer> playerLoadConsumer
+    ) {
+
+        fetchSeasons(); // Fetches all available seasons first, in case they were not fetched yet.
+
+
+        final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
+        final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
+
+        PlayerCompetitive playerCompetitive = null;
+        String matchId = null;
+        String mapId, server;
+
+
+        // Fetch match id
+        switch (state) {
+            case IN_GAME -> {
+                final Request matchRequest = Request.createRequest(
+                        RequestMethod.GET,
+                        RequestDest.GLZ,
+                        "core-game/v1/players/" + selfPlayerId
+                );
+
+
+                final Optional<String> matchResult = matchRequest.sendAndGet(client);
+                if (matchResult.isPresent()) {
+                    matchId = new JSONObject(matchResult.get()).getString("MatchID");
+                }
+            }
+
+
+            case IN_LOBBY -> {
+
+                // Checking their pre-game match. This is practically just
+                // the lobby where just select your agents usually.
+
+                final Request pregameRequest = Request.createRequest(
+                        RequestMethod.GET,
+                        RequestDest.GLZ,
+                        "pregame/v1/players/" + selfPlayerId
+                );
+
+                final Optional<String> pregameResult = pregameRequest.sendAndGet(client);
+                if (pregameResult.isEmpty()) {
+                    throw new NullPointerException("Failed to construct game object! Failed to fetch match id.");
+                }
+
+                matchId = new JSONObject(pregameResult.get()).getString("MatchID");
+            }
+
+            default -> {
+                // Well, kinda makes no sense at all. But who knows?
+                throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + state.name() + ")");
+            }
+        }
+
+
+        final Request matchDetailsRequest = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.GLZ,
+                state.getInternalName() + "/v1/matches/" + matchId
+        );
+
+        final Optional<String> matchDetailsResult = matchDetailsRequest.sendAndGet(client);
+        if (matchDetailsResult.isEmpty()) {
+            throw new NullPointerException("Failed to construct game object! Failed to fetch match details.");
+        }
+
+
+        // Fetch match information
+        final JSONObject match = new JSONObject(matchDetailsResult.get());
+
+        final String mapName = match.getString("MapID");
+        mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapName);
+
+
+        String tmpServer = match.getString("GamePodID");
+        tmpServer = tmpServer.substring(0, tmpServer.lastIndexOf("-"));
+        tmpServer = tmpServer.substring(tmpServer.lastIndexOf("-") + 1);
+        tmpServer = Character.toUpperCase(tmpServer.charAt(0)) + tmpServer.substring(1);
+
+        server = tmpServer;
+
+
+
+        // Fetch the loadouts of all players.
+
+        final Request loadoutsRequest = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.GLZ,
+                state.getInternalName() + "/v1/matches/" + matchId + "/loadouts"
+        );
+
+        final Optional<String> loadoutsResult = loadoutsRequest.sendAndGet(client);
+        if (loadoutsResult.isEmpty()) {
+            throw new NullPointerException("Failed to construct game object! Failed to fetch match loadouts.");
+        }
+
+
+        final JSONArray loadouts = new JSONObject(loadoutsResult.get()).getJSONArray("Loadouts");
+        // Player id, Skin inventory
+        final Map<String, PlayerInventory> playerInventories = state == SessionState.IN_GAME
+                ? fetchInventory(loadouts)
+                : Map.of();
+
+
+        // Get list of all players.
+        final JSONArray players = (state == SessionState.IN_LOBBY
+                // Since it's the lobby, enemy team won't be shared yet.
+                ? match.getJSONArray("Teams").getJSONObject(0)
+                : match
+        ).getJSONArray("Players");
+
+
+        Team ownTeam = null;
+
+        if (state == SessionState.IN_LOBBY) {
+            final String teamId = match
+                    .getJSONArray("Teams")
+                    .getJSONObject(0)
+                    .getString("TeamID");
+
+            ownTeam = teamId.equalsIgnoreCase("blue")
+                    ? Team.DEFEND : Team.ATTACK;
+        }
+
+
+        // Preparing a json of players whose names we want
+        // to ask for.
+        final JSONArray playersArray = new JSONArray();
+        for (Object playerObj : players) {
+
+            final JSONObject player = (JSONObject) playerObj;
+            final String playerId = player.getString("Subject");
+
+            /*
+            In order to be RIOT compliant, incognito users won't be checked.
+            Because it bypasses the streamer-protection:
+            */
+
+            final JSONObject identity = player.getJSONObject("PlayerIdentity");
+            final boolean incognito = identity.getBoolean("Incognito");
+
+            if (!incognito) {
+                playersArray.put(playerId);
+            } else incognitoPlayerIds.add(playerId);
+        }
+
+
+        // Asking VALORANT for the information of the players inside
+        // our match.
+        final Request playerNamesRequest = Request.createRequest(
+                RequestMethod.PUT,
+                RequestDest.PD,
+                "name-service/v2/players",
+                playersArray.toString()
+        );
+
+        final Optional<String> playerNameResult = playerNamesRequest.sendAndGet(client);
+        if (playerNameResult.isEmpty()) {
+            throw new NullPointerException("Failed to construct game object! Failed to fetch player names.");
+        }
+
+
+        final JSONArray playerNames = new JSONArray(playerNameResult.get());
+        final Map<String, String> playerNamesMap = new HashMap<>(); // Player ID, Name + Tag
+
+        for (int i = 0; i < playerNames.length(); i++) {
+            final JSONObject player = playerNames.getJSONObject(i);
+
+            final String playerId = player.getString("Subject");
+            final String playerName = player.getString("GameName") + "#" + player.getString("TagLine");
+
+
+            playerNamesMap.put(playerId, playerName);
+        }
+
+
+        for (int i = 0; i < players.length(); i++) {
+            final JSONObject playerJson = players.getJSONObject(i);
+
+            final String playerId = playerJson.getString("Subject");
+            final String playerName = playerNamesMap.get(playerId);
+
+
+            // Competitive information about the player...
+            final Request competitiveRequest = Request.createRequest(
+                    RequestMethod.GET,
+                    RequestDest.PD,
+                    "mmr/v1/players/" + playerId
+            );
+
+
+
+            final Optional<String> competitiveResult = competitiveRequest.sendAndGet(client);
+            if (competitiveResult.isPresent()) {
+                final JSONObject rank = new JSONObject(competitiveResult.get());
+
+                final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
+
+                final JSONObject competitive = rank.getJSONObject("QueueSkills").getJSONObject("competitive");
+                final int requiredRankGames = competitive.getInt("TotalGamesNeededForRating");
+                final boolean rankedIn = requiredRankGames == 0;
+
+                LastCompMatch lastMatch = null;
+                if (latestCompGameObj instanceof JSONObject latestCompGame) {
+                    final String lastPlayedMapId = latestCompGame.getString("MapID");
+                    final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
+
+                    lastMatch = new LastCompMatch(
+                            lastPlayedMapId,
+                            new CompMatchResult(lastReceivedRR)
+                    );
+                }
+
+
+                final CompRequirements compRequirements = new CompRequirements(
+                        requiredRankGames,
+                        rankedIn
+                );
+
+                playerCompetitive = constructPlayerCompetitive(
+                        lastMatch,
+                        compRequirements,
+                        competitive
+                );
+
+            } else {
+                System.err.println("Failed to fetch competitive information of player: " + playerName + ". ( " + playerId + " )");
+            }
+
+
+
+            // Only fetches 15 matches of the player. Should be enough.
+            final Request matchHistoryRequest = Request.createRequest(
+                    RequestMethod.GET,
+                    RequestDest.PD,
+                    "mmr/v1/players/" + playerId + "/competitiveupdates?startIndex=0&endIndex=" + MATCH_HISTORY_NUM + "&queue=competitive"
+            );
+
+
+            // Fetch match history by starting with played match ids
+
+            final Optional<String> matchHistoryResult = matchHistoryRequest.sendAndGet(client);
+            final List<Match> playedMatchesList = new ArrayList<>(); // Match history
+
+            if (matchHistoryResult.isPresent()) {
+
+                final JSONObject matchHistory = new JSONObject(matchHistoryResult.get());
+
+                if (matchHistory.has("Matches")) {
+                    final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
+
+                    for (final Object playedMatchObj : playedMatches) {
+                        final JSONObject playedMatch = (JSONObject) playedMatchObj;
+
+                        final String playedMatchId = playedMatch.getString("MatchID");
+                        final int gainedRR = playedMatch.has("RankedRatingEarned")
+                                ? playedMatch.getInt("RankedRatingEarned")
+                                : 0;
+
+
+                        // Now trying to get the match information
+
+                        final Request matchDataRequest = Request.createRequest(
+                                RequestMethod.GET,
+                                RequestDest.PD,
+                                "match-details/v1/matches/" + playedMatchId
+                        );
+
+                        final Optional<String> matchDataResult = matchDataRequest.sendAndGet(client);
+
+                        if (matchDataResult.isPresent() && matchDataResult.get().charAt(0) == '{') {
+                            // Construct match stats to add in the list of match history.
+
+                            final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
+                            final Match historyMatch = constructMatch(
+                                    playerId,
+                                    gainedRR,
+                                    playedMatchId,
+                                    playedMatchDetails
+                            );
+
+                            if (historyMatch == null) {
+                                System.out.println("Worked? " + (playedMatchDetails != null) + " | " + playedMatchDetails.has("teams"));
+                                System.out.println("Ignored one match of " + playerName + " because it contained no teams. Probably Deathmatch.");
+                                continue;
+                            }
+
+                            playedMatchesList.add(historyMatch);
+                        }
+                    }
+                }
+            }
+
+
+            final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
+
+            final boolean incognito = incognitoPlayerIds.contains(playerId);
+            final boolean levelHidden = identity.getBoolean("HideAccountLevel");
+            final int level = identity.getInt("AccountLevel");
+
+            final String playerCardId = identity.getString("PlayerCardID");
+            final String playerTitleId = identity.getString("PlayerTitleID");
+
+            final Team team = state == SessionState.IN_LOBBY
+                    ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
+                    ? Team.DEFEND : Team.ATTACK;
+
+            final PlayerSettings settings = new PlayerSettings(
+                    levelHidden,
+                    incognito
+            );
+
+            final PlayerInventory inventory = playerInventories.get(playerId);
+
+
+            final String agentId = state == SessionState.IN_GAME
+                    ? playerJson.getString("CharacterID")
+                    : null;
+
+            final Agent agent =  state == SessionState.IN_GAME
+                    ? Agent.getAgentById(agentId)
+                    : null;
+
+
+            int headshotHits = 0, shotHits = 0, wins = 0, games = 0;
+            for (final Match playedMatch : playedMatchesList) {
+                final MatchInfo info = playedMatch.stats();
+
+                headshotHits += info.headshots();
+                shotHits += info.headshots() + info.bodyShots() + info.legShots();
+
+                games++;
+
+                if (info.won()) wins++;
+            }
+
+            final float headshotRate = (float) headshotHits / (float) shotHits;
+            final float winRate = (float) wins / (float) games;
+
+
+            registeredPlayers.add(new Player(
+                    playerId,
+                    team,
+                    Objects.requireNonNullElse(playerName,
+                            agent == null ? "Hidden" : agent.getAgentName()
+                    ),
+                    agent,
+                    level,
+                    playerCardId,
+                    playerTitleId,
+                    settings,
+                    inventory,
+                    playerCompetitive,
+                    new PlayerStats(winRate, headshotRate),
+                    playedMatchesList.toArray(new Match[0])
+            ));
+
+            playerLoadConsumer.accept(registeredPlayers.size());
+        }
+
+
+        Player selfPlayer = null;
+        for (final Player registeredPlayer : registeredPlayers) {
+            if (registeredPlayer.id().equalsIgnoreCase(selfPlayerId)) {
+                selfPlayer = registeredPlayer;
+                break;
+            }
+        }
+
+
+        if (selfPlayer == null) {
+            throw new NullPointerException("Self Player could not be found! (" + registeredPlayers.size() + " players)");
+        }
+
+
+        return new Game(
+                selfPlayer,
+                state,
+                registeredPlayers.toArray(new Player[0]),
+                mapId,
+                server
+        );
+    }
+
+
+    /**
+     * Constructs a {@link Match} object for the match history
+     * of a certain player.
+     *
+     * @param playerId ID of the player playing in that match whose information is relevant.
+     * @param gainedRR Gained RR during match.
+     * @param matchId Match id.
+     * @param matchDetails JSONObject containing match details.
+     *
+     * @return Constructed {@link Match} object.
+     */
+    private Match constructMatch(
+            final String playerId,
+            final int gainedRR,
+            final String matchId,
+            final JSONObject matchDetails
+    ) {
+
+        int headShots = 0, bodyShots = 0, legShots = 0;
+
+        final JSONObject matchInfo = matchDetails.getJSONObject("matchInfo");
+
+        final boolean ranked = matchInfo.getBoolean("isRanked");
+
+        // e.g: /Game/GameModes/Bomb/BombGameMode.BombGameMode_C
+        // I'm not sure what exactly that means, but let's check it
+        // some other day idk. Maybe it's on the valorant-api page?
+        final String gameMode = matchInfo.getString("gameMode");
+
+
+        final String mapUrl = matchInfo.getString("mapId");
+        final String mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapUrl);
+
+        final String seasonId = matchInfo.getString("seasonId");
+        final Season season = seasons.get(seasonId);
+
+
+        final JSONArray teams = matchDetails.getJSONArray("teams");
+
+        final JSONObject team1 = teams.getJSONObject(0);
+        final JSONObject team2 = teams.getJSONObject(1);
+
+        final String team1Id = team1.getString("teamId");
+
+        final boolean team1Won = team1.getBoolean("won");
+        final boolean team2Won = team2.getBoolean("won");
+
+        final int team1Wins = team1.getInt("roundsWon");
+        final int team2Wins = team2.getInt("roundsWon");
+
+
+        // Prevent team of the player whose match it is.
+        String playerTeam = "";
+        for (final Object playerObj : matchDetails.getJSONArray("players")) {
+            final JSONObject player = (JSONObject) playerObj;
+            final String teamId = player.getString("teamId");
+
+            if (player.getString("subject").equalsIgnoreCase(playerId)) {
+                playerTeam = teamId;
+                break;
+            }
+        }
+
+
+        final JSONArray roundResults = matchDetails.getJSONArray("roundResults");
+
+        for (final Object roundObj : roundResults) {
+            final JSONObject round = (JSONObject) roundObj;
+            final JSONArray playerStats = round.getJSONArray("playerStats");
+
+
+            for (final Object statsObj : playerStats) {
+                final JSONObject stats = (JSONObject) statsObj;
+                final String matchPlayerId = stats.getString("subject");
+
+
+                if (matchPlayerId.equalsIgnoreCase(playerId)) {
+                    continue;
+                }
+
+
+                final JSONArray damageDetails = stats.getJSONArray("damage");
+
+                for (final Object damageDetailObj : damageDetails) {
+                    final JSONObject damageDetail = (JSONObject) damageDetailObj;
+
+
+                    headShots += damageDetail.getInt("headshots");
+                    bodyShots += damageDetail.getInt("bodyshots");
+                    legShots += damageDetail.getInt("legshots");
+
+                }
+            }
+        }
+
+
+
+        final boolean isTeam1 = playerTeam.equalsIgnoreCase(team1Id);
+
+        final int wonRounds = isTeam1 ? team1Wins : team2Wins;
+        final int lostRounds = isTeam1 ? team2Wins : team1Wins;
+
+        final boolean won = isTeam1 ? team1Won : team2Won;
+
+
+        final float headShotRate = (float) headShots / (float) (headShots + bodyShots + legShots);
+
+
+        return new Match(
+                matchId,
+                mapId,
+                new MatchInfo(
+                        season, headShotRate,
+                        headShots, bodyShots, legShots,
+                        wonRounds, lostRounds, won
+                ),
+                new CompMatchResult(
+                        gainedRR
+                )
+        );
+    }
+
+
+
+    /**
+     * Creates a map of all player ids and maps them
+     * with their corresponding weapon skin inventory.
+     *
+     * @param loadouts Loadout JSONArray
+     *
+     * @return Map of all player ids anf their player inventories.
+     */
+    private Map<String, PlayerInventory> fetchInventory(final JSONArray loadouts) {
+
+        // PlayerId, Skin inventory
+        final Map<String, PlayerInventory> playerInventories = new HashMap<>();
+
+        for (final Object obj : loadouts) {
+            final JSONObject loadout = ((JSONObject) obj).getJSONObject("Loadout");
+            final JSONObject items = loadout.getJSONObject("Items");
+            final String playerId = loadout.getString("Subject");
+
+            // Weapon, Skin id
+            final Map<Weapon, String> skins = new HashMap<>();
+
+            for (final Weapon weapon : Weapon.values()) {
+                final String gunId = weapon.getDefaultSkinId();
+
+                if (loadout.has(gunId)) {
+                    skins.put(weapon, gunId);
+                    continue;
+                }
+
+                String skinId = items.getJSONObject(gunId)
+                        .getJSONObject("Sockets")
+                        .getJSONObject("bcef87d6-209b-46c6-8b19-fbe40bd95abc")
+                        .getJSONObject("Item")
+                        .getString("ID");
+
+                skins.put(weapon, skinId);
+            }
+
+            playerInventories.put(playerId, new PlayerInventory(skins));
+        }
+
+        return playerInventories;
+    }
+
+    /**
+     * Fetches all seasons.
+     */
+    private void fetchSeasons() {
+
+        if (!seasons.isEmpty()) {
+            return;
+        }
+
+        final Request contentRequest = Request.createRequest(
+                RequestMethod.GET,
+                RequestDest.SHARED,
+                "content-service/v3/content"
+        );
+
+        final Optional<String> contentResult = contentRequest.sendAndGet(client);
+        if (contentResult.isEmpty()) {
+            throw new RuntimeException("Failed to fetch seasons!");
+        }
+
+        final JSONArray seasonsArray = new JSONObject(contentResult.get()).getJSONArray("Seasons");
+
+        String episodeName = "";
+        for (Object seasonObj : seasonsArray) {
+            final JSONObject seasonJson = (JSONObject) seasonObj;
+
+            String seasonName = seasonJson.getString("Name");
+
+            final String seasonType = seasonJson.getString("Type");
+            final String seasonId = seasonJson.getString("ID");
+
+            final boolean active = seasonJson.getBoolean("IsActive");
+
+
+            if (seasonType.equals("episode")) {
+                episodeName = seasonName;
+            }
+
+            if (!seasonName.equals(episodeName)) {
+                seasonName = episodeName + " " + seasonName;
+            }
+
+
+            final Season season = new Season(
+                    seasonId,
+                    seasonName,
+                    seasonType,
+                    active
+            );
+
+            seasons.put(seasonId, season);
+
+            if (active) {
+                currentSeason = season;
+            }
+        }
+    }
+
+
+
+    /**
+     * Constructs the {@link PlayerCompetitive} object.
+     *
+     * @param lastMatch Latest match data.
+     * @param compRequirements Competitive requirements.
+     * @param competitive Competitive JSONObject.
+     *
+     * @return Constructed PlayerCompetitive.
+     */
+    private PlayerCompetitive constructPlayerCompetitive(
+            final LastCompMatch lastMatch,
+            final CompRequirements compRequirements,
+            final JSONObject competitive
+    ) {
+
+
+        SeasonTiers seasonTiers = null;
+
+        // Trying to fetch the tiers and seasons of the player.
+        if (competitive.has("SeasonalInfoBySeasonID")) {
+            final Object seasonInfoObj = competitive.get("SeasonalInfoBySeasonID");
+
+            if (seasonInfoObj instanceof JSONObject seasonInfo) {
+
+                // Season, Tier id
+                final HashMap<SeasonStats, Integer> seasonTierIdsMap = new HashMap<>();
+
+
+                // Read and set all seasons and tiers for the player.
+                for (final String seasonId : seasonInfo.keySet()) {
+                    final JSONObject seasonJson = seasonInfo.getJSONObject(seasonId);
+                    final Season season = seasons.get(seasonId);
+
+
+                    if (seasonJson == null) {
+                        throw new RuntimeException("Failed to find season with ID: " + seasonId);
+                    }
+
+
+                    final int rr = seasonJson.getInt("RankedRating");
+                    final int playedGames = seasonJson.getInt("NumberOfGames");
+                    final int wonGames = seasonJson.getInt("NumberOfWins");
+                    final int lostGames = playedGames - wonGames;
+
+                    final float winRate = 100f * ((float) wonGames / (float) playedGames);
+
+
+                    final SeasonStats seasonStats = new SeasonStats(
+                            season,
+                            rr,
+                            playedGames,
+                            winRate,
+                            wonGames,
+                            lostGames
+                    );
+
+
+                    if (seasonJson.has("CompetitiveTier")) {
+                        final int tierId = seasonJson.getInt("CompetitiveTier");
+                        seasonTierIdsMap.put(seasonStats, tierId);
+                    }
+
+                    if (seasonJson.has("Rank")) {
+                        final int competitiveRankId = seasonJson.getInt("Rank");
+                        seasonTierIdsMap.put(seasonStats, competitiveRankId);
+                    }
+
+                }
+
+
+                // Create the SeasonTiers object.
+                seasonTiers = new SeasonTiers(seasonTierIdsMap);
+            }
+        }
+
+
+        final Tier currentTier = seasonTiers != null
+                ? seasonTiers.getTierInSeason(currentSeason)
+                : Tier.UNRANKED;
+
+
+        final int rr = seasonTiers != null
+                ? seasonTiers.getSessionStats(currentSeason).rr()
+                : 0;
+
+        return new PlayerCompetitive(
+                currentTier,
+                rr,
+                seasonTiers,
+                lastMatch,
+                compRequirements
+        );
+    }
+}
