@@ -72,6 +72,17 @@ public class DownloadProcess {
 
     /**
      * Start the download process.
+     */
+    public void start() {
+        if (started) {
+            throw new IllegalStateException("Download process is already running!");
+        }
+
+        downloadRecursively(a -> {});
+    }
+
+    /**
+     * Start the download process.
      *
      * @param consumer Consumer after each downloaded file.
      */
