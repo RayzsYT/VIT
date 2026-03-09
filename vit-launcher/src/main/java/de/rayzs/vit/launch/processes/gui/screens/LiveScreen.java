@@ -412,6 +412,8 @@ public class LiveScreen extends Screen {
         new Thread(() ->
                 SwingUtilities.invokeLater(() -> {
 
+                    gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
                     // clears up player windows in case it has been reloaded.
                     playerWindows.values().forEach(Window::dispose);
                     playerWindows.clear();
@@ -420,6 +422,8 @@ public class LiveScreen extends Screen {
                     load(api, gui);
                     gui.revalidate();
                     gui.repaint();
+
+                    gui.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 })
         ).start();
     }
