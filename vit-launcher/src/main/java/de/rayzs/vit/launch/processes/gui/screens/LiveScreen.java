@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
+import de.rayzs.vit.api.gui.elements.BeautifiedJComboBox;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
@@ -309,13 +310,16 @@ public class LiveScreen extends Screen {
             }
         }
 
-        final JComboBox<String> weaponSelector = new JComboBox<>(weaponSelectionOptions.toArray(new String[0]));
-
-        weaponSelector.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        weaponSelector.setForeground(Color.WHITE);
-        weaponSelector.setBackground(GUI.Colors.BANNER_ATTACKER.get());
-        weaponSelector.setFocusable(false);
-        weaponSelector.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        final JComboBox<String> weaponSelector = new BeautifiedJComboBox<>(
+                weaponSelectionOptions.toArray(new String[0]),
+                GUI.Colors.CONTROL_COMBOBOX_HOVER,
+                GUI.Colors.TEXT_FOREGROUND,
+                GUI.Colors.CONTROL_COMBOBOX_BACKGROUND,
+                GUI.Colors.TEXT_FOREGROUND,
+                GUI.Colors.CONTROL_COMBOBOX_ARROW,
+                GUI.Colors.CONTROL_COMBOBOX_SCROLL_FOREGROUND,
+                GUI.Colors.CONTROL_COMBOBOX_SCROLL_BACKGROUND
+        );
 
         weaponSelector.addActionListener(e -> {
             final Weapon selectedWeapon =
