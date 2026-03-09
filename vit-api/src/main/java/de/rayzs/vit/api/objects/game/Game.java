@@ -1,7 +1,7 @@
 package de.rayzs.vit.api.objects.game;
 
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.objects.session.SessionState;
+import de.rayzs.vit.api.session.SessionState;
 
 public record Game(
         Player self,            // Self player

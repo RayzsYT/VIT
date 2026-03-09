@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.objects.session;
+package de.rayzs.vit.api.session;
 
 import java.util.Locale;
 

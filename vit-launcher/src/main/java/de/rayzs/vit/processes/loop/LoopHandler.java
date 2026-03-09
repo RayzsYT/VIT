@@ -3,7 +3,7 @@ package de.rayzs.vit.processes.loop;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.session.SessionState;
+import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.processes.gui.screens.InactiveScreen;
 import de.rayzs.vit.processes.gui.screens.LiveScreen;

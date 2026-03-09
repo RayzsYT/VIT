@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.objects.session;
+package de.rayzs.vit.api.session;
 
 import de.rayzs.vit.api.objects.game.Game;
 import java.net.http.HttpClient;

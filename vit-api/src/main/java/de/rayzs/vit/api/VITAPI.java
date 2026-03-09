@@ -3,7 +3,7 @@ package de.rayzs.vit.api;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
-import de.rayzs.vit.api.objects.session.Session;
+import de.rayzs.vit.api.session.Session;
 
 public interface VITAPI {
 
