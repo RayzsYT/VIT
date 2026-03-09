@@ -1,10 +1,13 @@
 package de.rayzs.vit.api.objects.player.match.data;
 
-/**
- * Match statistics.
- *
- * @param headshotRate Headshot rate.
- */
+import de.rayzs.vit.api.objects.items.Season;
+
 public record MatchInfo(
-        float headshotRate           // How much RR lost/gained after this match.
+        Season season,
+        int headshots,
+        int bodyShots,
+        int legShots,
+        int wonRounds,
+        int lostRounds,
+        boolean won
 ) { }
