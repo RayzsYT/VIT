@@ -328,7 +328,12 @@ public class LivePlayerWindow extends GUI {
         banner.setLayout(new GridBagLayout());
 
 
-        final Color textColor = match.stats().won()
+
+        final boolean isTie = match.stats().wonRounds() == match.stats().lostRounds();
+
+        final Color textColor = isTie
+                ? Colors.PLAYER_MATCH_TIE.get()
+                : match.stats().won()
                 ? Colors.PLAYER_MATCH_WON.get()
                 : Colors.PLAYER_MATCH_LOST.get();
 
@@ -338,7 +343,9 @@ public class LivePlayerWindow extends GUI {
                         textColor.getGreen(),
                         textColor.getBlue(),
                         match.stats().wonRounds(),
-                        match.stats().won() ? "WON" : "LOST",
+                        isTie
+                                ? "TIE" : match.stats().won()
+                                ? "WON" : "LOST",
                         match.stats().lostRounds(),
 
                         match.compMatchResult().rr(),
