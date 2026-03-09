@@ -45,9 +45,13 @@ public class LobbyScreen extends Screen {
 
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
-        playerWindows.clear(); // clears up player windows in case it has been reloaded.
-        gui.reset();
 
+        // clears up player windows.
+        playerWindows.values().forEach(Window::dispose);
+        playerWindows.clear();
+
+
+        gui.reset();
 
         final Game game = api.getGame();
 
