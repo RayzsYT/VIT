@@ -94,7 +94,6 @@ public class UpdateChecker {
 
             process.start(a -> {});
 
-            System.out.println("Downloading from: " + downloadUrl);
             uninteractableGUI.dispose();
 
             final PopupGUI popupGUI = PopupGUI.create("Completed!",
