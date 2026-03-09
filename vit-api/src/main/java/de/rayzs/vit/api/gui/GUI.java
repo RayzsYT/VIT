@@ -52,6 +52,7 @@ public class GUI extends JFrame {
         LOBBY_ROLE_DEFENDING                (161, 196, 255),
 
         CONTROL_SCROLLBAR                   (206, 62, 62),
+        CONTROL_SCROLLBAR_HOVER             (218, 108, 108),
 
         CONTROL_BUTTON_BACKGROUND           (206, 62, 62),
         CONTROL_BUTTON_BACKGROUND_HOVER     (129, 27, 27),

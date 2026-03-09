@@ -47,7 +47,6 @@ public class LiveScreen extends Screen {
         gui.setTitle(title.formatted(api.getVersion(), game.server()));
 
         final JPanel contentPane = gui.getContentPane();
-
         final JPanel topLayerPanel = createTopLayer(api, gui, game.mapId());
 
         final JPanel playersPanel = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -310,8 +309,7 @@ public class LiveScreen extends Screen {
             }
         }
 
-        final JComboBox<String> weaponSelector =
-                new JComboBox<>(weaponSelectionOptions.toArray(new String[0]));
+        final JComboBox<String> weaponSelector = new JComboBox<>(weaponSelectionOptions.toArray(new String[0]));
 
         weaponSelector.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         weaponSelector.setForeground(Color.WHITE);
