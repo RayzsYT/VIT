@@ -134,7 +134,7 @@ public class TestDummy {
 
     private static String generateRandomPlayerName() {
         return "Player-"
-                + UUID.randomUUID().toString().substring(0, random.nextInt(12))
+                + UUID.randomUUID().toString().substring(0, random.nextInt(6))
                 + "#"
                 + random.nextInt(10000);
     }
