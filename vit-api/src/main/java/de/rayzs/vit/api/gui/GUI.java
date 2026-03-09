@@ -39,7 +39,9 @@ public class GUI extends JFrame {
 
         STATS_TEXT_FOREGROUND               (204, 204, 204),
 
-        SCROLLBAR                           (new Color(67, 67, 99)),
+        SCROLLBAR                           (67, 67, 99),
+
+        WEAPON_SELECTION_SCROLLBAR          (206, 62, 62),
 
         PROGRESS_BAR_SELECTED_TEXT          (74, 8, 12),
         PROGRESS_BAR_FOREGROUND             (236, 97, 108),
