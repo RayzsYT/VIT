@@ -16,11 +16,15 @@ public class PlayerWindow extends GUI {
 
 
     private final String matchDisplay = String.join("", new String[] {
-            "<html><div style='",
+            "<html><center><div style='",
             "color: rgba(%d, %d, %d, 1); ",
             "font-size: 24px;'><b>",
             "%d  -  %s  -  %d",
-            "</b></div></html>"
+            "</b></div><br><div style='",
+            "color: rgba(255, 255, 255, 1); ",
+            "font-size: 15px;'>",
+            "RR: %d | HS: %.2f%%",
+            "</div></center></html>"
     });
 
 
@@ -104,8 +108,8 @@ public class PlayerWindow extends GUI {
 
         skinsButton.setEnabled(swapView); // Disabled by default since it's selected by default
 
-        center.add(skinsButton);
-        center.add(historyButton);
+        center.add(skinsButton, BorderLayout.EAST);
+        center.add(historyButton, BorderLayout.EAST);
 
         bannerInner.add(left, BorderLayout.WEST);
         bannerInner.add(center, BorderLayout.CENTER);
@@ -165,16 +169,63 @@ public class PlayerWindow extends GUI {
         });
 
 
-        final JPanel historyPanel = new JPanel(new GridLayout(0, 1, 10, 10));
-        historyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        historyPanel.setBackground(Colors.BACKGROUND.get());
+        final JPanel historyPanel;
 
-        for (final Match match : player.playedMatches()) {
-            historyPanel.add(createMatchBanner(match));
+        if (player.playedMatches().length == 0) {
+            historyPanel = new JPanel(new GridBagLayout());
+            historyPanel.setBackground(Colors.BACKGROUND.get());
+
+            final JLabel emptyLabel = new JLabel("No matches found!");
+            emptyLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+            emptyLabel.setForeground(Colors.TEXT_FOREGROUND.get());
+
+            historyPanel.add(emptyLabel);
+        } else {
+            historyPanel = new JPanel(new GridLayout(0, 1, 10, 10));
+            historyPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            historyPanel.setBackground(Colors.BACKGROUND.get());
+
+            for (final Match match : player.playedMatches()) {
+                historyPanel.add(createMatchBanner(match));
+            }
         }
 
+        final JScrollPane historyScroll = new JScrollPane(historyPanel);
+        historyScroll.getVerticalScrollBar().setUnitIncrement(4);
+        historyScroll.getViewport().setBackground(Colors.BACKGROUND.get());
+        historyScroll.setBorder(null);
+
+        historyScroll.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+
+        historyScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Colors.SCROLLBAR.get();
+                this.trackColor = Colors.BACKGROUND.get();
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            private JButton createZeroButton() {
+                final JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                return button;
+            }
+        });
+
         body.add(skinsScroll, "skins");
-        body.add(historyPanel, "history");
+        body.add(historyScroll, "history");
 
         skinsButton.addActionListener(e -> {
             swapView = false;
@@ -284,11 +335,12 @@ public class PlayerWindow extends GUI {
                         textColor.getBlue(),
                         match.stats().wonRounds(),
                         match.stats().won() ? "WON" : "LOST",
-                        match.stats().lostRounds()
+                        match.stats().lostRounds(),
+
+                        match.compMatchResult().rr(),
+                        match.stats().headshotRate()
                 )
         );
-        text.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
-        text.setForeground(Color.WHITE);
 
         banner.add(text);
 
