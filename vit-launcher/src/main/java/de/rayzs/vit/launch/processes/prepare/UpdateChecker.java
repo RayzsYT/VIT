@@ -89,7 +89,7 @@ public class UpdateChecker {
                     "Installing latest VIT version... Please wait."
             );
 
-            final DownloadElement element = new DownloadElement(url, "latest-updated.jar");
+            final DownloadElement element = new DownloadElement(downloadUrl, "latest-updated.jar");
             final DownloadProcess process = new DownloadProcess(FileDir.ROOT, element);
 
             process.start(a -> {});
