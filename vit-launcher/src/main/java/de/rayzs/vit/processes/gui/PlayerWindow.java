@@ -258,7 +258,7 @@ public class PlayerWindow extends GUI {
                                     .getImage(match.mapId()).getImage(),
                             1000,
                             200
-                    ), 0.6f
+                    ), 0.5f
             );
 
 
