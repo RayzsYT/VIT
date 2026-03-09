@@ -25,7 +25,7 @@ import java.util.Map;
 public class LiveScreen extends Screen {
 
     private final String title = "v%s [%s]";
-    private final String playerStats = "WR: %s%% | HS: %s%%";
+    private final String playerStats = "WR: %.2f%% | HS: %.2f%%";
 
     private final String playerNameDisplay = String.join("", new String[]{
             "<html><div style='color: rgba(%d, %d, %d, 1)",
@@ -143,7 +143,9 @@ public class LiveScreen extends Screen {
 
         center.add(Box.createVerticalStrut(6));
 
-        final JLabel statsLabel = new JLabel(playerStats.formatted("/", "/"));
+        final JLabel statsLabel = new JLabel(playerStats.formatted(
+                player.stats().winRate(), player.stats().headShotRate()
+        ));
         statsLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
         statsLabel.setForeground(GUI.Colors.STATS_TEXT_FOREGROUND.get());
         center.add(statsLabel);
