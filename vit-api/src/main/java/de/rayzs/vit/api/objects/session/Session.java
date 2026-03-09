@@ -695,8 +695,7 @@ public class Session {
             final JSONObject playedMatchDetails
     ) {
 
-        int headshots = 0;
-        int landedShots = 0;
+        int headShots = 0, bodyShots = 0, legShots = 0;
 
         final JSONObject matchInfo = playedMatchDetails.getJSONObject("matchInfo");
 
@@ -713,6 +712,34 @@ public class Session {
 
         final String seasonId = matchInfo.getString("seasonId");
         final Season season = seasons.get(seasonId);
+
+
+        final JSONArray teams = matchInfo.getJSONArray("teams");
+
+        final JSONObject team1 = teams.getJSONObject(0);
+        final JSONObject team2 = teams.getJSONObject(1);
+
+        final String team1Id = team1.getString("teamId");
+
+        final boolean team1Won = team1.getBoolean("won");
+        final boolean team2Won = team2.getBoolean("won");
+
+        final int team1Wins = team1.getInt("roundsWon");
+        final int team2Wins = team2.getInt("roundsWon");
+
+
+        // Prevent team of the player whose match it is.
+        String playerTeam = "";
+        for (final Object playerObj : matchInfo.getJSONArray("players")) {
+            final JSONObject player = (JSONObject) playerObj;
+            final String teamId = player.getString("teamId");
+
+            if (player.getString("subject").equalsIgnoreCase(playerId)) {
+                playerTeam = teamId;
+                break;
+            }
+        }
+
 
         final JSONArray roundResults = matchInfo.getJSONArray("roundResults");
 
@@ -737,21 +764,31 @@ public class Session {
                     final JSONObject damageDetail = (JSONObject) damageDetailObj;
 
 
-                    headshots += damageDetail.getInt("headshots");
-
-                    landedShots += damageDetail.getInt("headshots")
-                            + damageDetail.getInt("bodyshots")
-                            + damageDetail.getInt("legshots");
+                    headShots += damageDetail.getInt("headshots");
+                    bodyShots += damageDetail.getInt("bodyshots");
+                    legShots += damageDetail.getInt("legshots");
 
                 }
             }
         }
 
 
+
+        final boolean isTeam1 = playerTeam.equalsIgnoreCase(team1Id);
+
+        final int wonRounds = isTeam1 ? team1Wins : team2Wins;
+        final int lostRounds = isTeam1 ? team2Wins : team1Wins;
+
+        final boolean won = isTeam1 ? team1Won : team2Won;
+
+
         return new Match(
                 matchId,
                 mapId,
-                new MatchInfo((float) (headshots / landedShots)),
+                new MatchInfo(
+                        season, headShots, bodyShots, legShots,
+                        wonRounds, lostRounds, won
+                ),
                 null
         );
     }
