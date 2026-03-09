@@ -22,9 +22,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class AssetPreparer {
@@ -203,11 +205,24 @@ public class AssetPreparer {
             if (!installedBefore) {
 
 
-                // Creating file which tells VIT that it has been installed before.
                 try {
+                    // Creating file which tells VIT that it has been installed before.
                     installedFile.createNewFile();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+
+
+                    // Create copy of executed jar file into VIT root folder.
+                    final File jarFile = new File(this.getClass()
+                            .getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()
+                    );
+
+                    final File target = FileDir.ROOT.getFile("latest.jar");
+                    Files.copy(jarFile.toPath(), target.toPath());
+
+                } catch (Exception exception) {
+                    throw new RuntimeException(exception);
                 }
 
 
