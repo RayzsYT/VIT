@@ -22,7 +22,7 @@ public class FileUtils {
     ) {
 
         final URL url = FileUtils.class.getClassLoader().getResource(
-                inFilePath.replace("/", "\\")
+                inFilePath
         );
 
         if (url == null) {
