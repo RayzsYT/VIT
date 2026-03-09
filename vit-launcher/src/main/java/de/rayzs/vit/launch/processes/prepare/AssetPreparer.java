@@ -15,6 +15,7 @@ import de.rayzs.vit.api.image.SystemImages;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
+import de.rayzs.vit.api.utils.FileUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -193,6 +194,10 @@ public class AssetPreparer {
 
 
             System.out.println("Finished installation!");
+
+
+            // Extract the start script.
+            FileUtils.exportResourceFile("scripts/start.bat", FileDir.SCRIPTS);
 
 
             if (!installedBefore) {

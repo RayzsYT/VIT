@@ -47,7 +47,7 @@ public class LiveScreen extends Screen {
 
         final Game game = api.getGame();
 
-        gui.setTitle(title.formatted(api.getVersion(), game.server()));
+        gui.setTitle(title.formatted(VITAPI.getVersion(), game.server()));
 
         final JPanel contentPane = gui.getContentPane();
         final JPanel topLayerPanel = createTopLayer(api, gui, game.mapId());

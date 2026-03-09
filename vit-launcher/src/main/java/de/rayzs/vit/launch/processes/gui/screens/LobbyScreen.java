@@ -58,7 +58,7 @@ public class LobbyScreen extends Screen {
         final Game game = api.getGame();
 
         gui.setTitle(title.formatted(
-                api.getVersion(),
+                VITAPI.getVersion(),
                 game.server()
         ));
 

@@ -34,7 +34,7 @@ public class MainGUI extends GUI {
         this.disclaimerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         this.disclaimerPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
-        final JLabel disclaimerLabel = new JLabel(DISCLAIMER.formatted(VIT.get().getVersion()));
+        final JLabel disclaimerLabel = new JLabel(DISCLAIMER.formatted(VITAPI.getVersion()));
         disclaimerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         disclaimerPanel.add(disclaimerLabel);
 

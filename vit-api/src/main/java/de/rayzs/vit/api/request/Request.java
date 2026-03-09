@@ -239,7 +239,7 @@ public class Request {
                 .uri(URI.create(dest.from(urlPath)));
 
 
-        if (dest != RequestDest.API) {
+        if (dest != RequestDest.API && dest != RequestDest.UPDATE) {
 
             if (dest == RequestDest.LOCAL) {
 
