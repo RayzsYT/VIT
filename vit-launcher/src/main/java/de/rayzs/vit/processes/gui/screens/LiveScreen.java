@@ -146,6 +146,7 @@ public class LiveScreen extends Screen {
         final JLabel statsLabel = new JLabel(playerStats.formatted(
                 player.stats().winRate(), player.stats().headShotRate()
         ));
+
         statsLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
         statsLabel.setForeground(GUI.Colors.STATS_TEXT_FOREGROUND.get());
         center.add(statsLabel);
