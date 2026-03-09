@@ -60,11 +60,25 @@ public class SessionImpl implements Session {
      * to send requests. Should not be called
      * during runtime once it already has been called,
      * unless VALORANT has been restarted.
+     *
+     * It unsets all request important information
+     * and updates them, which is a pretty heavy process.
+     * So please only call it if necessary, in case
+     * VALORANT isn't booted and needs to be detected.
      */
     @Override
     public void initialize() {
         this.client = Request.createClient();
 
+        if (Request.isAuthTokenSet()) {
+            Request.unsetAuthToken();
+        }
+
+        if (Request.areHeadersSet()) {
+            Request.unsetHeaders();
+        }
+
+        fetchAuthToken();
         fetchRequestHeaders(this.client);
     }
 
