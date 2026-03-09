@@ -41,8 +41,6 @@ public class GUI extends JFrame {
 
         SCROLLBAR                           (67, 67, 99),
 
-        WEAPON_SELECTION_SCROLLBAR          (206, 62, 62),
-
         PROGRESS_BAR_SELECTED_TEXT          (74, 8, 12),
         PROGRESS_BAR_FOREGROUND             (236, 97, 108),
         PROGRESS_BAR_BACKGROUND             (BACKGROUND),
@@ -52,6 +50,8 @@ public class GUI extends JFrame {
 
         LOBBY_ROLE_ATTACKING                (248, 155, 155),
         LOBBY_ROLE_DEFENDING                (161, 196, 255),
+
+        CONTROL_SCROLLBAR                   (206, 62, 62),
 
         CONTROL_BUTTON_BACKGROUND           (206, 62, 62),
         CONTROL_BUTTON_BACKGROUND_HOVER     (129, 27, 27),
