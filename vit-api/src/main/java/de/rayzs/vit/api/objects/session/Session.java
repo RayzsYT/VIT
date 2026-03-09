@@ -598,6 +598,12 @@ public class Session {
                                     playedMatchDetails
                             );
 
+                            if (historyMatch == null) {
+                                System.out.println("Worked? " + (playedMatchDetails != null) + " | " + playedMatchDetails.has("teams"));
+                                System.out.println("Ignored one match of " + playerName + " because it contained no teams. Probably Deathmatch.");
+                                continue;
+                            }
+
                             playedMatchesList.add(historyMatch);
                         }
                     }
@@ -667,6 +673,8 @@ public class Session {
                     new PlayerStats(winRate, headshotRate),
                     playedMatchesList.toArray(new Match[0])
             ));
+
+            playerLoadConsumer.accept(registeredPlayers.size());
         }
 
 
@@ -700,19 +708,19 @@ public class Session {
      *
      * @param playerId ID of the player playing in that match whose information is relevant.
      * @param matchId Match id.
-     * @param playedMatchDetails JSONObject containing match details.
+     * @param matchDetails JSONObject containing match details.
      *
      * @return Constructed {@link Match} object.
      */
     private Match constructMatch(
             final String playerId,
             final String matchId,
-            final JSONObject playedMatchDetails
+            final JSONObject matchDetails
     ) {
 
         int headShots = 0, bodyShots = 0, legShots = 0;
 
-        final JSONObject matchInfo = playedMatchDetails.getJSONObject("matchInfo");
+        final JSONObject matchInfo = matchDetails.getJSONObject("matchInfo");
 
         final boolean ranked = matchInfo.getBoolean("isRanked");
 
@@ -729,7 +737,7 @@ public class Session {
         final Season season = seasons.get(seasonId);
 
 
-        final JSONArray teams = matchInfo.getJSONArray("teams");
+        final JSONArray teams = matchDetails.getJSONArray("teams");
 
         final JSONObject team1 = teams.getJSONObject(0);
         final JSONObject team2 = teams.getJSONObject(1);
@@ -745,7 +753,7 @@ public class Session {
 
         // Prevent team of the player whose match it is.
         String playerTeam = "";
-        for (final Object playerObj : matchInfo.getJSONArray("players")) {
+        for (final Object playerObj : matchDetails.getJSONArray("players")) {
             final JSONObject player = (JSONObject) playerObj;
             final String teamId = player.getString("teamId");
 
@@ -756,7 +764,7 @@ public class Session {
         }
 
 
-        final JSONArray roundResults = matchInfo.getJSONArray("roundResults");
+        final JSONArray roundResults = matchDetails.getJSONArray("roundResults");
 
         for (final Object roundObj : roundResults) {
             final JSONObject round = (JSONObject) roundObj;
