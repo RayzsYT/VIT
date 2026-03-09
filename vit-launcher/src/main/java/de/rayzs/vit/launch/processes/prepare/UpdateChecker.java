@@ -1,6 +1,9 @@
 package de.rayzs.vit.launch.processes.prepare;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.download.DownloadElement;
+import de.rayzs.vit.api.download.DownloadProcess;
+import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.OptionGUI;
 import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.UninteractableGUI;
@@ -85,6 +88,11 @@ public class UpdateChecker {
                     "Downloading...",
                     "Installing latest VIT version... Please wait."
             );
+
+            final DownloadElement element = new DownloadElement(url, "latest-updated.jar");
+            final DownloadProcess process = new DownloadProcess(FileDir.ROOT, element);
+
+            process.start(a -> {});
 
             System.out.println("Downloading from: " + downloadUrl);
             uninteractableGUI.dispose();
