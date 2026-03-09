@@ -4,10 +4,7 @@ import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
-import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.objects.player.PlayerCompetitive;
-import de.rayzs.vit.api.objects.player.PlayerInventory;
-import de.rayzs.vit.api.objects.player.PlayerSettings;
+import de.rayzs.vit.api.objects.player.*;
 import de.rayzs.vit.api.objects.player.competitive.*;
 import de.rayzs.vit.api.objects.player.match.LastCompMatch;
 import de.rayzs.vit.api.objects.player.match.Match;
@@ -332,7 +329,6 @@ public class Session {
 
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
-        final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
         PlayerCompetitive playerCompetitive = null;
         String matchId = null;
@@ -456,6 +452,7 @@ public class Session {
         // to ask for.
         final JSONArray playersArray = new JSONArray();
         for (Object playerObj : players) {
+
             final JSONObject player = (JSONObject) playerObj;
             final String playerId = player.getString("Subject");
 
@@ -568,6 +565,7 @@ public class Session {
             // Fetch match history by starting with played match ids
 
             final Optional<String> matchHistoryResult = matchHistoryRequest.sendAndGet(client);
+            final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
             if (matchHistoryResult.isPresent()) {
                 final JSONObject matchHistory = new JSONObject(matchHistoryResult.get());
@@ -637,6 +635,22 @@ public class Session {
                     : null;
 
 
+            int headshotHits = 0, shotHits = 0, wins = 0, games = 0;
+            for (final Match playedMatch : playedMatchesList) {
+                final MatchInfo info = playedMatch.stats();
+
+                headshotHits += info.headshots();
+                shotHits += info.headshots() + info.bodyShots() + info.legShots();
+
+                games++;
+
+                if (info.won()) wins++;
+            }
+
+            final float headshotRate = (float) (headshotHits / shotHits);
+            final float winRate = (float) (wins / games);
+
+
             registeredPlayers.add(new Player(
                     playerId,
                     team,
@@ -650,6 +664,7 @@ public class Session {
                     settings,
                     inventory,
                     playerCompetitive,
+                    new PlayerStats(winRate, headshotRate),
                     playedMatchesList.toArray(new Match[0])
             ));
         }

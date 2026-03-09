@@ -10,6 +10,7 @@ import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.objects.player.PlayerInventory;
 import de.rayzs.vit.api.objects.player.PlayerSettings;
+import de.rayzs.vit.api.objects.player.PlayerStats;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
@@ -70,6 +71,23 @@ public class TestDummy {
             matches.add(createRandomMatch());
         }
 
+        int headshotHits = 0, shotHits = 0, wins = 0, games = 0;
+        for (final Match playedMatch : matches) {
+            final MatchInfo info = playedMatch.stats();
+
+            headshotHits += info.headshots();
+            shotHits += info.headshots() + info.bodyShots() + info.legShots();
+
+            games++;
+
+            if (info.won()) wins++;
+        }
+
+        final float headshotRate = (float) (headshotHits / shotHits);
+        final float winRate = (float) (wins / games);
+
+        final PlayerStats playerStats = new PlayerStats(winRate, headshotRate);
+
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
                 team,
@@ -81,6 +99,7 @@ public class TestDummy {
                 settings,
                 inventory,
                 null,
+                playerStats,
                 matches.toArray(new Match[0])
         );
     }

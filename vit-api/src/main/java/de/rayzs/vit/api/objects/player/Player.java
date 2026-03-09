@@ -15,5 +15,6 @@ public record Player(
         PlayerSettings settings,            // Player settings,
         PlayerInventory inventory,          // Skin inventory
         PlayerCompetitive competitive,      // Stored competitive information
-        Match[] playedMatches          // Played matches
+        PlayerStats stats,                  // Player stats
+        Match[] playedMatches               // Played matches
 ) { }
