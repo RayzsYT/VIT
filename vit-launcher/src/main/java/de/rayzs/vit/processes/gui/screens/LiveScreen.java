@@ -252,15 +252,16 @@ public class LiveScreen extends Screen {
      */
     private JPanel createTopLayer(final VITAPI api, final MainGUI gui, final String mapImageId) {
 
-        // Top map image. Will be behind the control boxes
-        // like reload and weapon selection.
-        final Image mapImage = ImageUtils.cropImage(
-                api.getImageProvider().getMaps().getImage(mapImageId).getImage(),
-                1000,
-                200
-        );
-
         final JPanel banner = new JPanel() {
+
+            // Top map image. Will be behind the control boxes
+            // like reload and weapon selection.
+            private final Image mapImage = ImageUtils.cropImage(
+                    api.getImageProvider().getMaps().getImage(mapImageId).getImage(),
+                    1000,
+                    200
+            );
+
             @Override
             public void paintComponent(final Graphics graphics) {
                 super.paintComponent(graphics);
