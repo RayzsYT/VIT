@@ -255,7 +255,7 @@ public class LiveScreen extends Screen {
      *
      * @param api VITAPI.
      * @param gui GUI. Required for reloading.
-     * @param mapImageId Id of the map being played on.
+     * @param mapImageId ID of the map being played on.
      *
      * @return Created top layer.
      */
