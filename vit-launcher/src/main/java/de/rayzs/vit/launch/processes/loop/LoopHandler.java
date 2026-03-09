@@ -49,6 +49,12 @@ public class LoopHandler {
         final SessionState sessionState = api.getSession().getSessionState();
 
 
+        if (!sessionState.isValorantStarted()) {
+            Request.unsetAuthToken();
+            Request.unsetHeaders();
+        }
+
+
         if (priorState == sessionState) {
             return;
         }
