@@ -13,7 +13,7 @@ import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
-import de.rayzs.vit.launch.processes.gui.PlayerWindow;
+import de.rayzs.vit.launch.processes.gui.LivePlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class LiveScreen extends Screen {
 
 
     // Map of all players and their player windows.
-    private final Map<Player, PlayerWindow> playerWindows = new HashMap<>();
+    private final Map<Player, LivePlayerWindow> playerWindows = new HashMap<>();
 
 
     @Override
@@ -79,7 +79,7 @@ public class LiveScreen extends Screen {
     private JPanel createPlayerBanner(final VITAPI api, final Game game, final Player player) {
 
         // Create player window and map it with the player.
-        playerWindows.put(player, new PlayerWindow(player));
+        playerWindows.put(player, new LivePlayerWindow(player));
 
 
         final JPanel banner = new JPanel(new BorderLayout()) {

@@ -9,7 +9,7 @@ import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
-import de.rayzs.vit.launch.processes.gui.PlayerWindow;
+import de.rayzs.vit.launch.processes.gui.LobbyPlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +42,7 @@ public class LobbyScreen extends Screen {
 
 
     // Map of all players and their player windows.
-    private final Map<Player, PlayerWindow> playerWindows = new HashMap<>();
+    private final Map<Player, LobbyPlayerWindow> playerWindows = new HashMap<>();
 
 
     @Override
@@ -105,7 +105,7 @@ public class LobbyScreen extends Screen {
     ) {
 
         // Create player window and map it with the player.
-        playerWindows.put(player, new PlayerWindow(player));
+        playerWindows.put(player, new LobbyPlayerWindow(player));
 
         final JPanel banner = new JPanel(new BorderLayout()) {
             @Override
