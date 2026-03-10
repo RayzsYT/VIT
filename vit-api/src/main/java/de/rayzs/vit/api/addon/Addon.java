@@ -4,9 +4,9 @@ import de.rayzs.vit.api.VITAPI;
 
 public class Addon {
 
-    private final VITAPI api;
-    private final AddonDescription description;
+    protected final VITAPI api;
 
+    private final AddonDescription description;
     private boolean enabled = true;
 
     public Addon(
