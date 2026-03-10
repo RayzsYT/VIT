@@ -38,3 +38,18 @@ Simply use the **x64 Installer** version and install it.
 ![Player Window: Skins](images/player-window-skins.png)
 
 ![Player Window: Matches](images/player-window-matches.png)
+
+<br>
+
+**(!) About these images:**
+> These images were created with fake matches and player data.
+> <br><br>
+> If you wish to check for yourself how it would feel to
+> use VIT, then feel free to use those command lines as well, to test
+> VIT first, instead of trying it inside a live match directly.
+> <br> <br>
+> Fake **Live Match** with **10 players**:<br>
+> ``java -jar VIT.jar --test=live --num=10``
+> <br><br>
+> Fake **Lobby** with **5 players**:<br>
+> ``java -jar VIT.jar --test=lobby --num=5``
