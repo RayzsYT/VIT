@@ -3,7 +3,7 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.VITAPIImpl;
+import de.rayzs.vit.launch.ImplVITAPI;
 import de.rayzs.vit.launch.processes.loop.LoopHandler;
 import de.rayzs.vit.launch.processes.prepare.AssetPreparer;
 import de.rayzs.vit.launch.processes.gui.screens.LiveScreen;
@@ -34,7 +34,7 @@ public class Bootstrap {
     }
 
     private static void start(final String[] args) {
-        final VITAPIImpl api = new VITAPIImpl();
+        final ImplVITAPI api = new ImplVITAPI();
         VIT.set(api);
 
 
