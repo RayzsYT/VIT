@@ -4,7 +4,7 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 
 <br><br>
 
-# Features
+# What it can do
 
 - Change the weapon skin you wish to see from all players live during the match.
 - View player related information by left-clicking on the player.
@@ -16,6 +16,7 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 - View headshot, & win-rate of all players.
 - View the current and peak rank of all players.
   - Hovering over the peak rank shows you in which season that player achieved that rank.
+- Interactable API with [**addon system**](https://github.com/RayzsYT/VIT?tab=readme-ov-file#addons--developer-api)
 <br><br>
 
 # Requirements
