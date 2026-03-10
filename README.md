@@ -38,7 +38,7 @@ your very own addons for VIT directly to use them as you wish.
 
 <br>
 
-On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki)!
+On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
 
 <br><br>
 
