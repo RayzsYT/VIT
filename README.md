@@ -49,7 +49,7 @@ Simply use the **x64 Installer** version and install it.
 > VIT first, instead of trying it inside a live match directly.
 > <br> <br>
 > Fake **Live Match** with **10 players**:<br>
-> ``java -jar VIT.jar --test=live --num=10``
+> ``java -jar VIT.jar --test=live --num=12``
 > <br><br>
 > Fake **Lobby** with **5 players**:<br>
 > ``java -jar VIT.jar --test=lobby --num=5``
