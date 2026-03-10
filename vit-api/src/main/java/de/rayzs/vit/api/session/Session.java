@@ -11,8 +11,8 @@ public interface Session {
     int MATCH_HISTORY_NUM = 5;
 
     // Cooldowns
-    int PER_PLAYER_COOLDOWN = 500;
-    int PER_MATCH_COOLDOWN = 250;
+    int PER_PLAYER_COOLDOWN = 250;
+    int PER_MATCH_COOLDOWN = 50;
 
 
     /**
