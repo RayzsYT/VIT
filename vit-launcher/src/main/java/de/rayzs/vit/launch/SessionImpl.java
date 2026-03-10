@@ -614,7 +614,17 @@ public class SessionImpl implements Session {
 
                         final Optional<String> matchDataResult = matchDataRequest.sendAndGet(client);
 
-                        if (matchDataResult.isPresent() && matchDataResult.get().charAt(0) == '{') {
+
+                        // Simply cancel the process to fetch the  match history of that player.
+                        // Most of the time, when the first match-id failed, then the others fail as well.
+                        // So better not asking for the others.
+                        if (matchDataResult.isEmpty()) {
+                            System.err.println("Failed to fetch match details for " + playerName + "! Ignoring match history of that player entirely to prevent spamming the VALORANT API any further.");
+                            break;
+                        }
+
+
+                        if (matchDataResult.get().charAt(0) == '{') {
                             // Construct match stats to add in the list of match history.
 
                             final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
