@@ -1,5 +1,40 @@
 # VIT
-**VIT** Is going to be Valorant Tracker showing live stats and skin items of your own and enemy team.
+**VIT** is a VALORANT tracker showing the **weapon skins**, **stats**, **rr**, and **latest matches** of players inside your lobby.
+It's entirely written in Java and **completely automated**. Well, except some actions of course.
+
+<br><br>
+
+# Features
+
+- Change the weapon skin you wish to see from all players live during the match.
+- View player related information by left-clicking on the player.
+  - Shows player skins.
+  - Shows latest played competitive matches and their outcomes.
+- Copy player names instantly. Simply double right-click on the player.
+- Open player stats on tracker.gg instantly. Simply middle mouse click on the player.
+- View how much RR someone has and lost after their last competitive match.
+- View headshot, & win-rate of all players.
+- View the current and peak rank of all players.
+  - Hovering over the peak rank shows you in which season that player achieved that rank.
+<br><br>
+
+# Requirements
+Requires at least [**Java 17 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).
 <br>
-<br>
-**IN WORK**
+Simply use the **x64 Installer** version and install it.
+
+<br><br>
+
+# Images
+
+### Live GUI
+![LIVE GUI](images/live-gui.png)
+
+### Lobby GUI
+![LOBBY GUI](images/lobby-gui.png)
+
+### Player Window
+
+![Player Window: Skins](images/player-window-skins.png)
+
+![Player Window: Matches](images/player-window-matches.png)
