@@ -32,9 +32,6 @@ import java.util.function.Consumer;
 public class SessionImpl implements Session {
 
 
-    private static final int MATCH_HISTORY_NUM = 5;
-
-
     private final File lockfile;
 
     // SeasonId, Season
@@ -60,7 +57,7 @@ public class SessionImpl implements Session {
      * to send requests. Should not be called
      * during runtime once it already has been called,
      * unless VALORANT has been restarted.
-     *
+     * <p>
      * It unsets all request important information
      * and updates them, which is a pretty heavy process.
      * So please only call it if necessary, in case
@@ -595,6 +592,10 @@ public class SessionImpl implements Session {
                     final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
 
                     for (final Object playedMatchObj : playedMatches) {
+                        wait(PER_MATCH_COOLDOWN);
+
+
+
                         final JSONObject playedMatch = (JSONObject) playedMatchObj;
 
                         final String playedMatchId = playedMatch.getString("MatchID");
@@ -623,12 +624,6 @@ public class SessionImpl implements Session {
                                     playedMatchId,
                                     playedMatchDetails
                             );
-
-                            if (historyMatch == null) {
-                                System.out.println("Worked? " + (playedMatchDetails != null) + " | " + playedMatchDetails.has("teams"));
-                                System.out.println("Ignored one match of " + playerName + " because it contained no teams. Probably Deathmatch.");
-                                continue;
-                            }
 
                             playedMatchesList.add(historyMatch);
                         }
@@ -701,6 +696,9 @@ public class SessionImpl implements Session {
             ));
 
             playerLoadConsumer.accept(registeredPlayers.size());
+
+
+            wait(PER_PLAYER_COOLDOWN);
         }
 
 
@@ -1048,5 +1046,23 @@ public class SessionImpl implements Session {
                 lastMatch,
                 compRequirements
         );
+    }
+
+
+    /**
+     * In order to avoid spamming the VALORANT servers,
+     * it would be best to stop the program for a short
+     * time.
+     *
+     * @param milliseconds Waiting time in milliseconds. (1000ms -> 1s)
+     */
+    private void wait(final int milliseconds) {
+
+        if (milliseconds <= 0) {
+            return;
+        }
+
+        try { Thread.sleep(milliseconds);
+        } catch (InterruptedException ignored) {}
     }
 }
