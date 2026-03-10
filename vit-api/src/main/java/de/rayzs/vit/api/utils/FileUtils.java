@@ -60,4 +60,30 @@ public class FileUtils {
             throw new NullPointerException("Failed to export resource file: " + inFilePath);
         }
     }
+
+    /**
+     * Reads a resource file and returns it's input.
+     *
+     * @param inFilePath Resource file path.
+     */
+    public static String readResourceInput(final String inFilePath) {
+
+        final URL url = FileUtils.class.getClassLoader().getResource(inFilePath);
+
+        if (url == null) {
+            throw new IllegalArgumentException("Resource not found: " + inFilePath);
+        }
+
+        try {
+            final URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+
+            try (InputStream inputStream = connection.getInputStream()) {
+                return new String(inputStream.readAllBytes());
+            }
+
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to read resource file: " + inFilePath, exception);
+        }
+    }
 }
