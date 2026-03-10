@@ -7,7 +7,7 @@ import de.rayzs.vit.api.image.ImageProvider;
 
 import java.util.*;
 
-public class ImageProviderImpl implements ImageProvider {
+public class ImplImageProvider implements ImageProvider {
 
     private final Map<FileDir, Map<String, DisplayImage>> images = new HashMap<>();
 

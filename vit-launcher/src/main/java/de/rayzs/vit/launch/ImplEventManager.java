@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class EventManagerImpl implements EventManager {
+public class ImplEventManager implements EventManager {
 
     private final Map<Addon, Set<Event>> events = new HashMap<>();
 

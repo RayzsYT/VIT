@@ -7,19 +7,19 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
 
-public class VITAPIImpl implements VITAPI {
+public class ImplVITAPI implements VITAPI {
 
-    private final EventManagerImpl eventManager;
+    private final ImplEventManager eventManager;
     private final ImageProvider imageProvider;
     private final Session session;
 
     private Game game;
     private Weapon selectedWeapon = Weapon.VANDAL;
 
-    public VITAPIImpl() {
-        this.session = new SessionImpl();
-        this.imageProvider = new ImageProviderImpl();
-        this.eventManager = new EventManagerImpl();
+    public ImplVITAPI() {
+        this.session = new ImplSession();
+        this.imageProvider = new ImplImageProvider();
+        this.eventManager = new ImplEventManager();
     }
 
     @Override

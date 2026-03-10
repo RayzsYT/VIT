@@ -29,7 +29,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class SessionImpl implements Session {
+public class ImplSession implements Session {
 
 
     private final File lockfile;
@@ -43,7 +43,7 @@ public class SessionImpl implements Session {
     private HttpClient client;
     private String selfPlayerId;
 
-    public SessionImpl() {
+    public ImplSession() {
         this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
         this.client = Request.createClient();
 
