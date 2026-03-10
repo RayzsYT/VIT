@@ -19,9 +19,26 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 <br><br>
 
 # Requirements
+
+Since VALORANT can only be played on Windows computers, 
+VIT can only be used on and is designed to work for **Windows** computers only.
+<br>
+
 Requires at least [**Java 17 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).
 <br>
 Simply use the **x64 Installer** version and install it.
+
+<br><br>
+
+# Addons / Developer API
+
+If you press ``WIN + R`` and enter `%appdata%/../local/VIT`,
+you'll find an empty folder named ``addons``. You can upload
+your very own addons for VIT directly to use them as you wish.
+
+<br>
+
+On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki)!
 
 <br><br>
 
