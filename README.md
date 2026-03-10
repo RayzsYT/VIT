@@ -1,5 +1,5 @@
 # VIT
-**VIT** is a VALORANT tracker showing the **weapon skins**, **stats**, **rr**, and **latest matches** of players inside your lobby.
+**VIT** is a VALORANT Info Viewer showing the **weapon skins**, **stats**, **rr**, and **latest matches** of players inside your lobby.
 It's entirely written in Java and **completely automated**. Well, except some actions of course.
 
 <br><br>
