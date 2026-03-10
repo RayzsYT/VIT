@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.addon.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
@@ -8,6 +9,7 @@ import de.rayzs.vit.api.session.Session;
 
 public class VITAPIImpl implements VITAPI {
 
+    private final EventManagerImpl eventManager;
     private final ImageProvider imageProvider;
     private final Session session;
 
@@ -17,11 +19,17 @@ public class VITAPIImpl implements VITAPI {
     public VITAPIImpl() {
         this.session = new SessionImpl();
         this.imageProvider = new ImageProviderImpl();
+        this.eventManager = new EventManagerImpl();
     }
 
     @Override
     public Session getSession() {
         return this.session;
+    }
+
+    @Override
+    public EventManager getEventManager() {
+        return this.eventManager;
     }
 
     @Override
