@@ -1,6 +1,6 @@
-package de.rayzs.vit.api.addon.event.events;
+package de.rayzs.vit.api.event.events;
 
-import de.rayzs.vit.api.addon.event.Event;
+import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.session.SessionState;
 
 /**

@@ -1,6 +1,4 @@
-package de.rayzs.vit.api.addon.event;
-
-import de.rayzs.vit.api.addon.event.events.StateChangeEvent;
+package de.rayzs.vit.api.event;
 
 public class Event {
 

@@ -1,8 +1,8 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.addon.Addon;
-import de.rayzs.vit.api.addon.event.Event;
-import de.rayzs.vit.api.addon.event.EventManager;
+import de.rayzs.vit.api.event.Event;
+import de.rayzs.vit.api.event.EventManager;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.addon.event;
+package de.rayzs.vit.api.event;
 
 import de.rayzs.vit.api.addon.Addon;
 
