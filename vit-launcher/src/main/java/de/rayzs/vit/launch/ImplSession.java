@@ -936,9 +936,9 @@ public class ImplSession implements Session {
             final String seasonId = seasonJson.getString("ID");
 
             final boolean active = seasonJson.getBoolean("IsActive");
+            final boolean isEpisode = seasonType.equals("episode");
 
-
-            if (seasonType.equals("episode")) {
+            if (isEpisode) {
                 episodeName = seasonName;
             }
 
@@ -956,7 +956,7 @@ public class ImplSession implements Session {
 
             seasons.put(seasonId, season);
 
-            if (active) {
+            if (active && isEpisode) {
                 currentSeason = season;
             }
         }
