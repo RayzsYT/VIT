@@ -32,5 +32,5 @@ public interface EventManager {
      * @param event Event.
      * @return Returns modified version of {@link Event} if any of its arguments have been modified.
      */
-    Event call(final Event event);
+    <E extends Event> E call(final E event);
 }

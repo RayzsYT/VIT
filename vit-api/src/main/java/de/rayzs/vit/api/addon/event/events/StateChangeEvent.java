@@ -7,7 +7,7 @@ import de.rayzs.vit.api.session.SessionState;
  * Whenever the state of VALORANT changes.
  * For example from {@link SessionState#IN_LOBBY} to {@link SessionState#IN_GAME}.
  */
-public class StateChangeEvent implements Event {
+public class StateChangeEvent extends Event {
 
     private final SessionState before, state;
 
