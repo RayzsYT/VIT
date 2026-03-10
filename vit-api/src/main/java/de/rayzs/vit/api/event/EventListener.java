@@ -15,7 +15,6 @@ public interface EventListener<E extends Event> {
      * this to implement your own call.
      *
      * @param event Event.
-     * @return Modified event.
      */
-    E call(E event);
+    void call(E event);
 }
