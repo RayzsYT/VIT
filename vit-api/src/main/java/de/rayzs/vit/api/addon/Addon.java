@@ -5,60 +5,47 @@ import de.rayzs.vit.api.VITAPI;
 public class Addon {
 
     private final VITAPI api;
+    private final AddonDescription description;
 
-    private final String addonName, addonVersion, addonPurpose;
-    private final String[] addonAuthors;
+    private boolean enabled = true;
 
     public Addon(
             final VITAPI api,
-            final String addonName,
-            final String addonVersion,
-            final String addonPurpose,
-            final String... addonAuthors
+            final AddonDescription description
     ) {
         this.api = api;
-        this.addonName = addonName;
-        this.addonVersion = addonVersion;
-        this.addonPurpose = addonPurpose;
-        this.addonAuthors = addonAuthors;
+        this.description = description;
     }
 
     /**
-     * Get the addon name.
-     *
-     * @return Addon name.
+     * What to do during bootup.
      */
-    public String getAddonName() {
-        return this.addonName;
+    public void onEnable() {}
+
+    /**
+     * What to do during shutdown.
+     */
+    public void onDisable() {}
+
+    /**
+     * If addon is enabled. Please do NOT
+     * override this method here!
+     *
+     * @return True if addon is enabled. False otherwise.
+     */
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     /**
-     * Get purpose of the addon. Practically
-     * just a short description on what this
-     * addon does or for what it is for.
+     * Addon description object containing
+     * all necessary information about this
+     * addon, like it's id, path to the main class,
+     * who made it, and what purpose it serves.
      *
-     * @return Purpose of the addon.
+     * @return Addon description.
      */
-    public String getAddonPurpose() {
-        return this.addonPurpose;
-    }
-
-    /**
-     * Get version of the addon.
-     *
-     * @return Addon version.
-     */
-    public String getAddonVersion() {
-        return this.addonVersion;
-    }
-
-    /**
-     * Get an array of all contributors of
-     * the addon.
-     *
-     * @return Contributors who wrote the addon.
-     */
-    public String[] getAddonAuthors() {
-        return this.addonAuthors;
+    public AddonDescription getDescription() {
+        return this.description;
     }
 }
