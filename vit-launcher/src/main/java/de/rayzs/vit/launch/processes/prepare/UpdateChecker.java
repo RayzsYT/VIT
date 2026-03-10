@@ -18,8 +18,6 @@ import java.util.Optional;
 
 public class UpdateChecker {
 
-    private final String url = "https://api.github.com/repos/rayzsyt/vit/releases/latest";
-
     private boolean updated = true, wantToUpdate = false;
 
     public UpdateChecker() {
