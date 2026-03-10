@@ -1,31 +1,31 @@
 package de.rayzs.vit.api.addon;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AddonDescription {
 
-    private final String id, version, author, purpose, main;
+    private final String id, version, author, purpose, website, main;
 
     public AddonDescription(final JSONObject json) {
         if (!json.has("id")) {
             throw new IllegalArgumentException("AddonDescription is missing an ID!");
-        }
+        } else id = json.getString("id");
 
         if (!json.has("version")) {
             throw new IllegalArgumentException("AddonDescription is missing the version!");
-        }
+        } else this.version = json.getString("version");
+
+        if (!json.has("author")) {
+            throw new IllegalArgumentException("AddonDescription is missing the author!");
+        } else this.author = json.getString("author");
 
         if (!json.has("main")) {
             throw new IllegalArgumentException("AddonDescription is missing the path to the main class!");
-        }
+        } else this.main = json.getString("main");
 
 
-        id = json.getString("id");
-        version = json.getString("version");
-        author = json.getString("author");
-        purpose = json.getString("purpose");
-        main = json.getString("main");
+        website = json.has("website") ? json.getString("website") : null;
+        purpose = json.has("purpose") ? json.getString("purpose") : null;
     }
 
     /**
@@ -45,6 +45,15 @@ public class AddonDescription {
      */
     public String getVersion() {
         return this.version;
+    }
+
+    /**
+     * Get website of the addon, if one provided.
+     *
+     * @return Addon website or null if not set.
+     */
+    public String getWebsite() {
+        return this.website;
     }
 
     /**

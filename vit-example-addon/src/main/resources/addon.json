@@ -1,6 +1,8 @@
 {
   "id": "test_addon",
+  "author": "Rayzs_YT",
   "purpose": "Prints a message in the console once the SessionState changes.",
   "version": "1.0.0",
-  "main": "de.rayzs.vit.exampleaddon.ExampleAddon"
+  "main": "de.rayzs.vit.exampleaddon.ExampleAddon",
+  "website": "https://github.com/RayzsYT/VIT"
 }
