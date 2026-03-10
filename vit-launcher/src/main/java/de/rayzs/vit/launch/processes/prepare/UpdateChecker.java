@@ -54,9 +54,9 @@ public class UpdateChecker {
 
         final OptionGUI option = OptionGUI.create(
                 "Update available!",
-                "A new version of VIT is available now! Would you like to update?",
-                "YESSIIIIR",
-                "Not now, thanks."
+                "Yea sure!",
+                "Not now, thanks.",
+                "A new version of VIT is available now! Would you like to update?"
         );
 
         if (option.getResponse() != 1) {
@@ -74,6 +74,8 @@ public class UpdateChecker {
             final JSONObject asset = (JSONObject) assetObj;
 
             final String assetName = asset.getString("name");
+
+            System.out.println("Found: " + assetName);
 
             if (!assetName.endsWith(".jar")) {
                 continue;
