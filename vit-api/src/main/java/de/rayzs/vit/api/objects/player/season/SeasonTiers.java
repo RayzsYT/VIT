@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.objects.player.competitive;
+package de.rayzs.vit.api.objects.player.season;
 
 import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Tier;
