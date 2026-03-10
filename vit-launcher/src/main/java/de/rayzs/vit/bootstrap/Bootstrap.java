@@ -92,5 +92,16 @@ public class Bootstrap {
         };
 
         new Timer().scheduleAtFixedRate(task, 0, 2500);
+
+
+
+        final long start = System.currentTimeMillis();
+        api.getAddonManager().loadAddons();
+
+        System.out.printf(
+                "Loaded %d addon(s) in %dms!%n",
+                api.getAddonManager().getLoadedAddons().size(),
+                System.currentTimeMillis() - start
+        );
     }
 }
