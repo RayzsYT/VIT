@@ -8,9 +8,9 @@ public interface EventManager {
      * Register an event.
      *
      * @param addon Addon.
-     * @param event Event.
+     * @param listener Event listener.
      */
-    void register(final Addon addon, final Event event);
+    <E extends Event> void register(final Addon addon, final EventListener<E> listener);
 
     /**
      * Unregister all registered events.

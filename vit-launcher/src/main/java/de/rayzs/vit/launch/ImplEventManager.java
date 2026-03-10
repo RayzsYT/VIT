@@ -2,6 +2,7 @@ package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.addon.Addon;
 import de.rayzs.vit.api.event.Event;
+import de.rayzs.vit.api.event.EventListener;
 import de.rayzs.vit.api.event.EventManager;
 
 import java.util.HashMap;
@@ -11,28 +12,30 @@ import java.util.Set;
 
 public class ImplEventManager implements EventManager {
 
-    private final Map<Addon, Set<Event>> events = new HashMap<>();
+    private final Map<Addon, Set<EventListener<?>>> listeners = new HashMap<>();
 
     @Override
-    public void register(final Addon addon, final Event event) {
-        events.computeIfAbsent(addon, k -> new HashSet<>()).add(event);
+    public <E extends Event> void register(final Addon addon, final EventListener<E> listener) {
+        listeners.computeIfAbsent(addon, k -> new HashSet<>()).add(listener);
     }
 
     @Override
     public void unregisterAll() {
-        events.clear();
+        listeners.clear();
     }
 
     @Override
     public void unregisterAll(final Addon addon) {
-        events.remove(addon);
+        listeners.remove(addon);
     }
 
     @Override
     public <E extends Event> E call(final E event) {
-        for (final Set<Event> events : events.values()) {
-            for (final Event e : events) {
-                e.call(event);
+        for (final Set<EventListener<?>> listeners : listeners.values()) {
+            for (final EventListener<?> listener : listeners) {
+                if (listener.type().isInstance(event)) {
+                    ((EventListener<E>) listener).call(event);
+                }
             }
         }
 
