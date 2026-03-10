@@ -1,5 +1,6 @@
 package de.rayzs.vit.api;
 
+import de.rayzs.vit.api.addon.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
@@ -22,6 +23,13 @@ public interface VITAPI {
      * @return Session.
      */
     Session getSession();
+
+    /**
+     * Get the instance of the event manager.
+     *
+     * @return Event manager.
+     */
+    EventManager getEventManager();
 
     /**
      * Get the ImageProvider to create
