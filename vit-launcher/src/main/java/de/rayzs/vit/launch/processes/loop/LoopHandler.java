@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.addon.event.events.StateChangeEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
@@ -39,10 +40,7 @@ public class LoopHandler {
         if (!Request.areHeadersSet()) {
             try {
                 api.getSession().initialize();
-            } catch (final Exception exception) {
-                System.out.println("It seems VALORANT isn't launched yet. Waiting... (" + exception.getMessage() + ")");
-                return;
-            }
+            } catch (Exception ignored) { return; }
         }
 
 
@@ -60,10 +58,12 @@ public class LoopHandler {
         }
 
 
+        api.getEventManager().call(new StateChangeEvent(priorState, sessionState));
+
+
         priorState = sessionState;
         loadingScreen.resetText();
 
-        System.out.println("New state detected: " + sessionState.name());
 
         switch (sessionState) {
 
