@@ -56,9 +56,33 @@ public class LiveScreen extends Screen {
         playersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
-        for (Player player : game.players()) {
-            playersPanel.add(createPlayerBanner(api, game, player));
+
+        final List<Player> team1Players = new ArrayList<>();
+        final List<Player> team2Players = new ArrayList<>();
+
+        final Player selfPlayer = game.self();
+
+        for (final Player player : game.players()) {
+            if (player.team() == selfPlayer.team()) {
+                team1Players.add(player);
+            } else {
+                team2Players.add(player);
+            }
         }
+
+
+        final int max = Math.max(team1Players.size(), team2Players.size());
+
+        for (int i = 0; i < max; i++) {
+            if (i < team1Players.size()) {
+                playersPanel.add(createPlayerBanner(api, game, team1Players.get(i)));
+            }
+
+            if (i < team2Players.size()) {
+                playersPanel.add(createPlayerBanner(api, game, team2Players.get(i)));
+            }
+        }
+
 
         contentPane.add(topLayerPanel, BorderLayout.NORTH);
         contentPane.add(playersPanel, BorderLayout.CENTER);
