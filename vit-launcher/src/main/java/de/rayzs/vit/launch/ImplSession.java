@@ -1,6 +1,8 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.event.events.GameInitializedEvent;
+import de.rayzs.vit.api.event.events.PreGameInitializeEvent;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
@@ -343,7 +345,6 @@ public class ImplSession implements Session {
 
         fetchSeasons(); // Fetches all available seasons first, in case they were not fetched yet.
 
-
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
@@ -420,6 +421,11 @@ public class ImplSession implements Session {
         tmpServer = Character.toUpperCase(tmpServer.charAt(0)) + tmpServer.substring(1);
 
         server = tmpServer;
+
+
+        VIT.get().getEventManager().call(new PreGameInitializeEvent(
+                state, server, mapName, mapId
+        ));
 
 
 
@@ -726,13 +732,19 @@ public class ImplSession implements Session {
         }
 
 
-        return new Game(
+        final Game constructedGame = new Game(
                 selfPlayer,
                 state,
                 registeredPlayers.toArray(new Player[0]),
                 mapId,
                 server
         );
+
+
+        VIT.get().getEventManager().call(new GameInitializedEvent(state, constructedGame));
+
+
+        return constructedGame;
     }
 
 
