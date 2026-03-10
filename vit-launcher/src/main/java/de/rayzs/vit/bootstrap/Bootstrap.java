@@ -45,6 +45,16 @@ public class Bootstrap {
         gui.setVisible(true);
 
 
+        final long start = System.currentTimeMillis();
+        api.getAddonManager().loadAddons();
+
+        System.out.printf(
+                "Loaded %d addon(s) in %dms!%n",
+                api.getAddonManager().getLoadedAddons().size(),
+                System.currentTimeMillis() - start
+        );
+
+
         // Test screen
         if (args.length >= 1) {
 
@@ -92,16 +102,5 @@ public class Bootstrap {
         };
 
         new Timer().scheduleAtFixedRate(task, 0, 2500);
-
-
-
-        final long start = System.currentTimeMillis();
-        api.getAddonManager().loadAddons();
-
-        System.out.printf(
-                "Loaded %d addon(s) in %dms!%n",
-                api.getAddonManager().getLoadedAddons().size(),
-                System.currentTimeMillis() - start
-        );
     }
 }
