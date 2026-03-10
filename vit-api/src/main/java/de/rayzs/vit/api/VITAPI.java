@@ -1,5 +1,6 @@
 package de.rayzs.vit.api;
 
+import de.rayzs.vit.api.addon.AddonManager;
 import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
@@ -30,6 +31,13 @@ public interface VITAPI {
      * @return Event manager.
      */
     EventManager getEventManager();
+
+    /**
+     * Get the instance of the addon manager.
+     *
+     * @return Addon manager.
+     */
+    AddonManager getAddonManager();
 
     /**
      * Get the ImageProvider to create

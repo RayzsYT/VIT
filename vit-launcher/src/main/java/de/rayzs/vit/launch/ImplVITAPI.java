@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.addon.AddonManager;
 import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
@@ -10,6 +11,8 @@ import de.rayzs.vit.api.session.Session;
 public class ImplVITAPI implements VITAPI {
 
     private final ImplEventManager eventManager;
+    private final ImplAddonManager addonManager;
+
     private final ImageProvider imageProvider;
     private final Session session;
 
@@ -19,7 +22,9 @@ public class ImplVITAPI implements VITAPI {
     public ImplVITAPI() {
         this.session = new ImplSession();
         this.imageProvider = new ImplImageProvider();
+
         this.eventManager = new ImplEventManager();
+        this.addonManager = new ImplAddonManager(this);
     }
 
     @Override
@@ -30,6 +35,11 @@ public class ImplVITAPI implements VITAPI {
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
+    }
+
+    @Override
+    public AddonManager getAddonManager() {
+        return this.addonManager;
     }
 
     @Override
