@@ -245,7 +245,7 @@ public class LiveScreen extends Screen {
                 player.stats().headShotRate()
         ));
 
-        statsLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+        statsLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         statsLabel.setForeground(GUI.Colors.STATS_TEXT_FOREGROUND.get());
         center.add(statsLabel);
 
