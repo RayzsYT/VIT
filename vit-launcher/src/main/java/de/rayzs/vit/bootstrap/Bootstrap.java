@@ -1,6 +1,7 @@
 package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.event.events.InitializeMainGuiEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.ImplVITAPI;
@@ -39,7 +40,15 @@ public class Bootstrap {
 
 
         final AssetPreparer prep = new AssetPreparer(api);
-        final MainGUI gui = new MainGUI("Initializing...");
+
+        final InitializeMainGuiEvent initializeMainGuiEvent = api.getEventManager().call(
+                new InitializeMainGuiEvent(new MainGUI("Initializing..."))
+        );
+
+
+        final MainGUI gui = initializeMainGuiEvent.isCancelled()
+                ? null
+                : initializeMainGuiEvent.getGui();
 
 
         final long start = System.currentTimeMillis();
@@ -76,7 +85,6 @@ public class Bootstrap {
                 };
 
                 TestDummy.apply(gui, screen, num);
-                gui.setVisible(true);
             }
 
             return;
@@ -91,7 +99,9 @@ public class Bootstrap {
         }
 
 
-        gui.setVisible(true);
+        if (gui != null) {
+            gui.setVisible(true);
+        }
 
 
         final LoopHandler loop = new LoopHandler(api, gui);

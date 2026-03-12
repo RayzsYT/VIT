@@ -2,6 +2,7 @@ package de.rayzs.vit.launch.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.event.events.StateChangeEvent;
+import de.rayzs.vit.api.event.events.UpdateMainGuiEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
@@ -29,10 +30,12 @@ public class LoopHandler {
         this.api = api;
         this.gui = gui;
 
-        gui.setAlwaysOnTop(true);
-        gui.setAlwaysOnTop(false);
+        if (gui != null) {
+            gui.setAlwaysOnTop(true);
+            gui.setAlwaysOnTop(false);
 
-        inactiveScreen.load(api, gui);
+            inactiveScreen.load(api, gui);
+        }
     }
 
 
@@ -58,10 +61,28 @@ public class LoopHandler {
         }
 
 
-        api.getEventManager().call(new StateChangeEvent(priorState, sessionState));
-
-
         priorState = sessionState;
+
+
+
+        final StateChangeEvent stateChangeEvent = api.getEventManager().call(new StateChangeEvent(priorState, sessionState));
+
+        if (gui == null) {
+            return;
+        }
+
+
+
+        final UpdateMainGuiEvent updateMainGuiEvent = api.getEventManager().call(
+                new UpdateMainGuiEvent(stateChangeEvent.getState(), gui)
+        );
+
+        if (updateMainGuiEvent.isCancelled()) {
+            return;
+        }
+
+
+
         loadingScreen.resetText();
 
 

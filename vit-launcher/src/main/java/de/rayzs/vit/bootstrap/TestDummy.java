@@ -26,6 +26,11 @@ public class TestDummy {
 
     public static void apply(final MainGUI gui, final Screen screen, final int playerNum) {
 
+        if (gui != null) {
+            gui.setVisible(true);
+        }
+
+
         final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
         final String[] mapsArray = maps.toArray(new String[0]);
 
@@ -49,7 +54,9 @@ public class TestDummy {
 
         VIT.get().setGame(game);
 
-        screen.load(VIT.get(), gui);
+        if (gui != null) {
+            screen.load(VIT.get(), gui);
+        }
     }
 
 
