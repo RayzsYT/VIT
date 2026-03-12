@@ -195,7 +195,7 @@ public class AssetPreparer {
                 // Downloads all the missing assets.
                 downloadProcess.start(process -> {
 
-                    if (System.currentTimeMillis() - lastUpdatedText.get() > 7000) {
+                    if (System.currentTimeMillis() - lastUpdatedText.get() > 8000) {
                         lastUpdatedText.set(System.currentTimeMillis());
 
                         final String downloadText = downloadLines[random.nextInt(maxDownloadLines)];
