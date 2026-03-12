@@ -7,7 +7,15 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
 
+import java.text.SimpleDateFormat;
+
 public interface VITAPI {
+
+
+    // Time and date formats, so I don't have to copy-paste them across the entire project.
+    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy-HH-mm");
+    SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+
 
     /**
      * Get current VIT version.

@@ -1,5 +1,6 @@
 package de.rayzs.vit.bootstrap;
 
+import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
 
 import java.io.*;
@@ -10,9 +11,6 @@ public class OutputLogger extends PrintStream {
     private enum Level {
         INFO, ERROR
     }
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy-HH-mm");
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
     private static final String LOG_MESSAGE = "[%s | %s] %s";
 
@@ -35,7 +33,7 @@ public class OutputLogger extends PrintStream {
 
         initialized = true;
 
-        final File logFile = FileDir.LOGS.getFile(DATE_FORMAT.format(System.currentTimeMillis()) + ".txt");
+        final File logFile = FileDir.LOGS.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".txt");
         logFile.createNewFile();
 
         final FileWriter fileWriter = new FileWriter(logFile);
@@ -80,7 +78,7 @@ public class OutputLogger extends PrintStream {
 
     private String constructMessage(final String message) {
         return LOG_MESSAGE.formatted(
-                TIME_FORMAT.format(System.currentTimeMillis()),
+                VITAPI.TIME_FORMAT.format(System.currentTimeMillis()),
                 this.level.name().substring(0, 3),
                 message
         );
