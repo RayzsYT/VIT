@@ -238,16 +238,16 @@ public class LobbyScreen extends Screen {
         // Get current tiers. If one of them does not exist,
         // it will be simply ignored.
 
-        final boolean hasCompetitive = player.competitive() != null;
+        final boolean hasCurrentTier = player.competitive() != null;
+        final boolean hasPeakTier = hasCurrentTier && player.competitive().seasonTiers() != null;
 
-        final Tier currentTier = hasCompetitive
+        final Tier currentTier = hasCurrentTier
                 ? player.competitive().currentTier()
                 : Tier.UNRANKED;
 
-        final Tier peakTier = hasCompetitive
+        final Tier peakTier = hasPeakTier
                 ? player.competitive().seasonTiers().getPeakTier()
                 : Tier.UNRANKED;
-
 
 
         final ImageIcon currentRankImage = currentTier.getImage()
@@ -263,7 +263,7 @@ public class LobbyScreen extends Screen {
 
         currentRankLabel.setToolTipText("Current Rank: " + currentTier.getTierName());
 
-        if (peakTier != Tier.UNRANKED) {
+        if (hasPeakTier) {
             final ImageIcon peakRankImage = peakTier.getImage()
                     .getIcon(38, 38, Image.SCALE_SMOOTH);
 
