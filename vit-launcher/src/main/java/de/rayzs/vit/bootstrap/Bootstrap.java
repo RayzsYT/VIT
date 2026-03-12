@@ -39,10 +39,7 @@ public class Bootstrap {
 
 
         final AssetPreparer prep = new AssetPreparer(api);
-
-
         final MainGUI gui = new MainGUI("Initializing...");
-        gui.setVisible(true);
 
 
         final long start = System.currentTimeMillis();
@@ -79,6 +76,7 @@ public class Bootstrap {
                 };
 
                 TestDummy.apply(gui, screen, num);
+                gui.setVisible(true);
             }
 
             return;
@@ -91,6 +89,9 @@ public class Bootstrap {
         if (new UpdateChecker().wantToUpdate()) {
             return;
         }
+
+
+        gui.setVisible(true);
 
 
         final LoopHandler loop = new LoopHandler(api, gui);
