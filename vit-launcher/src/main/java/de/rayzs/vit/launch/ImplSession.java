@@ -3,6 +3,7 @@ package de.rayzs.vit.launch;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.event.events.game.GameInitializedEvent;
 import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
+import de.rayzs.vit.api.event.events.player.PreFetchPlayerNameEvent;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
@@ -492,9 +493,14 @@ public class ImplSession implements Session {
             final JSONObject identity = player.getJSONObject("PlayerIdentity");
             final boolean incognito = identity.getBoolean("Incognito");
 
-            if (!incognito) {
+            final PreFetchPlayerNameEvent preFetchPlayerNameEvent = new PreFetchPlayerNameEvent(playerId, incognito);
+
+            if (!preFetchPlayerNameEvent.isIncognito()) {
                 playersArray.put(playerId);
-            } else incognitoPlayerIds.add(playerId);
+                continue;
+            }
+
+            incognitoPlayerIds.add(playerId);
         }
 
 
@@ -872,6 +878,79 @@ public class ImplSession implements Session {
                         gainedRR
                 )
         );
+    }
+
+
+
+    /**
+     * Takes an array of players and fetches each of their names if allowed.
+     * Returns a modified version of the array with all player names.
+     *
+     * @param players Array of players to fetch their names from.
+     *
+     * @return New array of all players with their fetched player names.
+     */
+    @Override
+    public Player[] updatePlayerNames(final Player... players) {
+        final JSONArray array = new JSONArray();
+        for (final Player player : players) {
+            final PreFetchPlayerNameEvent preFetchPlayerNameEvent = new PreFetchPlayerNameEvent(
+                    player.id(), player.settings().incognito()
+            );
+
+            if (preFetchPlayerNameEvent.isIncognito()) {
+                continue;
+            }
+
+            array.put(player.id());
+        }
+
+        final Request request = Request.createRequest(
+                RequestMethod.PUT,
+                RequestDest.PD,
+                "name-service/v2/players",
+                array.toString()
+        );
+
+        final Optional<String> result = request.sendAndGet(client);
+        if (result.isEmpty()) {
+            throw new NullPointerException("Failed to update player names!");
+        }
+
+
+        final JSONArray response = new JSONArray(result.get());
+        final Map<String, String> playerNamesMap = new HashMap<>();
+
+        for (int i = 0; i < response.length(); i++) {
+            final JSONObject player = response.getJSONObject(i);
+
+            final String playerId = player.getString("Subject");
+            final String playerName = player.getString("GameName") + "#" + player.getString("TagLine");
+
+            playerNamesMap.put(playerId, playerName);
+        }
+
+        for (int i = 0; i < response.length(); i++) {
+            final Player player = players[i];
+            final String name = playerNamesMap.get(player.id());
+
+            players[i] = new Player(
+                    player.id(),
+                    player.team(),
+                    name,
+                    player.agent(),
+                    player.level(),
+                    player.playerCardId(),
+                    player.playerTitleId(),
+                    player.settings(),
+                    player.inventory(),
+                    player.competitive(),
+                    player.stats(),
+                    player.playedMatches()
+            );
+        }
+
+        return players;
     }
 
 
