@@ -39,7 +39,7 @@ public class ImplSession implements Session {
 
     // SeasonId, Season
     private final Map<String, Season> seasons = new HashMap<>();
-    private final Season[] currentSeasons =  new Season[2]; // 0 = Episode | 1 = ACT
+    private final Season[] currentSeasons =  new Season[2]; // 0 = ACT | 1 = Episode
 
 
     private String currentVersion;
@@ -1043,7 +1043,7 @@ public class ImplSession implements Session {
             seasons.put(seasonId, season);
 
             if (active) {
-                this.currentSeasons[isEpisode ? 0 : 1] = season;
+                this.currentSeasons[isEpisode ? 1 : 0] = season;
             }
 
         }
