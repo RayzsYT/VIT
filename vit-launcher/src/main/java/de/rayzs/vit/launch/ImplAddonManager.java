@@ -41,7 +41,7 @@ public class ImplAddonManager implements AddonManager {
 
     @Override
     public void unloadAddons() {
-        Set<Addon> addons = Collections.unmodifiableSet(getLoadedAddons());
+        final Set<Addon> addons = Collections.unmodifiableSet(getLoadedAddons());
 
         for (Addon addon : addons) {
             unloadAddon(addon);
@@ -78,7 +78,7 @@ public class ImplAddonManager implements AddonManager {
             }
 
 
-            for (AddonInfo value : addons.values()) {
+            for (final AddonInfo value : addons.values()) {
                 if (main.equals(value.getAddon().getDescription().getMain())) {
                     System.err.println("Cannot load addon. Another addon with that main class already exists! (" + main + ")");
                     return null;
@@ -190,7 +190,7 @@ public class ImplAddonManager implements AddonManager {
 
         private AddonDescription readAndSetAddonDescription() {
             try {
-                JarEntry entry = jarFile.getJarEntry("addon.json");
+                final JarEntry entry = jarFile.getJarEntry("addon.json");
 
                 if (entry == null) {
                     return null;
@@ -199,7 +199,7 @@ public class ImplAddonManager implements AddonManager {
                 final InputStream stream = jarFile.getInputStream(entry);
                 final String result;
 
-                try (InputStream inputStream = stream) {
+                try (final InputStream inputStream = stream) {
                     result = new String(inputStream.readAllBytes());
                 }
 
