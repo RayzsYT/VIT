@@ -38,10 +38,11 @@ public class ImplSession implements Session {
 
     // SeasonId, Season
     private final Map<String, Season> seasons = new HashMap<>();
+    private final Season[] currentSeasons =  new Season[2]; // 0 = Episode | 1 = ACT
+
 
     private String currentVersion;
 
-    private Season currentSeason;
     private HttpClient client;
     private String selfPlayerId;
 
@@ -936,9 +937,10 @@ public class ImplSession implements Session {
             throw new RuntimeException("Failed to fetch seasons!");
         }
 
+        System.out.println(contentResult.toString());
+
         final JSONArray seasonsArray = new JSONObject(contentResult.get()).getJSONArray("Seasons");
 
-        String episodeName = "";
         for (Object seasonObj : seasonsArray) {
             final JSONObject seasonJson = (JSONObject) seasonObj;
 
@@ -950,14 +952,6 @@ public class ImplSession implements Session {
             final boolean active = seasonJson.getBoolean("IsActive");
             final boolean isEpisode = seasonType.equals("episode");
 
-            if (isEpisode) {
-                episodeName = seasonName;
-            }
-
-            if (!seasonName.equals(episodeName)) {
-                seasonName = episodeName + " " + seasonName;
-            }
-
 
             final Season season = new Season(
                     seasonId,
@@ -968,9 +962,10 @@ public class ImplSession implements Session {
 
             seasons.put(seasonId, season);
 
-            if (active && isEpisode) {
-                currentSeason = season;
+            if (active) {
+                this.currentSeasons[isEpisode ? 0 : 1] = season;
             }
+
         }
     }
 
@@ -991,6 +986,7 @@ public class ImplSession implements Session {
             final JSONObject competitive
     ) {
 
+        System.out.println(competitive.toString());
 
         SeasonTiers seasonTiers = null;
 
@@ -1052,14 +1048,25 @@ public class ImplSession implements Session {
         }
 
 
-        final Tier currentTier = seasonTiers != null
-                ? seasonTiers.getTierInSeason(currentSeason)
-                : Tier.UNRANKED;
+        // Check for current tier of the player.
+        // First checking the episode if there's something.
+        // If nothing is found there, the act is checked next.
+        // If both have no result, {@link Tier#UNRANKED} with 0 RR
+        // is returned.
 
+        Tier currentTier = Tier.UNRANKED;
+        int rr = 0;
 
-        final int rr = seasonTiers != null
-                ? seasonTiers.getSessionStats(currentSeason).rr()
-                : 0;
+        if (seasonTiers != null) for (final Season season : currentSeasons) {
+            currentTier = seasonTiers.getTierInSeason(season);
+
+            if (currentTier != Tier.UNRANKED) {
+                rr = seasonTiers.getSessionStats(season).rr();
+                break;
+            }
+
+        }
+
 
         return new PlayerCompetitive(
                 currentTier,
