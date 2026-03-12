@@ -12,12 +12,14 @@ public enum FileDir {
     ROOT                (APP_DATA, "VIT"),
 
 
+    STORAGE             (ROOT,      "storage"),
     ADDONS              (ROOT,      "addons"),
     SCRIPTS             (ROOT,      "scripts"),
     LOGS                (ROOT,      "logs"),
     ASSETS              (ROOT,      "assets"),
 
     SYSTEM              (ASSETS,    "system"),
+    GAMES               (ASSETS,    "games"),
 
     WEAPONS             (ASSETS,    "weapons"),
     AGENTS              (ASSETS,    "agents"),
