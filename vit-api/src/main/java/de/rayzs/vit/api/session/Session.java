@@ -1,6 +1,8 @@
 package de.rayzs.vit.api.session;
 
 import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.player.Player;
+
 import java.net.http.HttpClient;
 import java.util.function.Consumer;
 
@@ -59,5 +61,17 @@ public interface Session {
     Game constructGame(
             final SessionState state,
             final Consumer<Integer> playerLoadConsumer
+    );
+
+    /**
+     * Takes an array of players and fetches each of their names if allowed.
+     * Returns a modified version of the array with all player names.
+     *
+     * @param players Array of players to fetch their names from.
+     *
+     * @return New array of all players with their fetched player names.
+     */
+    Player[] updatePlayerNames(
+            final Player... players
     );
 }
