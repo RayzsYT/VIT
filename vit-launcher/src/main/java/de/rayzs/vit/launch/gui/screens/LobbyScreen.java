@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.processes.gui.screens;
+package de.rayzs.vit.launch.gui.screens;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
@@ -9,7 +9,7 @@ import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
-import de.rayzs.vit.launch.processes.gui.LobbyPlayerWindow;
+import de.rayzs.vit.launch.gui.LobbyPlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;

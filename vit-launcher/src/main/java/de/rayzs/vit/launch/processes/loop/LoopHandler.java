@@ -6,10 +6,10 @@ import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
-import de.rayzs.vit.launch.processes.gui.screens.InactiveScreen;
-import de.rayzs.vit.launch.processes.gui.screens.LiveScreen;
-import de.rayzs.vit.launch.processes.gui.screens.LoadingScreen;
-import de.rayzs.vit.launch.processes.gui.screens.LobbyScreen;
+import de.rayzs.vit.launch.gui.screens.InactiveScreen;
+import de.rayzs.vit.launch.gui.screens.LiveScreen;
+import de.rayzs.vit.launch.gui.screens.LoadingScreen;
+import de.rayzs.vit.launch.gui.screens.LobbyScreen;
 
 public class LoopHandler {
 
