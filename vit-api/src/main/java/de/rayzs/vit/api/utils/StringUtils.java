@@ -44,6 +44,9 @@ public class StringUtils {
      *      StringUtils.formatNumber(0);
      *      // Out: "0"
      *
+     *      StringUtils.formatNumber(0.5);
+     *      // Out: "0,5"
+     *
      *      StringUtils.formatNumber(-1);
      *      // Out: "-1"
      *  }
@@ -54,6 +57,12 @@ public class StringUtils {
      * @return Formatted number.
      */
     public static String formatNumber(final double number) {
-        return (number > 0 ? "+" : "") + number;
+        final String prefix = number > 0 ? "+" : "";
+
+        if (number % 1 == 0) {
+            return prefix + (int) number;
+        }
+
+        return (prefix + number).replace(".", ",");
     }
 }
