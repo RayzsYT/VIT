@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.event.events;
+package de.rayzs.vit.api.event.events.game;
 
 import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.objects.game.Game;

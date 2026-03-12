@@ -1,8 +1,8 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VIT;
-import de.rayzs.vit.api.event.events.GameInitializedEvent;
-import de.rayzs.vit.api.event.events.PreGameInitializeEvent;
+import de.rayzs.vit.api.event.events.game.GameInitializedEvent;
+import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;

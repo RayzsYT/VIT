@@ -1,7 +1,7 @@
 package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
-import de.rayzs.vit.api.event.events.InitializeMainGuiEvent;
+import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.ImplVITAPI;

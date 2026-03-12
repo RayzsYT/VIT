@@ -1,8 +1,8 @@
 package de.rayzs.vit.launch.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.event.events.StateChangeEvent;
-import de.rayzs.vit.api.event.events.UpdateMainGuiEvent;
+import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
+import de.rayzs.vit.api.event.events.gui.UpdateMainGuiEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;

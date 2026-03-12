@@ -4,7 +4,7 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.addon.Addon;
 import de.rayzs.vit.api.event.EventAdapter;
 import de.rayzs.vit.api.addon.AddonDescription;
-import de.rayzs.vit.api.event.events.StateChangeEvent;
+import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 
 public class ExampleAddon extends Addon {
 

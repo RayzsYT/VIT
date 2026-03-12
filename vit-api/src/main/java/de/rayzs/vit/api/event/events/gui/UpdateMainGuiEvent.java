@@ -1,7 +1,8 @@
-package de.rayzs.vit.api.event.events;
+package de.rayzs.vit.api.event.events.gui;
 
 import de.rayzs.vit.api.event.Cancellable;
 import de.rayzs.vit.api.event.Event;
+import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.session.SessionState;
 

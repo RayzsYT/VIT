@@ -1,4 +1,4 @@
-package de.rayzs.vit.api.event.events;
+package de.rayzs.vit.api.event.events.system.state;
 
 import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.session.SessionState;
