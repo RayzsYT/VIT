@@ -937,8 +937,6 @@ public class ImplSession implements Session {
             throw new RuntimeException("Failed to fetch seasons!");
         }
 
-        System.out.println(contentResult.toString());
-
         final JSONArray seasonsArray = new JSONObject(contentResult.get()).getJSONArray("Seasons");
 
         for (Object seasonObj : seasonsArray) {
@@ -985,8 +983,6 @@ public class ImplSession implements Session {
             final CompRequirements compRequirements,
             final JSONObject competitive
     ) {
-
-        System.out.println(competitive.toString());
 
         SeasonTiers seasonTiers = null;
 
