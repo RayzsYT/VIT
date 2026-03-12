@@ -412,7 +412,7 @@ public class ImplSession implements Session {
         // Fetch match information
         final JSONObject match = new JSONObject(matchDetailsResult.get());
 
-        final String mapName = match.getString("MapID");
+        String mapName = match.getString("MapID");
         mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapName);
 
 
@@ -424,10 +424,14 @@ public class ImplSession implements Session {
         server = tmpServer;
 
 
-        VIT.get().getEventManager().call(new PreGameInitializeEvent(
+        final PreGameInitializeEvent preGameInitializeEvent = VIT.get().getEventManager().call(new PreGameInitializeEvent(
                 state, server, mapName, mapId
         ));
 
+
+        mapName = preGameInitializeEvent.getMapName();
+        mapId = preGameInitializeEvent.getMapId();
+        server = preGameInitializeEvent.getServer();
 
 
         // Fetch the loadouts of all players.
@@ -742,10 +746,9 @@ public class ImplSession implements Session {
         );
 
 
-        VIT.get().getEventManager().call(new GameInitializedEvent(state, constructedGame));
-
-
-        return constructedGame;
+        return VIT.get().getEventManager()
+                .call(new GameInitializedEvent(state, constructedGame))
+                .getGame();
     }
 
 
