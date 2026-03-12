@@ -25,7 +25,7 @@ public class LobbyScreen extends Screen {
 
 
     private final String title = "v%s [%s]";
-    private final String playerStats = "RR: %d (%+d) | WR: %.2f%% | HS: %.2f%%";
+    private final String playerStats = "Lvl.: %s | RR: %s | WR: %.2f%% | HS: %.2f%%";
 
     private final String roleDisplay = String.join("", new String[] {
             "<html><div style='",
@@ -196,14 +196,21 @@ public class LobbyScreen extends Screen {
         center.add(Box.createVerticalStrut(6));
 
 
-        final int rr = player.competitive() != null ? player.competitive().rr() : 0;
-        final int lastGainedRR = player.competitive() != null && player.competitive().latestMatch() != null
-                ? player.competitive().latestMatch().compMatchResult().rr()
-                : 0;
+        final String level = String.valueOf(
+                player.settings().incognito() || player.settings().levelHidden()
+                        ? "Hidden"
+                        : player.level()
+        );
+
+        final String rr = String.valueOf(player.competitive() != null ? player.competitive().rr() : "/");
+        final String lastGainedRR =
+                player.competitive() != null && player.competitive().latestMatch() != null
+                        ? " (" + player.competitive().latestMatch().compMatchResult().rr() + ")"
+                        : "";
 
         final JLabel statsLabel = new JLabel(playerStats.formatted(
-                rr,
-                lastGainedRR,
+                level,
+                rr + lastGainedRR,
                 player.stats().winRate(),
                 player.stats().headShotRate()
         ));
