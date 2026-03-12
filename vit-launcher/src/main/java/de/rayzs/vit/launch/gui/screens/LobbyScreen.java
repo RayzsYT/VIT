@@ -9,6 +9,7 @@ import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
+import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.gui.LobbyPlayerWindow;
 
 import javax.swing.*;
@@ -203,10 +204,9 @@ public class LobbyScreen extends Screen {
         );
 
         final String rr = String.valueOf(player.competitive() != null ? player.competitive().rr() : "/");
-        final String lastGainedRR =
-                player.competitive() != null && player.competitive().latestMatch() != null
-                        ? " (" + player.competitive().latestMatch().compMatchResult().rr() + ")"
-                        : "";
+        final String lastGainedRR = player.competitive() != null && player.competitive().latestMatch() != null
+                ? " (" + StringUtils.formatNumber(player.competitive().latestMatch().compMatchResult().rr()) + ")"
+                : "";
 
         final JLabel statsLabel = new JLabel(playerStats.formatted(
                 level,
