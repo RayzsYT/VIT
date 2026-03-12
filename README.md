@@ -15,7 +15,7 @@ It's entirely written in Java and **completely automated**. Well, except some ac
   - Hovering over the peak rank shows you in which season that player achieved that rank.
 - Copy player names instantly. (Double right-click on the player)
 - Open player stats on tracker.gg instantly. (Middle mouse click on the player)
-- Interactable API with [**addon system**](https://github.com/RayzsYT/VIT?tab=readme-ov-file#addons--developer-api)
+- Interactable API with [**addon system**](https://github.com/RayzsYT/VIT?tab=readme-ov-file#addons--developer-api).
 <br><br>
 
 # Requirements
