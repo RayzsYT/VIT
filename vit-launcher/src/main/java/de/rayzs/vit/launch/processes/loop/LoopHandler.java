@@ -3,6 +3,8 @@ package de.rayzs.vit.launch.processes.loop;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.gui.UpdateMainGuiEvent;
+import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
+import de.rayzs.vit.api.event.events.system.tick.TickEvent;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
@@ -47,7 +49,15 @@ public class LoopHandler {
         }
 
 
-        final SessionState sessionState = api.getSession().getSessionState();
+        final PreTickEvent preTickEvent = api.getEventManager().call(new PreTickEvent());
+
+        if (preTickEvent.isCancelled()) {
+            return;
+        }
+
+
+        final TickEvent tickEvent = api.getEventManager().call(new TickEvent(api.getSession().getSessionState()));
+        final SessionState sessionState = tickEvent.getState();
 
 
         if (!sessionState.isValorantStarted()) {
@@ -65,7 +75,9 @@ public class LoopHandler {
 
 
 
-        final StateChangeEvent stateChangeEvent = api.getEventManager().call(new StateChangeEvent(priorState, sessionState));
+        final StateChangeEvent stateChangeEvent = api.getEventManager().call(
+                new StateChangeEvent(priorState, sessionState)
+        );
 
         if (gui == null) {
             return;
