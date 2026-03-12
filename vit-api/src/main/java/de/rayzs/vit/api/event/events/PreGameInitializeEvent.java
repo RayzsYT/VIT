@@ -11,7 +11,7 @@ import de.rayzs.vit.api.session.SessionState;
 public class PreGameInitializeEvent extends Event {
 
     private final SessionState state;
-    private final String server, mapName, mapId;
+    private String server, mapName, mapId;
 
     public PreGameInitializeEvent(
             final SessionState state,
@@ -32,6 +32,35 @@ public class PreGameInitializeEvent extends Event {
      */
     public SessionState getState() {
         return this.state;
+    }
+
+    /**
+     * Set a new map id.
+     *
+     * @param mapId New map id.
+     */
+    public void setMapId(String mapId) {
+        this.mapId = mapId;
+    }
+
+    /**
+     * Set a new map name.
+     * Idk why someone would do that though since
+     * it's not used anywhere. But perhaps in the future?
+     *
+     * @param mapName New map name.
+     */
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
+    }
+
+    /**
+     * Set server name
+     *
+     * @param server New server name.
+     */
+    public void setServer(String server) {
+        this.server = server;
     }
 
     /**

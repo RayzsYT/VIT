@@ -11,7 +11,7 @@ import de.rayzs.vit.api.session.SessionState;
 public class GameInitializedEvent extends Event {
 
     private final SessionState state;
-    private final Game game;
+    private Game game;
 
     public GameInitializedEvent(
             final SessionState state,
@@ -28,6 +28,15 @@ public class GameInitializedEvent extends Event {
      */
     public SessionState getState() {
         return this.state;
+    }
+
+    /**
+     * Update the game object.
+     *
+     * @param game New game object.
+     */
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     /**
