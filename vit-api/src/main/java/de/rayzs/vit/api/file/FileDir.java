@@ -15,7 +15,6 @@ public enum FileDir {
     ADDONS              (ROOT,      "addons"),
     SCRIPTS             (ROOT,      "scripts"),
     LOGS                (ROOT,      "logs"),
-    DATA                (ROOT,      "data"),
     ASSETS              (ROOT,      "assets"),
 
     SYSTEM              (ASSETS,    "system"),
