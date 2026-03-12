@@ -25,6 +25,7 @@ import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AssetPreparer {
 
@@ -129,6 +130,11 @@ public class AssetPreparer {
         // actually something to download.
         if (requiresToDownload) {
 
+            // Some funny VALORANT pickup lines during installation.
+            final String[] downloadLines = FileUtils.readResourceInput("data/installation.txt").split("\n");
+            final int maxDownloadLines = downloadLines.length;
+
+
             // Indicators if VIT was already installed or not. Depending on that,
             // the popup messages will change.
             final File installedFile = FileDir.ROOT.getFile(".installed");
@@ -163,7 +169,7 @@ public class AssetPreparer {
             // Prepare download gui.
             final DownloadGUI downloadGUI = DownloadGUI.create(
                     "Downloading...",
-                    "Installing everything... This might take a while. 🙄"
+                    "Here are a few pickup lines while downloading everything."
             );
 
 
@@ -182,8 +188,22 @@ public class AssetPreparer {
                     continue;
                 }
 
+
+                final AtomicLong lastUpdatedText = new AtomicLong(System.currentTimeMillis());
+                final Random random = new Random();
+
                 // Downloads all the missing assets.
                 downloadProcess.start(process -> {
+
+                    if (System.currentTimeMillis() - lastUpdatedText.get() > 7000) {
+                        lastUpdatedText.set(System.currentTimeMillis());
+
+                        final String downloadText = downloadLines[random.nextInt(maxDownloadLines)];
+                        downloadGUI.updateText(
+                                downloadText
+                        );
+                    }
+
                     downloadGUI.getProgressBar().setValue(Math.round(process.getPercent()));
                 });
 
