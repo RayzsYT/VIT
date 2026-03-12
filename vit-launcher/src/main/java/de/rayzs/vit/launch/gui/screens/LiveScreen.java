@@ -30,6 +30,8 @@ public class LiveScreen extends Screen {
     private final String title = "v%s [%s]";
     private final String playerStats = "RR: %d (%+d) | WR: %.2f%% | HS: %.2f%%";
 
+    private final int minRequiredPlayerBanners = 5;
+
     private final String playerNameDisplay = String.join("", new String[]{
             "<html><div style='color: rgba(%d, %d, %d, 1)",
             "; font-size: 13px;'><b>%s</b></div></html>"
@@ -73,14 +75,21 @@ public class LiveScreen extends Screen {
 
         final int max = Math.max(team1Players.size(), team2Players.size());
 
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < Math.max(minRequiredPlayerBanners, max); i++) {
+            final boolean shouldCreateEmptyBanner = i < minRequiredPlayerBanners;
+
             if (i < team1Players.size()) {
                 playersPanel.add(createPlayerBanner(api, game, team1Players.get(i)));
+            } else if (shouldCreateEmptyBanner) {
+                playersPanel.add(createEmptyPlayerBanner());
             }
 
             if (i < team2Players.size()) {
                 playersPanel.add(createPlayerBanner(api, game, team2Players.get(i)));
+            } else if (shouldCreateEmptyBanner) {
+                playersPanel.add(createEmptyPlayerBanner());
             }
+
         }
 
 
@@ -89,6 +98,22 @@ public class LiveScreen extends Screen {
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
 
+
+    /**
+     * Creates an empty player banner as a placeholder
+     * to fill the grid.
+     *
+     * @return Empty player banner.
+     */
+    private JPanel createEmptyPlayerBanner() {
+        final JPanel banner = new JPanel();
+
+        banner.setOpaque(false);
+        banner.setPreferredSize(new Dimension(450, 170));
+        banner.setMinimumSize(new Dimension(450, 170));
+
+        return banner;
+    }
 
 
     /**
