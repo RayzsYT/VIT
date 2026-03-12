@@ -186,6 +186,9 @@ public class AssetPreparer {
                 downloadProcess.start(process -> {
                     downloadGUI.getProgressBar().setValue(Math.round(process.getPercent()));
                 });
+
+                // Update all files once downloaded
+                api.getImageProvider().getImages(dir).forEach(DisplayImage::updateImage);
             }
 
             // Close download gui.
