@@ -195,6 +195,7 @@ public class AssetPreparer {
                 // Downloads all the missing assets.
                 downloadProcess.start(process -> {
 
+                    // Changing the download text after every 8s
                     if (System.currentTimeMillis() - lastUpdatedText.get() > 8000) {
                         lastUpdatedText.set(System.currentTimeMillis());
 
