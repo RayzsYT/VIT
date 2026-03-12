@@ -31,4 +31,29 @@ public class StringUtils {
 
         return -1;
     }
+
+    /**
+     * Takes a number as input and formats it into something
+     * more "nicer". Example:
+     *
+     * <pre>
+     *  {@code
+     *      StringUtils.formatNumber(1);
+     *      // Out: "+1"
+     *
+     *      StringUtils.formatNumber(0);
+     *      // Out: "0"
+     *
+     *      StringUtils.formatNumber(-1);
+     *      // Out: "-1"
+     *  }
+     * </pre>
+     *
+     * @param number Number to convert into a nicer String format.
+     *
+     * @return Formatted number.
+     */
+    public static String formatNumber(final double number) {
+        return (number > 0 ? "+" : "") + number;
+    }
 }
