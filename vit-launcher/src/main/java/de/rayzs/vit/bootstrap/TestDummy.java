@@ -3,14 +3,10 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.items.Agent;
-import de.rayzs.vit.api.objects.items.Season;
-import de.rayzs.vit.api.objects.items.Team;
-import de.rayzs.vit.api.objects.items.Weapon;
-import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.objects.player.PlayerInventory;
-import de.rayzs.vit.api.objects.player.PlayerSettings;
-import de.rayzs.vit.api.objects.player.PlayerStats;
+import de.rayzs.vit.api.objects.items.*;
+import de.rayzs.vit.api.objects.player.*;
+import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
+import de.rayzs.vit.api.objects.player.match.LastCompMatch;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
@@ -70,7 +66,11 @@ public class TestDummy {
             skinMap.put(weapon, skinsArr[random.nextInt(skinsArr.length)]);
         }
 
-        final PlayerSettings settings = new PlayerSettings(false, false);
+        final PlayerSettings settings = new PlayerSettings(
+                random.nextInt(10) > 4,
+                random.nextInt(10) > 4
+        );
+
         final PlayerInventory inventory = new PlayerInventory(skinMap);
 
         final List<Match> matches = new ArrayList<>();
@@ -105,7 +105,21 @@ public class TestDummy {
                 "PlayerTitle-" + random.nextInt(100),
                 settings,
                 inventory,
-                null,
+                new PlayerCompetitive(
+                        Tier.values()[random.nextInt(Tier.values().length)],
+                        random.nextInt(100),
+                        null,
+                        new LastCompMatch(
+                                null,
+                                new CompMatchResult(
+                                        (random.nextInt(10) <= 4 ? -1 : 1) * random.nextInt(30)
+                                )
+                        ),
+                        new CompRequirements(
+                                random.nextInt(10),
+                                true
+                        )
+                ),
                 playerStats,
                 matches.toArray(new Match[0])
         );
