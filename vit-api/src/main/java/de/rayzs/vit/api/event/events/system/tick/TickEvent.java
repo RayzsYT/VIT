@@ -10,9 +10,18 @@ import de.rayzs.vit.api.session.SessionState;
  */
 public class TickEvent extends Event {
 
-    private final SessionState state;
+    private SessionState state;
 
     public TickEvent(final SessionState state) {
+        this.state = state;
+    }
+
+    /**
+     * Set the fetched state.
+     *
+     * @param state New session state.
+     */
+    public void setState(SessionState state) {
         this.state = state;
     }
 
