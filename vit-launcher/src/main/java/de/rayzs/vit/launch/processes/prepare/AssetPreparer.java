@@ -4,14 +4,11 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
-import de.rayzs.vit.api.objects.items.MatchMap;
-import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
 import de.rayzs.vit.api.gui.UninteractableGUI;
 import de.rayzs.vit.api.image.DisplayImage;
-import de.rayzs.vit.api.objects.items.Agent;
-import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.image.SystemImages;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
@@ -83,6 +80,12 @@ public class AssetPreparer {
         loadingGUI.updateText("Fetching all weapons...");
         System.out.println("Fetching all weapons...");
         loadWeapons(client);
+
+
+        // Loading all seasons...
+        loadingGUI.updateText("Fetching all seasons...");
+        System.out.println("Fetching all seasons...");
+        loadSeasons(client);
 
 
         // Loading all agents...
@@ -373,6 +376,69 @@ public class AssetPreparer {
             api.getImageProvider().getAgents().putImage(
                     id,
                     IMAGE_URL.formatted(IMAGE_TARGET_AGENTS, id, IMAGE_SIZE_SMALL)
+            );
+        }
+    }
+
+    /**
+     * Fetches and loads all seasons.
+     *
+     * @param client HttpClient.
+     */
+    private void loadSeasons(final HttpClient client) {
+        final JSONObject jsonObj = fetch(client, "seasons");
+        final JSONArray seasons = jsonObj.getJSONArray("data");
+
+        final Map<String, String> seasonNames = new HashMap<>();        // id, name
+        final Map<String, String> seasonParents = new HashMap<>();      // id, parent id
+        final Map<String, SeasonType> seasonTypes = new HashMap<>();    // id, type
+
+        for (final Object seasonObj : seasons) {
+            final JSONObject season = (JSONObject) seasonObj;
+
+            final String title = season.optString("title");
+            final String name = season.optString("displayName");
+
+
+            final SeasonType seasonType = season.getString("type").contains("ACT")
+                    ? SeasonType.ACT : SeasonType.EPISODE;
+
+
+            final String seasonId = season.getString("uuid");
+            final String seasonName = Objects.requireNonNullElse(title, name);
+            final String parentId = season.optString("parentUuid");
+
+            seasonNames.put(seasonId, seasonName);
+            seasonTypes.put(seasonId, seasonType);
+
+            if (!parentId.isEmpty()) {
+                seasonParents.put(seasonId, parentId);
+            }
+        }
+
+        for (final String id : seasonNames.keySet()) {
+            final String name = seasonNames.get(id);
+            final SeasonType type = seasonTypes.get(id);
+            final String parentId = seasonParents.get(id);
+
+            Season parentSeason = null;
+            if (parentId != null) {
+                final String parentName = seasonNames.get(parentId);
+                final SeasonType parentType = seasonTypes.get(parentId);
+
+                parentSeason = new Season(
+                        parentId,
+                        parentName,
+                        parentType,
+                        null
+                );
+            }
+
+            final Season season = new Season(
+                    id,
+                    name,
+                    type,
+                    parentSeason
             );
         }
     }
