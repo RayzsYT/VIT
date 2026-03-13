@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.objects.items.MatchMap;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
@@ -394,7 +395,7 @@ public class AssetPreparer {
             final String id = map.getString("uuid");
 
 
-            de.rayzs.vit.api.objects.items.Map.loadMap(name, url, id);
+            MatchMap.loadMap(name, url, id);
 
             api.getImageProvider().getMaps().putName(id, url);
 

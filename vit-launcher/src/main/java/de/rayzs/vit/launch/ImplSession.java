@@ -343,7 +343,7 @@ public class ImplSession implements Session {
     @Override
     public Game constructGame(
             final SessionState state,
-            final Consumer<de.rayzs.vit.api.objects.items.Map> mapFoundConsumer,
+            final Consumer<MatchMap> mapFoundConsumer,
             final Consumer<Integer> playerLoadConsumer
     ) {
 
@@ -424,10 +424,10 @@ public class ImplSession implements Session {
 
 
         final PreGameInitializeEvent preGameInitializeEvent = VIT.get().getEventManager().call(new PreGameInitializeEvent(
-                state, server, de.rayzs.vit.api.objects.items.Map.getMapByUrl(match.getString("MapID"))
+                state, server, MatchMap.getMapByUrl(match.getString("MapID"))
         ));
 
-        final de.rayzs.vit.api.objects.items.Map map = preGameInitializeEvent.getMap();
+        final MatchMap map = preGameInitializeEvent.getMap();
 
         mapId = map.mapId();
         server = preGameInitializeEvent.getServer();
@@ -748,7 +748,7 @@ public class ImplSession implements Session {
                 selfPlayer,
                 state,
                 registeredPlayers.toArray(new Player[0]),
-                mapId,
+                map,
                 server
         );
 

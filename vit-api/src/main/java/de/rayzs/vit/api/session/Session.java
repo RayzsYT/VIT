@@ -1,7 +1,7 @@
 package de.rayzs.vit.api.session;
 
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.items.Map;
+import de.rayzs.vit.api.objects.items.MatchMap;
 import de.rayzs.vit.api.objects.player.Player;
 
 import java.net.http.HttpClient;
@@ -61,7 +61,7 @@ public interface Session {
      */
     Game constructGame(
             final SessionState state,
-            final Consumer<Map> mapFoundConsumer,
+            final Consumer<MatchMap> mapFoundConsumer,
             final Consumer<Integer> playerLoadConsumer
     );
 

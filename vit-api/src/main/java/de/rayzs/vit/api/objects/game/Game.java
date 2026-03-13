@@ -3,10 +3,7 @@ package de.rayzs.vit.api.objects.game;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
-import de.rayzs.vit.api.objects.items.Agent;
-import de.rayzs.vit.api.objects.items.Team;
-import de.rayzs.vit.api.objects.items.Tier;
-import de.rayzs.vit.api.objects.items.Weapon;
+import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.*;
 import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
 import de.rayzs.vit.api.objects.player.match.LastCompMatch;
@@ -24,7 +21,7 @@ public record Game(
         Player self,            // Self player
         SessionState state,     // State
         Player[] players,       // Players
-        String mapId,           // ID of map
+        MatchMap map,           // ID of map
         String server           // Connected server
 ) {
 
@@ -165,7 +162,7 @@ public record Game(
                         selfPlayer,
                         SessionState.IN_GAME, // Since it's only used to store matches and nothing more.
                         players,
-                        mapId,
+                        MatchMap.getMapById(game.mapId),
                         server
                 );
             }
@@ -198,8 +195,8 @@ public record Game(
 
             public CompressedGame(final Game game) {
 
-                this.mapId = game.mapId;
                 this.serverId = game.server;
+                this.mapId = game.map.mapId();
                 this.players = new CompressedPlayer[game.players.length];
 
                 for (int i = 0; i < game.players.length; i++) {

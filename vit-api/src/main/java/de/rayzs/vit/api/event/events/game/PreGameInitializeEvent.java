@@ -1,7 +1,7 @@
 package de.rayzs.vit.api.event.events.game;
 
 import de.rayzs.vit.api.event.Event;
-import de.rayzs.vit.api.objects.items.Map;
+import de.rayzs.vit.api.objects.items.MatchMap;
 import de.rayzs.vit.api.session.SessionState;
 
 /**
@@ -12,12 +12,12 @@ public class PreGameInitializeEvent extends Event {
 
     private final SessionState state;
     private String server;
-    private Map map;
+    private MatchMap map;
 
     public PreGameInitializeEvent(
             final SessionState state,
             final String server,
-            final Map map
+            final MatchMap map
     ) {
         this.state = state;
         this.server = server;
@@ -38,7 +38,7 @@ public class PreGameInitializeEvent extends Event {
      *
      * @param map New map.
      */
-    public void setMap(final Map map) {
+    public void setMap(final MatchMap map) {
         this.map = map;
     }
 
@@ -65,7 +65,7 @@ public class PreGameInitializeEvent extends Event {
      *
      * @return Map.
      */
-    public Map getMap() {
+    public MatchMap getMap() {
         return this.map;
     }
 }
