@@ -53,10 +53,13 @@ public class Bootstrap {
         final long start = System.currentTimeMillis();
         api.getAddonManager().loadAddons();
 
-        System.out.printf(
-                "Loaded %d addon(s) in %dms!%n",
-                api.getAddonManager().getLoadedAddons().size(),
-                System.currentTimeMillis() - start
+
+        final int loadedAddons = VIT.get().getAddonManager().getLoadedAddons().size();
+
+        System.out.println("Loaded "
+                + loadedAddons
+                + " addons in "
+                + (System.currentTimeMillis() - start) + "ms!"
         );
 
 

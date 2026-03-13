@@ -49,12 +49,15 @@ public class MainGUI extends GUI {
                         VIT.get().getAddonManager().unloadAddons();
                         VIT.get().getAddonManager().loadAddons();
 
+
                         final int loadedAddons = VIT.get().getAddonManager().getLoadedAddons().size();
 
-                        System.out.printf(
-                                "Done! Loaded %d addons in %dms.%n",
-                                loadedAddons, System.currentTimeMillis() - start
+                        System.out.println("Done! Loaded "
+                                + loadedAddons
+                                + " addons in "
+                                + (System.currentTimeMillis() - start) + "ms!"
                         );
+
                     });
 
                 },item -> {
