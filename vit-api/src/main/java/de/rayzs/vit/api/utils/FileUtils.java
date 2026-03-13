@@ -5,6 +5,8 @@ import de.rayzs.vit.api.file.FileDir;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class FileUtils {
 
@@ -85,5 +87,54 @@ public class FileUtils {
         } catch (Exception exception) {
             throw new RuntimeException("Failed to read resource file: " + inFilePath, exception);
         }
+    }
+
+    /**
+     * Zips a txt file and names the zipped file
+     * like the source file, just ending with .zip,
+     * and also deletes the original file once created.
+     *
+     * @param file Log file
+     * @return Zipped file with successful. NULL otherwise.
+     */
+    public static File zipFile(final File file) {
+
+        if (!file.isFile() || !file.getName().endsWith(".txt")) {
+            throw new IllegalArgumentException("Only .txt files can be zipped! Nothing more. Just a security measurement, since I don't trust myself.");
+        }
+
+        try {
+
+            final File zippedFile = new File(file.getParentFile(), file.getName() + ".zip");
+
+            final FileOutputStream fileOutputStream = new FileOutputStream(zippedFile);
+            final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+
+            final FileInputStream fileInputStream = new FileInputStream(file);
+            final ZipEntry zipEntry = new ZipEntry(file.getName());
+
+            zipOutputStream.putNextEntry(zipEntry);
+            final byte[] bytes = new byte[1024];
+
+            int length;
+            while ((length = fileInputStream.read(bytes)) >= 0) {
+                zipOutputStream.write(bytes, 0, length);
+            }
+
+            zipOutputStream.close();
+            fileInputStream.close();
+            fileOutputStream.close();
+
+            if (!file.delete()) {
+                System.err.println("Failed to delete source of zipped file: " + file.getAbsolutePath());
+            }
+
+            return zippedFile;
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
     }
 }
