@@ -1,6 +1,7 @@
 package de.rayzs.vit.api.event.events.game;
 
 import de.rayzs.vit.api.event.Event;
+import de.rayzs.vit.api.objects.items.Map;
 import de.rayzs.vit.api.session.SessionState;
 
 /**
@@ -10,18 +11,17 @@ import de.rayzs.vit.api.session.SessionState;
 public class PreGameInitializeEvent extends Event {
 
     private final SessionState state;
-    private String server, mapName, mapId;
+    private String server;
+    private Map map;
 
     public PreGameInitializeEvent(
             final SessionState state,
             final String server,
-            final String mapName,
-            final String mapId
+            final Map map
     ) {
         this.state = state;
         this.server = server;
-        this.mapName = mapName;
-        this.mapId = mapId;
+        this.map = map;
     }
 
     /**
@@ -34,23 +34,12 @@ public class PreGameInitializeEvent extends Event {
     }
 
     /**
-     * Set a new map id.
+     * Set a new map.
      *
-     * @param mapId New map id.
+     * @param map New map.
      */
-    public void setMapId(String mapId) {
-        this.mapId = mapId;
-    }
-
-    /**
-     * Set a new map name.
-     * Idk why someone would do that though since
-     * it's not used anywhere. But perhaps in the future?
-     *
-     * @param mapName New map name.
-     */
-    public void setMapName(String mapName) {
-        this.mapName = mapName;
+    public void setMap(final Map map) {
+        this.map = map;
     }
 
     /**
@@ -72,20 +61,11 @@ public class PreGameInitializeEvent extends Event {
     }
 
     /**
-     * Received map name.
+     * Received map.
      *
-     * @return Map name.
+     * @return Map.
      */
-    public String getMapName() {
-        return this.mapName;
-    }
-
-    /**
-     * Received map id.
-     *
-     * @return Map id.
-     */
-    public String getMapId() {
-        return this.mapId;
+    public Map getMap() {
+        return this.map;
     }
 }
