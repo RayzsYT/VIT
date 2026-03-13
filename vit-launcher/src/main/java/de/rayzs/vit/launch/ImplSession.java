@@ -572,6 +572,9 @@ public class ImplSession implements Session {
                         rankedIn
                 );
 
+                System.out.println("Loading " + playerName + " competitive data...");
+                System.out.println("> " + competitive);
+
                 playerCompetitive = constructPlayerCompetitive(
                         lastMatch,
                         compRequirements,
