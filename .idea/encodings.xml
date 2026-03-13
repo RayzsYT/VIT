@@ -3,11 +3,15 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vit-addon-example-addon/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vit-addon-example-addon/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vit-addon-predict-map/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vit-addon-predict-map/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vit-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vit-api/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/vit-example-addon/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/vit-example-addon/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vit-launcher/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vit-launcher/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../../../Windows/System32/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../../../Windows/System32/src/main/resources" charset="UTF-8" />
   </component>
 </project>

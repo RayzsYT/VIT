@@ -10,7 +10,7 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>vit-example-addon</artifactId>
+    <artifactId>vit-addon-predict-map</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
