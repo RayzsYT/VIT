@@ -2,9 +2,9 @@ package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.utils.FileUtils;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 
 public class OutputLogger extends PrintStream {
 
@@ -36,8 +36,17 @@ public class OutputLogger extends PrintStream {
         final File logFile = FileDir.LOGS.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".txt");
         logFile.createNewFile();
 
-        final FileWriter fileWriter = new FileWriter(logFile);
-        BufferedWriter writer = new BufferedWriter(fileWriter);
+        // Zipping all non-used files.
+        for (final File file : FileDir.LOGS.getFolder().listFiles()) {
+            if (!file.isFile() || !file.getName().endsWith(".txt") || file.getName().equalsIgnoreCase(logFile.getName())) {
+                continue;
+            }
+
+            FileUtils.zipFile(file);
+        }
+
+        final FileWriter fileWriter = new FileWriter(logFile, true);
+        final BufferedWriter writer = new BufferedWriter(fileWriter);
 
         System.setOut(new OutputLogger(writer, System.out, OutputLogger.Level.INFO));
         System.setErr(new OutputLogger(writer, System.err, OutputLogger.Level.ERROR));
@@ -66,7 +75,7 @@ public class OutputLogger extends PrintStream {
             final String text = new String(buf, off, len);
             final String line = text.contains("\n") ? text : constructMessage(text);
 
-            this.writer.write(line);
+            this.writer.append(line);
             this.writer.flush();
 
         } catch (IOException exception) {
