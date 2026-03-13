@@ -229,6 +229,10 @@ public record Game(
                         skins.put(weapon.getWeaponName(), player.inventory().getWeaponSkinName(weapon));
                     }
 
+                    final boolean hasCurrentTier = player.competitive() != null;
+                    final boolean hasPeakTier = hasCurrentTier && player.competitive().seasonTiers() != null;
+                    final boolean hasLatestMatch = hasCurrentTier && player.competitive().latestMatch() != null;
+
                     final CompressedPlayer compressedPlayer = new CompressedPlayer(
                             player.id(),
                             player.settings().incognito(),
@@ -240,18 +244,16 @@ public record Game(
                             player.name(),
                             player.agent().getAgentName(),
                             player.team().getTeamName(),
-                            (player.competitive() != null ? player.competitive().currentTier() : Tier.UNRANKED).getTierId(),
-                            (player.competitive() != null && player.competitive().seasonTiers() != null
-                                    ? player.competitive().seasonTiers().getPeakTier()
-                                    : Tier.UNRANKED).getTierId(),
+                            (hasCurrentTier ? player.competitive().currentTier() : Tier.UNRANKED).getTierId(),
+                            (hasPeakTier ? player.competitive().seasonTiers().getPeakTier() : Tier.UNRANKED).getTierId(),
                             player.stats().headShotRate(),
                             player.stats().winRate(),
-                            player.competitive() != null ? player.competitive().latestMatch().compMatchResult().rr() : 0,
-                            player.competitive() != null ? player.competitive().latestMatch().mapId() : null,
-                            player.competitive() != null ? player.competitive().rr() : 0,
-                            player.competitive() != null ? player.competitive().compRequirements().requiredCompGames() : 5,
-                            player.competitive() != null && player.competitive().compRequirements().rankedIn(),
-                            player.competitive() != null ? player.competitive().seasonTiers() : null,
+                            hasLatestMatch ? player.competitive().latestMatch().compMatchResult().rr() : 0,
+                            hasLatestMatch ? player.competitive().latestMatch().mapId() : null,
+                            hasCurrentTier ? player.competitive().rr() : 0,
+                            hasCurrentTier ? player.competitive().compRequirements().requiredCompGames() : 5,
+                            hasCurrentTier && player.competitive().compRequirements().rankedIn(),
+                            hasCurrentTier ? player.competitive().seasonTiers() : null,
                             compressedMatches
                     );
 
