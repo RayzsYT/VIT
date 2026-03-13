@@ -1,6 +1,11 @@
 package de.rayzs.vit.launch.processes.loop;
 
+import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.event.events.game.match.GameMatchEndEvent;
+import de.rayzs.vit.api.event.events.game.match.GameMatchStartEvent;
+import de.rayzs.vit.api.event.events.game.match.GamePreMatchDodgedEvent;
+import de.rayzs.vit.api.event.events.game.match.GamePreMatchStartEvent;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.gui.UpdateMainGuiEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
@@ -9,10 +14,7 @@ import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
-import de.rayzs.vit.launch.gui.screens.InactiveScreen;
-import de.rayzs.vit.launch.gui.screens.LiveScreen;
-import de.rayzs.vit.launch.gui.screens.LoadingScreen;
-import de.rayzs.vit.launch.gui.screens.LobbyScreen;
+import de.rayzs.vit.launch.gui.screens.*;
 
 public class LoopHandler {
 
@@ -25,14 +27,17 @@ public class LoopHandler {
     private final LobbyScreen lobbyScreen = new LobbyScreen();
     private final LiveScreen liveScreen = new LiveScreen();
 
+    private final boolean hasGui;
+
     private SessionState priorState;
 
 
     public LoopHandler(final VITAPI api, final MainGUI gui) {
         this.api = api;
         this.gui = gui;
+        this.hasGui = gui != null;
 
-        if (gui != null) {
+        if (hasGui) {
             gui.setAlwaysOnTop(true);
             gui.setAlwaysOnTop(false);
 
@@ -71,58 +76,74 @@ public class LoopHandler {
         }
 
 
-        priorState = sessionState;
-
-
-
         final StateChangeEvent stateChangeEvent = api.getEventManager().call(
                 new StateChangeEvent(priorState, sessionState)
         );
 
-        if (gui == null) {
-            return;
+
+        // Event calls:
+        final Game game = api.getGame();
+        if (priorState == SessionState.IN_MENU && sessionState == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchStartEvent(game));   // Agent selection
+        } else if (priorState == SessionState.IN_LOBBY && sessionState == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchDodgedEvent(game));  // Dodge
+        } else if (sessionState == SessionState.IN_GAME) {
+            api.getEventManager().call(new GameMatchStartEvent(game));      // Match started
+        } else if (priorState == SessionState.IN_GAME && sessionState == SessionState.IN_MENU) {
+            api.getEventManager().call(new GameMatchEndEvent(game));        // Match ended
         }
 
 
+        priorState = sessionState;
 
-        final UpdateMainGuiEvent updateMainGuiEvent = api.getEventManager().call(
-                new UpdateMainGuiEvent(stateChangeEvent.getState(), gui)
-        );
 
-        if (updateMainGuiEvent.isCancelled()) {
-            return;
+        if (hasGui) {
+            final UpdateMainGuiEvent updateMainGuiEvent = api.getEventManager().call(
+                    new UpdateMainGuiEvent(stateChangeEvent.getState(), gui)
+            );
+
+            if (updateMainGuiEvent.isCancelled()) {
+                return;
+            }
+
+            loadingScreen.resetText();
         }
-
-
-
-        loadingScreen.resetText();
 
 
         switch (sessionState) {
 
             case VALORANT_NOT_OPEN -> {
+                if (!hasGui) return;
+
                 inactiveScreen.load(api, gui);
             }
 
             case IN_MENU -> {
+                if (!hasGui) return;
+
                 loadingScreen.load(api, gui);
             }
 
             case IN_LOBBY -> {
-                loadingScreen.load(api, gui);
-                loadLobbyScreen();
+                loadGameScreen(lobbyScreen);
             }
 
             case IN_GAME -> {
-                loadingScreen.load(api, gui);
-                loadLiveScreen();
+                loadGameScreen(liveScreen);
             }
         }
     }
 
-    private void loadLobbyScreen() {
+    private void loadGameScreen(final Screen displayScreen) {
+        if (hasGui) loadingScreen.load(api, gui);
+
         final Game game = api.getSession().constructGame(priorState, n -> {
-            loadingScreen.updateText("Loaded " + n + " players...");
+            final String updateText = "Loaded " + n + " players...";
+
+
+            System.out.println(updateText);
+
+            if (hasGui) loadingScreen.updateText(updateText);
         });
 
         if (game == null) {
@@ -131,20 +152,6 @@ public class LoopHandler {
 
         api.setGame(game);
 
-        lobbyScreen.load(api, gui);
-    }
-
-    private void loadLiveScreen() {
-        final Game game = api.getSession().constructGame(priorState, n -> {
-            loadingScreen.updateText("Loaded " + n + " players...");
-        });
-
-        if (game == null) {
-            return;
-        }
-
-        api.setGame(game);
-
-        liveScreen.load(api, gui);
+        if (hasGui) displayScreen.load(api, gui);
     }
 }
