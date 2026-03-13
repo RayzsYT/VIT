@@ -400,11 +400,6 @@ public class AssetPreparer {
             final String name = season.optString("displayName");
             final String seasonTypeName = season.optString("type");
 
-            if (seasonTypeName.isEmpty()) {
-                continue;
-            }
-
-
             final SeasonType seasonType = seasonTypeName.contains("ACT")
                     ? SeasonType.ACT : SeasonType.EPISODE;
 
