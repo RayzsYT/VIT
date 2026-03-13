@@ -44,16 +44,8 @@ public class Bootstrap {
 
         final AssetPreparer prep = new AssetPreparer(api);
 
-        final InitializeMainGuiEvent initializeMainGuiEvent = api.getEventManager().call(
-                new InitializeMainGuiEvent(new MainGUI("Initializing..."))
-        );
 
-
-        final MainGUI gui = initializeMainGuiEvent.isCancelled()
-                ? null
-                : initializeMainGuiEvent.getGui();
-
-
+        // Loading addons
         final long start = System.currentTimeMillis();
         api.getAddonManager().loadAddons();
 
@@ -62,6 +54,17 @@ public class Bootstrap {
                 api.getAddonManager().getLoadedAddons().size(),
                 System.currentTimeMillis() - start
         );
+
+
+        // First event call
+        final InitializeMainGuiEvent initializeMainGuiEvent = api.getEventManager().call(
+                new InitializeMainGuiEvent(new MainGUI("Initializing..."))
+        );
+
+
+        final MainGUI gui = initializeMainGuiEvent.isCancelled()
+                ? null
+                : initializeMainGuiEvent.getGui();
 
 
         // Test screen
