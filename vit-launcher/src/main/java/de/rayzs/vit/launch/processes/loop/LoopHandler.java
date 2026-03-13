@@ -81,23 +81,22 @@ public class LoopHandler {
 
 
         // Event calls:
-        final Game game = api.getGame();
         if (priorState == SessionState.IN_MENU && sessionState == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchStartEvent(game));   // Agent selection
+            api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
 
 
         } else if (priorState == SessionState.IN_LOBBY && sessionState == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchDodgedEvent(game));  // Dodge
+            api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
 
 
         } else if (sessionState == SessionState.IN_GAME) {
-            api.getEventManager().call(new GameMatchStartEvent(game));      // Match started
+            api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
 
 
         } else if (priorState == SessionState.IN_GAME && sessionState == SessionState.IN_MENU) {
-            api.getEventManager().call(new GameMatchEndEvent(game));        // Match ended
+            api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
 
-            Game.saveMatch(game); // Save match into a file
+            Game.saveMatch(api.getGame()); // Save match into a file
         }
 
 
