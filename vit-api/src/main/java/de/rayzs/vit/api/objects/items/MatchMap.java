@@ -1,5 +1,6 @@
 package de.rayzs.vit.api.objects.items;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public record MatchMap(
@@ -60,5 +61,14 @@ public record MatchMap(
      */
     public static MatchMap getMapByName(final String mapName) {
         return MAP_NAMES.get(mapName);
+    }
+
+    /**
+     * Get a collection of all maps.
+     *
+     * @return Collection of all maps.
+     */
+    public static Collection<MatchMap> getMaps() {
+        return MAP_IDS.values();
     }
 }
