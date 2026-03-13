@@ -5,14 +5,9 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.ButtonUI;
-import javax.swing.plaf.MenuItemUI;
-import javax.swing.plaf.basic.BasicMenuBarUI;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URI;
 import java.util.function.Consumer;
 
 public class MainGUI extends GUI {
@@ -44,7 +39,7 @@ public class MainGUI extends GUI {
         final JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Colors.BACKGROUND.get());
 
-        menuBar.add(createMenu("Manage addons",
+        menuBar.add(createMenu("Addons",
                 item -> {
                     item.setText("Reload");
 
@@ -68,6 +63,56 @@ public class MainGUI extends GUI {
                     item.addActionListener(action -> {
                         try {
                             Desktop.getDesktop().open(FileDir.ADDONS.getFolder());
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+                }
+        ));
+
+        menuBar.add(createMenu("Extras",
+                item -> {
+                    item.setText("Github");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://github.com/rayzsyt/vit"));
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+
+                }, item -> {
+                    item.setText("Wiki");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/wiki"));
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+                }, item -> {
+                    item.setText("Report issue");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/issues"));
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+                }, item -> {
+                    item.setText("Open current logs");
+
+                    item.addActionListener(action -> {
+                        try {
+                            for (final File file : FileDir.LOGS.getFolder().listFiles()) {
+                                if (file.isFile() && file.getName().endsWith(".txt")) {
+                                    Desktop.getDesktop().open(file);
+                                    break;
+                                }
+                            }
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
