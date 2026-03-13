@@ -49,7 +49,7 @@ public class TestDummy {
                 self,
                 SessionState.IN_LOBBY, // Does not matter anyway
                 players.toArray(new Player[0]),
-                mapId,
+                MatchMap.getMapById(mapId),
                 "Wambooo" // Only legends will understand
         );
 
