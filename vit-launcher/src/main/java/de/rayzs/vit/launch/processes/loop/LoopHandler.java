@@ -61,46 +61,23 @@ public class LoopHandler {
 
 
         final TickEvent tickEvent = api.getEventManager().call(new TickEvent(api.getSession().getSessionState()));
-        final SessionState sessionState = tickEvent.getState();
+        final SessionState state = tickEvent.getState();
 
 
-        if (!sessionState.isValorantStarted()) {
+        if (!state.isValorantStarted()) {
             Request.unsetAuthToken();
             Request.unsetHeaders();
         }
 
 
-        if (priorState == sessionState) {
+        if (priorState == state) {
             return;
         }
 
 
         final StateChangeEvent stateChangeEvent = api.getEventManager().call(
-                new StateChangeEvent(priorState, sessionState)
+                new StateChangeEvent(priorState, state)
         );
-
-
-        // Event calls:
-        if (priorState == SessionState.IN_MENU && sessionState == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
-
-
-        } else if (priorState == SessionState.IN_LOBBY && sessionState == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
-
-
-        } else if (sessionState == SessionState.IN_GAME) {
-            api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
-
-
-        } else if (priorState == SessionState.IN_GAME && sessionState == SessionState.IN_MENU) {
-            api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
-
-            Game.saveMatch(api.getGame()); // Save match into a file
-        }
-
-
-        priorState = sessionState;
 
 
         if (hasGui) {
@@ -116,7 +93,7 @@ public class LoopHandler {
         }
 
 
-        switch (sessionState) {
+        switch (state) {
 
             case VALORANT_NOT_OPEN -> {
                 if (!hasGui) return;
@@ -131,19 +108,42 @@ public class LoopHandler {
             }
 
             case IN_LOBBY -> {
-                loadGameScreen(lobbyScreen);
+                loadGameScreen(state, lobbyScreen);
             }
 
             case IN_GAME -> {
-                loadGameScreen(liveScreen);
+                loadGameScreen(state, liveScreen);
             }
         }
+
+
+        // Event calls:
+        if (priorState == SessionState.IN_MENU && state == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
+
+
+        } else if (priorState == SessionState.IN_LOBBY && state == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
+
+
+        } else if (state == SessionState.IN_GAME) {
+            api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
+
+
+        } else if (priorState == SessionState.IN_GAME && state == SessionState.IN_MENU) {
+            api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
+
+            Game.saveMatch(api.getGame()); // Save match into a file
+        }
+
+
+        priorState = state;
     }
 
-    private void loadGameScreen(final Screen displayScreen) {
+    private void loadGameScreen(final SessionState state, final Screen displayScreen) {
         if (hasGui) loadingScreen.load(api, gui);
 
-        final Game game = api.getSession().constructGame(priorState, n -> {
+        final Game game = api.getSession().constructGame(state, n -> {
             final String updateText = "Loaded " + n + " players...";
 
 
