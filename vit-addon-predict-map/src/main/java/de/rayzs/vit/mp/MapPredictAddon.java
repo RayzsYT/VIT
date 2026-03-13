@@ -32,7 +32,7 @@ public class MapPredictAddon extends Addon {
             @Override
             public void call(PreGameInitializeEvent event) {
                 System.out.println("Found map: " + event.getMap().mapName());
-                mainGUI.setTitle("Predicted Map: " + event.getMap().mapName());
+                mainGUI.setTitle("Map: " + event.getMap().mapName());
             }
         });
 
