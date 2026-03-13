@@ -13,7 +13,7 @@ public interface VITAPI {
 
 
     // Time and date formats, so I don't have to copy-paste them across the entire project.
-    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy-HH-mm");
+    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy-HH");
     SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
 
