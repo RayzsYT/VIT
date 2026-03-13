@@ -389,8 +389,12 @@ public class AssetPreparer {
         for (final Object mapObj : maps) {
             final JSONObject map = (JSONObject) mapObj;
 
+            final String name = map.getString("displayName");
             final String url = map.getString("mapUrl"); // Using for blacklist
             final String id = map.getString("uuid");
+
+
+            de.rayzs.vit.api.objects.items.Map.loadMap(name, url, id);
 
             api.getImageProvider().getMaps().putName(id, url);
 
