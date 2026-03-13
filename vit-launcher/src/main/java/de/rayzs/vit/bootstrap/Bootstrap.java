@@ -71,6 +71,7 @@ public class Bootstrap {
             final int loadIndex = StringUtils.searchIndex("--load=", args[0]);
 
 
+            // Load a match from a file.
             if (loadIndex != -1) {
                 final String fileName = args[0].substring(loadIndex);
                 final File file = FileDir.GAMES.getFile(fileName);
