@@ -6,7 +6,7 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 
 # What it can do
 
-- View player related information by left-clicking on the player.
+- View player related information by left-clicking on a player.
   - Shows player skins.
   - Shows latest played competitive matches and their outcomes.
 - View how much RR someone has and lost after their last competitive match.
