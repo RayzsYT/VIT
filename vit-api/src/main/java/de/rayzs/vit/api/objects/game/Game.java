@@ -17,7 +17,6 @@ import de.rayzs.vit.api.objects.player.season.SeasonTiers;
 import de.rayzs.vit.api.session.SessionState;
 
 import java.io.*;
-import java.nio.MappedByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
