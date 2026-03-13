@@ -1,5 +1,6 @@
 package de.rayzs.vit.api.objects.game;
 
+import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.objects.items.Agent;
@@ -16,6 +17,7 @@ import de.rayzs.vit.api.objects.player.season.SeasonTiers;
 import de.rayzs.vit.api.session.SessionState;
 
 import java.io.*;
+import java.nio.MappedByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +89,8 @@ public record Game(
                     final Map<Weapon, String> weaponSkins = new HashMap<>();
                     for (Map.Entry<String, String> entry : compressedPlayer.weaponSkins.entrySet()) {
                         final Weapon weapon = Weapon.getWeaponByName(entry.getKey());
-                        final String skinId = entry.getValue();
+                        final String skinName = entry.getValue();
+                        final String skinId = VIT.get().getImageProvider().getWeaponSkins().getIdByName(skinName);
 
                         weaponSkins.put(weapon, skinId);
                     }
@@ -221,12 +224,17 @@ public record Game(
                         );
                     }
 
+                    final Map<String, String> skins = new HashMap<>();
+                    for (final Weapon weapon : Weapon.values()) {
+                        skins.put(weapon.getWeaponName(), player.inventory().getWeaponSkinName(weapon));
+                    }
+
                     final CompressedPlayer compressedPlayer = new CompressedPlayer(
                             player.id(),
                             player.settings().incognito(),
                             player.settings().levelHidden(),
                             player.level(),
-                            null,
+                            skins,
                             player.playerCardId(),
                             player.playerTitleId(),
                             player.name(),
