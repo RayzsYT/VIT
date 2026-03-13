@@ -84,6 +84,7 @@ public class LobbyScreen extends Screen {
         }
 
 
+        contentPane.add(gui.getControlPanel(), BorderLayout.NORTH);
         contentPane.add(topLayerPanel, BorderLayout.NORTH);
         contentPane.add(playersPanel, BorderLayout.CENTER);
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
