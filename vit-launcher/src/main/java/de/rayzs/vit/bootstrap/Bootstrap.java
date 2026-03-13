@@ -2,7 +2,9 @@ package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
+import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.ImplVITAPI;
 import de.rayzs.vit.launch.processes.loop.LoopHandler;
@@ -12,6 +14,7 @@ import de.rayzs.vit.launch.gui.screens.LobbyScreen;
 import de.rayzs.vit.launch.gui.screens.Screen;
 import de.rayzs.vit.launch.processes.prepare.UpdateChecker;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,6 +68,28 @@ public class Bootstrap {
         if (args.length >= 1) {
 
             final int testIndex = StringUtils.searchIndex("--test=", args[0]);
+            final int loadIndex = StringUtils.searchIndex("--load=", args[0]);
+
+
+            if (loadIndex != -1) {
+                final String fileName = args[0].substring(loadIndex);
+                final File file = FileDir.GAMES.getFile(fileName);
+
+                if (!file.isFile() || !file.exists()) {
+                    throw new NullPointerException("File does not exist! (" + fileName + ")");
+                }
+
+                final Game game = Game.loadMatch(file);
+                api.setGame(game);
+
+                if (gui != null) {
+                    new LiveScreen().load(api, gui);
+                    gui.setVisible(true);
+                } else System.err.println("GUI is currently disabled!");
+
+                return;
+            }
+
 
             if (testIndex != -1) {
 
@@ -84,7 +109,7 @@ public class Bootstrap {
                     default -> throw new IllegalStateException("Invalid screen name! (" + name + ")");
                 };
 
-                TestDummy.apply(gui, screen, num);
+                TestDummy.apply(gui, screen, num, true);
             }
 
             return;
