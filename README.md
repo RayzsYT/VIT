@@ -70,3 +70,25 @@ On how to create an addon, simply check out the [WIKI](https://github.com/RayzsY
 > <br><br>
 > Fake **Lobby** with **5 players**:<br>
 > ``java -jar VIT.jar --test=lobby --num=5``
+
+<br><br>
+
+# Commands
+
+``java -jar VIT.jar --test=<mode> --num=<size>``
+> Creates a VIT instance with fake data.
+> <br><br>
+> **Mode**: live / lobby
+> <br>
+> **Size**: Amount of fake players to generate
+> <br><br>
+> **Example**: ``java -jar VIT.jar --test=live --num=10``
+
+<br>
+
+``java -jar VIT.jar --load=<file>``
+> When you press ``WIN + R`` and enter `%appdata%/../local/VIT/storage/games`, 
+> you'll find a folder with files ending with ``.o``. Those files are save-files of the matches you played.
+> You can load them using the command above to see them inside VIT once more.
+> <br><br>
+> **Example**: ``java -jar VIT.jar --load=03-13-2026-04-43.o``
