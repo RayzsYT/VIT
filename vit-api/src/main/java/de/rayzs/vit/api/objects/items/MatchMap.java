@@ -2,15 +2,15 @@ package de.rayzs.vit.api.objects.items;
 
 import java.util.HashMap;
 
-public record Map(
+public record MatchMap(
         String mapName,
         String mapUrl,
         String mapId
 ) {
 
-    private final static HashMap<String, Map> MAP_NAMES = new HashMap<>();
-    private final static HashMap<String, Map> MAP_URLS = new HashMap<>();
-    private final static HashMap<String, Map> MAP_IDS = new HashMap<>();
+    private final static HashMap<String, MatchMap> MAP_NAMES = new HashMap<>();
+    private final static HashMap<String, MatchMap> MAP_URLS = new HashMap<>();
+    private final static HashMap<String, MatchMap> MAP_IDS = new HashMap<>();
 
 
     /**
@@ -25,7 +25,7 @@ public record Map(
             final String mapUrl,
             final String mapName
     ) {
-        final Map map = new Map(mapId, mapUrl, mapName);
+        final MatchMap map = new MatchMap(mapId, mapUrl, mapName);
 
         MAP_NAMES.putIfAbsent(mapName, map);
         MAP_URLS.putIfAbsent(mapUrl, map);
@@ -38,7 +38,7 @@ public record Map(
      *
      * @return Map if found. NULL otherwise.
      */
-    public static Map getMapById(final String mapId) {
+    public static MatchMap getMapById(final String mapId) {
         return MAP_IDS.get(mapId);
     }
 
@@ -48,7 +48,7 @@ public record Map(
      *
      * @return Map if found. NULL otherwise.
      */
-    public static Map getMapByUrl(final String mapUrl) {
+    public static MatchMap getMapByUrl(final String mapUrl) {
         return MAP_URLS.get(mapUrl);
     }
 
@@ -58,7 +58,7 @@ public record Map(
      *
      * @return Map if found. NULL otherwise.
      */
-    public static Map getMapByName(final String mapName) {
+    public static MatchMap getMapByName(final String mapName) {
         return MAP_NAMES.get(mapName);
     }
 }
