@@ -20,7 +20,12 @@ public class TestDummy {
     private static final Random random = new Random();
 
 
-    public static void apply(final MainGUI gui, final Screen screen, final int playerNum) {
+    public static void apply(
+            final MainGUI gui,
+            final Screen screen,
+            final int playerNum,
+            final boolean saveMatch
+    ) {
 
         if (gui != null) {
             gui.setVisible(true);
@@ -52,6 +57,11 @@ public class TestDummy {
 
         if (gui != null) {
             screen.load(VIT.get(), gui);
+        }
+
+
+        if (saveMatch) {
+            Game.saveMatch(game);
         }
     }
 
