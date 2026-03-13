@@ -158,7 +158,7 @@ public class TestDummy {
                 String.valueOf(Math.abs(random.nextLong())),
                 mapId,
                 new MatchInfo(
-                        new Season("", "", "", false),
+                        new Season("", "", SeasonType.ACT, null),
                         random.nextFloat(10),
                         random.nextInt(10),
                         random.nextInt(10),
