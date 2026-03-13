@@ -41,7 +41,17 @@ public class MainGUI extends GUI {
 
         menuBar.add(createMenu("Addons",
                 item -> {
-                    item.setText("Reload");
+                    item.setText("Open addons folder");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().open(FileDir.ADDONS.getFolder());
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+                }, item -> {
+                    item.setText("Reload all addons");
 
                     item.addActionListener(action -> {
                         final long start = System.currentTimeMillis();
@@ -59,13 +69,16 @@ public class MainGUI extends GUI {
                         );
 
                     });
+                }
+        ));
 
-                },item -> {
-                    item.setText("Open addons folder");
+        menuBar.add(createMenu("Help?",
+                item -> {
+                    item.setText("Wiki");
 
                     item.addActionListener(action -> {
                         try {
-                            Desktop.getDesktop().open(FileDir.ADDONS.getFolder());
+                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/wiki"));
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
@@ -73,24 +86,18 @@ public class MainGUI extends GUI {
                 }
         ));
 
-        menuBar.add(createMenu("Extras",
+        menuBar.add(createMenu("Issues",
                 item -> {
-                    item.setText("Github");
+                    item.setText("Open current logs");
 
                     item.addActionListener(action -> {
                         try {
-                            Desktop.getDesktop().browse(new URI("https://github.com/rayzsyt/vit"));
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
-                    });
-
-                }, item -> {
-                    item.setText("Wiki");
-
-                    item.addActionListener(action -> {
-                        try {
-                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/wiki"));
+                            for (final File file : FileDir.LOGS.getFolder().listFiles()) {
+                                if (file.isFile() && file.getName().endsWith(".txt")) {
+                                    Desktop.getDesktop().open(file);
+                                    break;
+                                }
+                            }
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
@@ -105,17 +112,16 @@ public class MainGUI extends GUI {
                             exception.printStackTrace();
                         }
                     });
-                }, item -> {
-                    item.setText("Open current logs");
+                }
+        ));
+
+        menuBar.add(createMenu("About",
+                item -> {
+                    item.setText("Github");
 
                     item.addActionListener(action -> {
                         try {
-                            for (final File file : FileDir.LOGS.getFolder().listFiles()) {
-                                if (file.isFile() && file.getName().endsWith(".txt")) {
-                                    Desktop.getDesktop().open(file);
-                                    break;
-                                }
-                            }
+                            Desktop.getDesktop().browse(new URI("https://github.com/rayzsyt/vit"));
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
