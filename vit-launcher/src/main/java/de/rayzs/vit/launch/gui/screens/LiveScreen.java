@@ -80,7 +80,8 @@ public class LiveScreen extends Screen {
 
 
         for (int i = 0; i < max; i++) {
-            final boolean shouldCreateEmptyBanner = !team2Players.isEmpty() && i < minRequiredPlayerBanners;
+            final boolean shouldCreateEmptyBanner = game.players().length == 1
+                    || !team2Players.isEmpty() && i < minRequiredPlayerBanners;
 
             if (i < team1Players.size()) {
                 playersPanel.add(createPlayerBanner(api, game, team1Players.get(i)));
