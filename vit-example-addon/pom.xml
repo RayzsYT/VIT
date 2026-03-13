@@ -23,6 +23,7 @@
             <groupId>de.rayzs.vit</groupId>
             <artifactId>vit-api</artifactId>
             <version>1.0.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
