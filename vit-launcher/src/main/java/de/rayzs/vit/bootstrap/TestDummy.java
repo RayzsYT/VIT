@@ -33,10 +33,10 @@ public class TestDummy {
         }
 
 
-        final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
-        final String[] mapsArray = maps.toArray(new String[0]);
+        final Collection<MatchMap> maps = MatchMap.getMaps();
+        final MatchMap[] mapsArray = maps.toArray(new MatchMap[0]);
 
-        final String mapId = mapsArray[random.nextInt(mapsArray.length)];
+        final MatchMap map = mapsArray[random.nextInt(mapsArray.length)];
 
         final List<Player> players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
@@ -49,7 +49,7 @@ public class TestDummy {
                 self,
                 SessionState.IN_LOBBY, // Does not matter anyway
                 players.toArray(new Player[0]),
-                MatchMap.getMapById(mapId),
+                map,
                 "Wambooo" // Only legends will understand
         );
 
