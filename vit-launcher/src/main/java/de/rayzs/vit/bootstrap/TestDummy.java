@@ -62,8 +62,17 @@ public class TestDummy {
         final String[] skinsArr = skins.toArray(new String[0]);
         final Map<Weapon, String> skinMap = new HashMap<>();
 
-        for (final Weapon weapon : Weapon.values()) {
-            skinMap.put(weapon, skinsArr[random.nextInt(skinsArr.length)]);
+        for (int i = 0; i < Weapon.values().length; i++) {
+            final Weapon weapon = Weapon.values()[i];
+            final String skinId = skinsArr[random.nextInt(skinsArr.length)];
+            final String skinName = VIT.get().getImageProvider().getWeaponSkins().getName(skinId);
+
+            if (skinName.contains(weapon.getWeaponName())) {
+                skinMap.put(weapon, skinId);
+                continue;
+            }
+
+            i--;
         }
 
         final PlayerSettings settings = new PlayerSettings(
