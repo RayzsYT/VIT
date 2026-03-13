@@ -2,9 +2,18 @@ package de.rayzs.vit.api.gui;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.file.FileDir;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.ButtonUI;
+import javax.swing.plaf.MenuItemUI;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
 
 public class MainGUI extends GUI {
 
@@ -31,12 +40,51 @@ public class MainGUI extends GUI {
         this.contentPane = new JPanel(new BorderLayout());
         this.contentPane.setBackground(Colors.BACKGROUND.get());
 
+
+        final JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Colors.BACKGROUND.get());
+
+        menuBar.add(createMenu("Manage addons",
+                item -> {
+                    item.setText("Reload");
+
+                    item.addActionListener(action -> {
+                        final long start = System.currentTimeMillis();
+
+                        VIT.get().getAddonManager().unloadAddons();
+                        VIT.get().getAddonManager().loadAddons();
+
+                        final int loadedAddons = VIT.get().getAddonManager().getLoadedAddons().size();
+
+                        System.out.printf(
+                                "Done! Loaded %d addons in %dms.%n",
+                                loadedAddons, System.currentTimeMillis() - start
+                        );
+                    });
+
+                },item -> {
+                    item.setText("Open addons folder");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().open(FileDir.ADDONS.getFolder());
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
+                }
+        ));
+
+        this.setJMenuBar(menuBar);
+
+
         this.disclaimerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         this.disclaimerPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
         final JLabel disclaimerLabel = new JLabel(DISCLAIMER.formatted(VITAPI.getVersion()));
         disclaimerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
         disclaimerPanel.add(disclaimerLabel);
+
 
         setContentPane(this.contentPane);
     }
@@ -60,5 +108,28 @@ public class MainGUI extends GUI {
         this.contentPane.setBackground(Colors.BACKGROUND.get());
 
         setContentPane(this.contentPane);
+    }
+
+    private JMenu createMenu(final String title, Consumer<JMenuItem>... items) {
+        final JMenu menu = new JMenu(title);
+
+        menu.setOpaque(true);
+        menu.setBackground(Colors.BACKGROUND.get());
+        menu.setForeground(Colors.TEXT_FOREGROUND.get());
+
+        menu.getPopupMenu().setBorder(null);
+
+        for (final Consumer<JMenuItem> consumer : items) {
+            final JMenuItem item = new JMenuItem();
+
+            item.setOpaque(true);
+            item.setBackground(Colors.BACKGROUND.get());
+            item.setForeground(Colors.TEXT_FOREGROUND.get());
+
+            consumer.accept(item);
+            menu.add(item);
+        }
+
+        return menu;
     }
 }
