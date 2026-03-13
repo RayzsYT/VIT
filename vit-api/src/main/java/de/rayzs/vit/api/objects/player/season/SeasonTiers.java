@@ -3,9 +3,10 @@ package de.rayzs.vit.api.objects.player.season;
 import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Tier;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class SeasonTiers {
+public class SeasonTiers implements Serializable {
 
     // Empty SeasonStats as dummy in case none was found
     private static final SeasonStats EMPTY_SEASON_STATS = new SeasonStats(
