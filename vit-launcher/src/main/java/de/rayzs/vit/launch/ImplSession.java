@@ -1123,20 +1123,17 @@ public class ImplSession implements Session {
         Tier currentTier = Tier.UNRANKED;
         int rr = 0;
 
-        if (seasonTiers != null) for (final Season season : Season.getActiveSeasons()) {
 
-            if (season.type() == SeasonType.EPISODE) {
-                continue;
+        if (seasonTiers != null && compRequirements.rankedIn()) {
+            for (final Season season : new Season[] { Season.getActiveEpisode(), Season.getActiveAct() }) {
+                currentTier = seasonTiers.getTierInSeason(season);
+
+                if (currentTier != Tier.UNRANKED) {
+                    rr = seasonTiers.getSessionStats(season).rr();
+                    break;
+                }
+
             }
-
-
-            currentTier = seasonTiers.getTierInSeason(season);
-
-            if (currentTier != Tier.UNRANKED) {
-                rr = seasonTiers.getSessionStats(season).rr();
-                break;
-            }
-
         }
 
 
