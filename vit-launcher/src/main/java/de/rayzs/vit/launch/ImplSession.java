@@ -38,11 +38,6 @@ public class ImplSession implements Session {
 
     private final File lockfile;
 
-    // SeasonId, Season
-    private final Map<String, Season> seasons = new HashMap<>();
-    private final Season[] currentSeasons =  new Season[2]; // 0 = ACT | 1 = Episode
-
-
     private String currentVersion;
 
     private HttpClient client;
@@ -347,7 +342,7 @@ public class ImplSession implements Session {
             final Consumer<Integer> playerLoadConsumer
     ) {
 
-        fetchSeasons(); // Fetches all available seasons first, in case they were not fetched yet.
+        updateSeasonActivity();     // Update all season activities.
 
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
@@ -793,7 +788,7 @@ public class ImplSession implements Session {
         final String mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapUrl);
 
         final String seasonId = matchInfo.getString("seasonId");
-        final Season season = seasons.get(seasonId);
+        final Season season = Season.getSeasonById(seasonId);
 
 
         final JSONArray teams = matchDetails.getJSONArray("teams");
@@ -1001,11 +996,11 @@ public class ImplSession implements Session {
     }
 
     /**
-     * Fetches all seasons.
+     * Updates season activity.
      */
-    private void fetchSeasons() {
+    private void updateSeasonActivity() {
 
-        if (!seasons.isEmpty()) {
+        if (!Season.getActiveSeasons().isEmpty()) {
             return;
         }
 
@@ -1024,29 +1019,21 @@ public class ImplSession implements Session {
 
         for (Object seasonObj : seasonsArray) {
             final JSONObject seasonJson = (JSONObject) seasonObj;
-
-            String seasonName = seasonJson.getString("Name");
-
-            final String seasonType = seasonJson.getString("Type");
-            final String seasonId = seasonJson.getString("ID");
-
             final boolean active = seasonJson.getBoolean("IsActive");
-            final boolean isEpisode = seasonType.equals("episode");
 
-
-            final Season season = new Season(
-                    seasonId,
-                    seasonName,
-                    seasonType,
-                    active
-            );
-
-            seasons.put(seasonId, season);
-
-            if (active) {
-                this.currentSeasons[isEpisode ? 1 : 0] = season;
+            if (!active) {
+                continue;
             }
 
+
+            final String seasonId = seasonJson.getString("ID");
+            final Season season = Season.getSeasonById(seasonId);
+
+            if (season == null) {
+                throw new NullPointerException("Failed to find season with ID: " + seasonId + "!");
+            }
+
+            Season.setActive(season);
         }
     }
 
@@ -1082,7 +1069,7 @@ public class ImplSession implements Session {
                 // Read and set all seasons and tiers for the player.
                 for (final String seasonId : seasonInfo.keySet()) {
                     final JSONObject seasonJson = seasonInfo.getJSONObject(seasonId);
-                    final Season season = seasons.get(seasonId);
+                    final Season season = Season.getSeasonById(seasonId);
 
 
                     if (seasonJson == null) {
@@ -1136,7 +1123,13 @@ public class ImplSession implements Session {
         Tier currentTier = Tier.UNRANKED;
         int rr = 0;
 
-        if (seasonTiers != null) for (final Season season : currentSeasons) {
+        if (seasonTiers != null) for (final Season season : Season.getActiveSeasons()) {
+
+            if (season.type() == SeasonType.EPISODE) {
+                continue;
+            }
+
+
             currentTier = seasonTiers.getTierInSeason(season);
 
             if (currentTier != Tier.UNRANKED) {
