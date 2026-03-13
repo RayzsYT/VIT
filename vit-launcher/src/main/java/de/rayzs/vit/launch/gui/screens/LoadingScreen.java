@@ -59,7 +59,6 @@ public class LoadingScreen extends Screen {
         panel.add(Box.createVerticalGlue());
 
 
-        contentPane.add(gui.getControlPanel(), BorderLayout.NORTH);
         contentPane.add(panel, BorderLayout.CENTER);
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
