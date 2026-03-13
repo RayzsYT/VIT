@@ -25,6 +25,16 @@ public record Season(
 
 
     /**
+     * Get a season by its id.
+     *
+     * @param id Season id.
+     * @return Found {@link Season} or NULL if nothing's found.
+     */
+    public static Season getSeasonById(final String id) {
+        return SEASON_IDS.get(id);
+    }
+
+    /**
      * Set a season active. Can only be done once
      * for a season and cannot be reverted back.
      *
