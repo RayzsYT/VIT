@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class Bootstrap {
 
     public static void main(String[] args) {
-        System.out.println("Starting VIT...");
+        System.out.println("Initializing logger...");
 
         try {
             OutputLogger.initialize();
@@ -38,6 +38,10 @@ public class Bootstrap {
     }
 
     private static void start(final String[] args) {
+
+        System.out.println("Starting VIT...");
+
+
         final ImplVITAPI api = new ImplVITAPI();
         VIT.set(api);
 
