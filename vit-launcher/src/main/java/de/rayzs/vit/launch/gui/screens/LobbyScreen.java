@@ -70,7 +70,7 @@ public class LobbyScreen extends Screen {
         final JPanel topLayerPanel = createTopLayer(
                 api,
                 game,
-                api.getGame().mapId()
+                api.getGame().map().mapId()
         );
 
 
