@@ -14,6 +14,7 @@ import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.gui.screens.Screen;
 
 import java.util.*;
+import java.util.Map;
 
 public class TestDummy {
 

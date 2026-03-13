@@ -5,7 +5,6 @@ import de.rayzs.vit.api.addon.Addon;
 import de.rayzs.vit.api.addon.AddonDescription;
 import de.rayzs.vit.api.event.EventAdapter;
 import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
-import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
 
 public class MapPredictAddon extends Addon {
 
@@ -20,7 +19,7 @@ public class MapPredictAddon extends Addon {
 
             @Override
             public void call(PreGameInitializeEvent event) {
-                System.out.println("Map: " + event.getMapName());
+                System.out.println("Map: " + event.getMap().mapName());
             }
         });
 
