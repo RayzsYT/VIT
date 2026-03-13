@@ -143,12 +143,11 @@ public class LoopHandler {
     private void loadGameScreen(final SessionState state, final Screen displayScreen) {
         if (hasGui) loadingScreen.load(api, gui);
 
-        final Game game = api.getSession().constructGame(state, n -> {
+        final Game game = api.getSession().constructGame(state, map -> {
+            gui.setTitle("Map: " + map.mapName());
+        }, n -> {
             final String updateText = "Loaded " + n + " players...";
-
-
             System.out.println(updateText);
-
             if (hasGui) loadingScreen.updateText(updateText);
         });
 

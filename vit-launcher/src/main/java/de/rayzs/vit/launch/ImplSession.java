@@ -343,6 +343,7 @@ public class ImplSession implements Session {
     @Override
     public Game constructGame(
             final SessionState state,
+            final Consumer<de.rayzs.vit.api.objects.items.Map> mapFoundConsumer,
             final Consumer<Integer> playerLoadConsumer
     ) {
 
@@ -430,6 +431,9 @@ public class ImplSession implements Session {
 
         mapId = map.mapId();
         server = preGameInitializeEvent.getServer();
+
+
+        mapFoundConsumer.accept(map);
 
 
         // Fetch the loadouts of all players.
