@@ -30,6 +30,7 @@ import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class ImplSession implements Session {
@@ -413,10 +414,6 @@ public class ImplSession implements Session {
         // Fetch match information
         final JSONObject match = new JSONObject(matchDetailsResult.get());
 
-        String mapName = match.getString("MapID");
-        mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapName);
-
-
         String tmpServer = match.getString("GamePodID");
         tmpServer = tmpServer.substring(0, tmpServer.lastIndexOf("-"));
         tmpServer = tmpServer.substring(tmpServer.lastIndexOf("-") + 1);
@@ -426,12 +423,12 @@ public class ImplSession implements Session {
 
 
         final PreGameInitializeEvent preGameInitializeEvent = VIT.get().getEventManager().call(new PreGameInitializeEvent(
-                state, server, mapName, mapId
+                state, server, de.rayzs.vit.api.objects.items.Map.getMapByUrl(match.getString("MapID"))
         ));
 
+        final de.rayzs.vit.api.objects.items.Map map = preGameInitializeEvent.getMap();
 
-        mapName = preGameInitializeEvent.getMapName();
-        mapId = preGameInitializeEvent.getMapId();
+        mapId = map.mapId();
         server = preGameInitializeEvent.getServer();
 
 
