@@ -7,6 +7,7 @@ import de.rayzs.vit.api.file.FileDir;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.function.Consumer;
 
@@ -91,15 +92,26 @@ public class MainGUI extends GUI {
                     item.setText("Open current logs");
 
                     item.addActionListener(action -> {
-                        try {
-                            for (final File file : FileDir.LOGS.getFolder().listFiles()) {
-                                if (file.isFile() && file.getName().endsWith(".txt")) {
-                                    Desktop.getDesktop().open(file);
-                                    break;
+                        for (final File file : FileDir.LOGS.getFolder().listFiles()) {
+                            if (file.isFile() && file.getName().endsWith(".txt")) {
+
+                                try {
+                                    Desktop.getDesktop().browseFileDirectory(file);
+                                } catch (Exception exception) {
+
+                                    // Called on Windows 10 since Java Windows 10
+                                    // somehow has some issues regarding the method
+                                    // called above.
+
+                                    try {
+                                        Desktop.getDesktop().open(file);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
+
+                                break;
                             }
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
                         }
                     });
                 }, item -> {
