@@ -17,12 +17,22 @@ public class ExampleAddon extends Addon {
 
     @Override
     public void onEnable() {
+
+        // Load default config
         loadConfig();
 
+        // Read prefix from config
         final String prefix = getConfig().getString("prefix");
         System.out.println(prefix + "Example Addon is enabled");
 
 
+        // Set a new value to a config.
+        config.put("lol", "skrr");
+        // Apply and save your config changes.
+        saveConfig();
+
+
+        // Register an event
         api.getEventManager().register(this, new EventAdapter<>(StateChangeEvent.class) {
 
             @Override
