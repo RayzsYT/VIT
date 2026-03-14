@@ -22,6 +22,16 @@ import java.util.TimerTask;
 public class Bootstrap {
 
     public static void main(String[] args) {
+
+        // Check if system is windows or not. Since VALORANT is for Windows only,
+        // it only makes sense to focus on making VIT Windows only.
+        if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
+            System.out.println("VIT only supports Windows!");
+            return;
+        }
+
+
+        // Initializing
         System.out.println("Initializing logger...");
 
         try {
