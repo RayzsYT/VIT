@@ -84,6 +84,11 @@ public class Bootstrap {
                 : initializeMainGuiEvent.getGui();
 
 
+        if (gui != null) {
+            gui.setLocation(prep.getLastAssetGuiX(), prep.getLastAssetGuiY());
+        }
+
+
         // Test screen
         if (args.length >= 1) {
 
