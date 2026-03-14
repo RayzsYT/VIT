@@ -156,7 +156,7 @@ public class LobbyPlayerWindow extends GUI {
                     ImageUtils.cropImage(
                             VIT.get()
                                     .getImageProvider().getMaps()
-                                    .getImage(match.mapId()).getImage(),
+                                    .getImage(match.map().mapId()).getImage(),
                             1000,
                             200
                     ), 0.5f
