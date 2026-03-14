@@ -13,7 +13,7 @@ public class FileUtils {
 
     /**
      * Reads a resource file from inside the jar
-     * and exports it to the directed file out path.
+     * and exports it to the out file directory.
      *
      * @param inFilePath Resource file path.
      * @param outFileDir Export file directory.
@@ -21,6 +21,20 @@ public class FileUtils {
     public static File exportResourceFile(
             final String inFilePath,
             final FileDir outFileDir
+    ) {
+        return exportResourceFile(inFilePath, outFileDir.getFolder());
+    }
+
+    /**
+     * Reads a resource file from inside the jar
+     * and exports it to the out file directory.
+     *
+     * @param inFilePath Resource file path.
+     * @param outFileDir Export file directory.
+     */
+    public static File exportResourceFile(
+            final String inFilePath,
+            final File outFileDir
     ) {
 
         final URL url = FileUtils.class.getClassLoader().getResource(
@@ -38,7 +52,8 @@ public class FileUtils {
             connection.setUseCaches(false);
 
             final InputStream inputStream = connection.getInputStream();
-            final File outputFile = outFileDir.getFile(
+            final File outputFile = new File(
+                    outFileDir,
                     inFilePath.substring(inFilePath.lastIndexOf("/") + 1)
             );
 
@@ -99,8 +114,8 @@ public class FileUtils {
      */
     public static File zipFile(final File file) {
 
-        if (!file.isFile() || !file.getName().endsWith(".txt")) {
-            throw new IllegalArgumentException("Only .txt files can be zipped! Nothing more. Just a security measurement, since I don't trust myself.");
+        if (!file.isFile() || !file.getName().endsWith(".txt") && !file.getName().endsWith(".o")) {
+            throw new IllegalArgumentException("Only .txt & .o files can be zipped! Nothing more. Just a security measurement, since I don't trust myself.");
         }
 
         try {
