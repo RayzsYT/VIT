@@ -159,7 +159,12 @@ public class Bootstrap {
 
         TimerTask task = new TimerTask() {
             public void run() {
-                loop.handle();
+
+                try {
+                    loop.handle();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         };
 
