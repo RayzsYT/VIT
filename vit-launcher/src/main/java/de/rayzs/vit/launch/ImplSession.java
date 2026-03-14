@@ -572,9 +572,6 @@ public class ImplSession implements Session {
                         rankedIn
                 );
 
-                System.out.println("Loading " + playerName + " competitive data...");
-                System.out.println("> " + competitive);
-
                 playerCompetitive = constructPlayerCompetitive(
                         lastMatch,
                         compRequirements,
@@ -1097,16 +1094,17 @@ public class ImplSession implements Session {
                     );
 
 
-                    if (seasonJson.has("CompetitiveTier")) {
-                        final int tierId = seasonJson.getInt("CompetitiveTier");
-                        seasonTierIdsMap.put(seasonStats, tierId);
+                    if (Season.isActive(season)) {
+                        if (seasonJson.has("CompetitiveTier")) {
+                            final int tierId = seasonJson.getInt("CompetitiveTier");
+                            seasonTierIdsMap.put(seasonStats, tierId);
+                        }
+                    } else {
+                        if (seasonJson.has("Rank")) {
+                            final int competitiveRankId = seasonJson.getInt("Rank");
+                            seasonTierIdsMap.put(seasonStats, competitiveRankId);
+                        }
                     }
-
-                    if (seasonJson.has("Rank")) {
-                        final int competitiveRankId = seasonJson.getInt("Rank");
-                        seasonTierIdsMap.put(seasonStats, competitiveRankId);
-                    }
-
                 }
 
 
@@ -1127,14 +1125,11 @@ public class ImplSession implements Session {
 
 
         if (seasonTiers != null && compRequirements.rankedIn()) {
-            for (final Season season : new Season[] { Season.getActiveAct(), Season.getActiveEpisode() }) {
-                currentTier = seasonTiers.getTierInSeason(season);
+            final Season season = Season.getActiveAct();
+            currentTier = seasonTiers.getTierInSeason(season);
 
-                if (currentTier != Tier.UNRANKED) {
-                    rr = seasonTiers.getSessionStats(season).rr();
-                    break;
-                }
-
+            if (currentTier != Tier.UNRANKED) {
+                rr = seasonTiers.getSessionStats(season).rr();
             }
         }
 
