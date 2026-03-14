@@ -59,8 +59,6 @@ public class LoopHandler {
             lastTick = System.currentTimeMillis();
         }
 
-        System.out.println("TICK");
-
 
         if (!Request.areHeadersSet()) {
             try {
