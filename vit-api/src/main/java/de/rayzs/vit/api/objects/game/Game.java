@@ -36,7 +36,12 @@ public record Game(
     public static boolean saveMatch(final Game game) {
         System.out.println("Saving match...");
 
-        final File saveFile = FileDir.GAMES.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".o");
+        final String fileName = String.format("%s-%s.o",
+                VITAPI.DATE_FORMAT.format(System.currentTimeMillis()),
+                VITAPI.TIME_FORMAT.format(System.currentTimeMillis()).replace(":", "-")
+        );
+
+        final File saveFile = FileDir.GAMES.getFile(fileName);
 
         try {
             final FileOutputStream outputStream = new FileOutputStream(saveFile);
