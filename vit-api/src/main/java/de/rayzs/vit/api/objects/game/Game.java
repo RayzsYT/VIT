@@ -135,7 +135,9 @@ public record Game(
                                     compressedPlayer.currentRR,
                                     compressedPlayer.seasonTiers,
                                     new LastCompMatch(
-                                            MatchMap.getMapById(compressedPlayer.lastCompMatchMapId),
+                                            compressedPlayer.lastCompMatchMapId != null
+                                                    ? MatchMap.getMapById(compressedPlayer.lastCompMatchMapId)
+                                                    : null,
                                             new CompMatchResult(
                                                     compressedPlayer.lastEarnedRR
                                             )
@@ -156,11 +158,6 @@ public record Game(
                         selfPlayer = players[i];
                     }
                 }
-
-                System.out.println("Map id: " + mapId);
-                System.out.println("#1 " + (MatchMap.getMapById(mapId) == null));
-                System.out.println("#2 " + (MatchMap.getMapByUrl(mapId) == null));
-                System.out.println("#3 " + (MatchMap.getMapByName(mapId) == null));
 
                 return new Game(
                         selfPlayer,
@@ -232,6 +229,7 @@ public record Game(
                     final boolean hasCurrentTier = player.competitive() != null;
                     final boolean hasPeakTier = hasCurrentTier && player.competitive().seasonTiers() != null;
                     final boolean hasLatestMatch = hasCurrentTier && player.competitive().latestMatch() != null;
+                    final boolean hasLatestMatchMap = hasLatestMatch && player.competitive().latestMatch().map() != null;
 
                     final CompressedPlayer compressedPlayer = new CompressedPlayer(
                             player.id(),
@@ -249,7 +247,7 @@ public record Game(
                             player.stats().headShotRate(),
                             player.stats().winRate(),
                             hasLatestMatch ? player.competitive().latestMatch().compMatchResult().rr() : 0,
-                            hasLatestMatch ? player.competitive().latestMatch().map().mapId() : null,
+                            hasLatestMatchMap ? player.competitive().latestMatch().map().mapId() : null,
                             hasCurrentTier ? player.competitive().rr() : 0,
                             hasCurrentTier ? player.competitive().compRequirements().requiredCompGames() : 5,
                             hasCurrentTier && player.competitive().compRequirements().rankedIn(),
