@@ -405,7 +405,7 @@ public class AssetPreparer {
 
 
             final String seasonId = season.getString("uuid");
-            final String seasonName = Objects.requireNonNullElse(title, name);
+            final String seasonName = title.isEmpty() ? name : title;
             final String parentId = season.optString("parentUuid");
 
             seasonNames.put(seasonId, seasonName);
