@@ -109,7 +109,7 @@ public class Addon {
     public JSONObject getConfig() {
 
         if (this.config == null) {
-            throw new NullPointerException("Config not found! Please ensure to call this method here after you called 'loadConfig()' first.");
+            throw new NullPointerException("Config not found! Please ensure to call this method here after you called 'Addon#loadConfig()' first.");
         }
 
         return this.config;
