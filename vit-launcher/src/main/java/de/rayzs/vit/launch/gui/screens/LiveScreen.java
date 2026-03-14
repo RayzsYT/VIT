@@ -68,7 +68,12 @@ public class LiveScreen extends Screen {
 
         final Player selfPlayer = game.self();
 
+        team1Players.add(selfPlayer);
         for (final Player player : game.players()) {
+            if (team1Players.contains(player)) {
+                continue;
+            }
+
             if (player.team() == selfPlayer.team()) {
                 team1Players.add(player);
             } else {
