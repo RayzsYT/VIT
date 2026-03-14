@@ -1127,7 +1127,7 @@ public class ImplSession implements Session {
 
 
         if (seasonTiers != null && compRequirements.rankedIn()) {
-            for (final Season season : new Season[] { Season.getActiveEpisode(), Season.getActiveAct() }) {
+            for (final Season season : new Season[] { Season.getActiveAct(), Season.getActiveEpisode() }) {
                 currentTier = seasonTiers.getTierInSeason(season);
 
                 if (currentTier != Tier.UNRANKED) {
