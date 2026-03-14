@@ -147,7 +147,9 @@ public class LobbyScreen extends Screen {
                     case MouseEvent.BUTTON2 -> {
                         if (player.settings().incognito()) return;
 
-                        final String[] nameSplit = player.name().split("#");
+                        final String[] nameSplit = player.name()
+                                .replace(" ", "")
+                                .split("#");
 
                         try {
                             Desktop.getDesktop().browse(new URI("https://tracker.gg/valorant/profile/riot/" + nameSplit[0] + "%23" + nameSplit[1] + "/"));
