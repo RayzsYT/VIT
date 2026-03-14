@@ -116,8 +116,8 @@ public class AssetPreparer {
 
         // Move MainGUI to asset window, in case someone moved it to a
         // less annoying position.
-        this.lastAssetGuiX = mainGUI.getLocation().x;
-        this.lastAssetGuiY = mainGUI.getLocation().y;
+        this.lastAssetGuiX = loadingGUI.getLocation().x;
+        this.lastAssetGuiY = loadingGUI.getLocation().y;
 
         // Close uninterpretable gui.
         loadingGUI.dispose();
