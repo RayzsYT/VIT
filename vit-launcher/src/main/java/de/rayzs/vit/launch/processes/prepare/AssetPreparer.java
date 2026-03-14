@@ -63,7 +63,7 @@ public class AssetPreparer {
 
     private final VITAPI api;
 
-    public AssetPreparer(final VITAPI api, final MainGUI mainGUI) {
+    public AssetPreparer(final VITAPI api) {
         this.api = api;
 
         System.out.println("Fetching and loading assets...");
