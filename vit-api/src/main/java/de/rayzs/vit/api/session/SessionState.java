@@ -3,23 +3,26 @@ package de.rayzs.vit.api.session;
 import java.util.Locale;
 
 public enum SessionState {
-    VALORANT_NOT_OPEN   (false,     false,      ""),
-    IN_MENU             (true,      false,      ""),
-    IN_LOBBY            (true,      true,       "pregame"),
-    IN_GAME             (true,      true,       "core-game");
+    VALORANT_NOT_OPEN   (false,     false,      "",                 2500),
+    IN_MENU             (true,      false,      "",                 1000),
+    IN_LOBBY            (true,      true,       "pregame",          2500),
+    IN_GAME             (true,      true,       "core-game",        2500);
 
 
     private final boolean started, insideMatch;
     private final String internalName;
+    private final int waitingInMillis;
 
     SessionState(
             final boolean started,
             final boolean insideMatch,
-            final String internalName
+            final String internalName,
+            final int waitingInMillis
     ) {
         this.started = started;
         this.insideMatch = insideMatch;
         this.internalName = internalName;
+        this.waitingInMillis = waitingInMillis;
     }
 
     /**
@@ -54,6 +57,15 @@ public enum SessionState {
         return this.internalName;
     }
 
+    /**
+     * Get time in millis to wait
+     * 'til the next tick.
+     *
+     * @return Waiting in millis.
+     */
+    public int getWaitingInMillisTime() {
+        return waitingInMillis;
+    }
 
     /**
      * Get the SessionState from the loop state.
