@@ -47,8 +47,6 @@ public record Season(
             throw new IllegalArgumentException("Season (" + season.name() + ") is already active!");
         }
 
-        System.out.println("Season: " + season.name + ": ");
-
         switch (season.type) {
             case ACT -> ACTIVE_SEASON_ACT = season;
             case EPISODE -> ACTIVE_SEASON_EPISODE = season;
