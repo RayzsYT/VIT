@@ -224,7 +224,7 @@ public class AssetPreparer {
 
 
             // Extract the start script.
-            FileUtils.exportResourceFile("scripts/start.bat", FileDir.SCRIPTS);
+            FileUtils.exportResourceFile(null, "scripts/start.bat", FileDir.SCRIPTS);
 
 
             if (!installedBefore) {

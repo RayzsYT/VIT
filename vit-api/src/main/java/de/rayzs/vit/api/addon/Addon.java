@@ -30,7 +30,7 @@ public class Addon {
     }
 
     /**
-     * What to do during bootup.
+     * What to do during boot-up.
      */
     public void onEnable() {}
 
@@ -93,7 +93,7 @@ public class Addon {
         File configFile = new File(getAddonDir(), configFileName);
 
         if (!configFile.exists()) {
-            configFile = FileUtils.exportResourceFile(configFileName, addonDir);
+            configFile = FileUtils.exportResourceFile(this.getClass(), configFileName, addonDir);
         }
 
 

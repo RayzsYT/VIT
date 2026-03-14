@@ -20,13 +20,14 @@ public enum SystemImages {
     SystemImages(final String inFilePath) {
         // Export the file first if it doesn't exist.
         this.imageFile = FileUtils.exportResourceFile(
+                null,
                 inFilePath,
                 FileDir.SYSTEM
         );
 
         final String[] fileNameSplit = this.imageFile.getName().split("\\."); // ["file", "png"]
-        final String fileName = fileNameSplit[0];                         // "file"
-        final String fileType = fileNameSplit[1];                         // "png"
+        final String fileName = fileNameSplit[0];   // "file"
+        final String fileType = fileNameSplit[1];   // "png"
 
         this.displayImage = new DisplayImage(
             null,
