@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public enum SessionState {
     VALORANT_NOT_OPEN   (false,     false,      "",                 2500),
-    IN_MENU             (true,      false,      "",                 1000),
+    IN_MENU             (true,      false,      "",                 1500),
     IN_LOBBY            (true,      true,       "pregame",          2500),
     IN_GAME             (true,      true,       "core-game",        2500);
 

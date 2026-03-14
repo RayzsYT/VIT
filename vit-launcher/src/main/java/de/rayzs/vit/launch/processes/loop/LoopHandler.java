@@ -29,6 +29,7 @@ public class LoopHandler {
     private final boolean hasGui;
 
     private SessionState priorState;
+    private long lastTick = System.currentTimeMillis();
 
 
     public LoopHandler(final VITAPI api, final MainGUI gui) {
@@ -46,6 +47,21 @@ public class LoopHandler {
 
 
     public void handle() {
+
+        if (priorState != null) {
+            final long time = System.currentTimeMillis() - lastTick;
+            final long waiting = priorState.getWaitingInMillisTime();
+
+            if (time < waiting) {
+                return;
+            }
+
+            lastTick = System.currentTimeMillis();
+        }
+
+        System.out.println("TICK");
+
+
         if (!Request.areHeadersSet()) {
             try {
                 api.getSession().initialize();
