@@ -27,7 +27,7 @@ public class UninteractableGUI extends GUI {
         super(title, 400, 120);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setUndecorated(true);
+        //setUndecorated(true);
 
         final JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Colors.BACKGROUND.get());
@@ -43,7 +43,7 @@ public class UninteractableGUI extends GUI {
         this.textArea.setForeground(Colors.TEXT_FOREGROUND.get());
 
         this.textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        this.textArea.setBorder(BorderFactory.createEmptyBorder(50, 10, 10, 10));
+        this.textArea.setBorder(BorderFactory.createEmptyBorder(30, 10, 10, 10));
 
 
         // Image logo
