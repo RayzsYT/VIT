@@ -17,7 +17,10 @@ public class ExampleAddon extends Addon {
 
     @Override
     public void onEnable() {
-        System.out.println("Example Addon is enabled");
+        loadConfig();
+
+        final String prefix = getConfig().getString("prefix");
+        System.out.println(prefix + "Example Addon is enabled");
 
 
         api.getEventManager().register(this, new EventAdapter<>(StateChangeEvent.class) {
