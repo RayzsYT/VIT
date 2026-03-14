@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
@@ -26,6 +27,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class AssetPreparer {
+
+    private final int lastAssetGuiX, lastAssetGuiY;
+
 
     // Format for the images at valorant-api:
     // maps,     id,     displayicon (small) / splash (normal)
@@ -59,7 +63,7 @@ public class AssetPreparer {
 
     private final VITAPI api;
 
-    public AssetPreparer(final VITAPI api) {
+    public AssetPreparer(final VITAPI api, final MainGUI mainGUI) {
         this.api = api;
 
         System.out.println("Fetching and loading assets...");
@@ -108,7 +112,15 @@ public class AssetPreparer {
 
         // Not required anymore, therefore closing the client.
         client.close();
-        loadingGUI.dispose(); // Close uninterpretable gui.
+
+
+        // Move MainGUI to asset window, in case someone moved it to a
+        // less annoying position.
+        this.lastAssetGuiX = mainGUI.getLocation().x;
+        this.lastAssetGuiY = mainGUI.getLocation().y;
+
+        // Close uninterpretable gui.
+        loadingGUI.dispose();
 
 
 
@@ -318,6 +330,24 @@ public class AssetPreparer {
         System.out.println("Finished loading assets!");
     }
 
+
+    /**
+     * Last x location of asset gui before disposal.
+     *
+     * @return Last x location of asset gui.
+     */
+    public int getLastAssetGuiX() {
+        return this.lastAssetGuiX;
+    }
+
+    /**
+     * Last y location of asset gui before disposal.
+     *
+     * @return Last y location of asset gui.
+     */
+    public int getLastAssetGuiY() {
+        return this.lastAssetGuiY;
+    }
 
     /**
      * Sends a request to the valorant-api
