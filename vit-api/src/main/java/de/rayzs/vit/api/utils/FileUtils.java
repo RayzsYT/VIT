@@ -15,29 +15,33 @@ public class FileUtils {
      * Reads a resource file from inside the jar
      * and exports it to the out file directory.
      *
+     * @param clazz Class of the project whose local resource folder should be chosen. NULL uses this class here instead.
      * @param inFilePath Resource file path.
      * @param outFileDir Export file directory.
      */
     public static File exportResourceFile(
+            final Class<?> clazz,
             final String inFilePath,
             final FileDir outFileDir
     ) {
-        return exportResourceFile(inFilePath, outFileDir.getFolder());
+        return exportResourceFile(clazz, inFilePath, outFileDir.getFolder());
     }
 
     /**
      * Reads a resource file from inside the jar
      * and exports it to the out file directory.
      *
+     * @param clazz Class of the project whose local resource folder should be chosen. NULL uses this class here instead.
      * @param inFilePath Resource file path.
      * @param outFileDir Export file directory.
      */
     public static File exportResourceFile(
+            final Class<?> clazz,
             final String inFilePath,
             final File outFileDir
     ) {
 
-        final URL url = FileUtils.class.getClassLoader().getResource(
+        final URL url = (clazz != null ? clazz : FileUtils.class).getClassLoader().getResource(
                 inFilePath
         );
 
