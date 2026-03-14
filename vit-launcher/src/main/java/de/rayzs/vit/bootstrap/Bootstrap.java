@@ -156,14 +156,28 @@ public class Bootstrap {
 
 
         final LoopHandler loop = new LoopHandler(api, gui);
+        final TimerTask task = new TimerTask() {
 
-        TimerTask task = new TimerTask() {
+            int tolerance = 0;
+
             public void run() {
-
                 try {
+
                     loop.handle();
+
                 } catch (Exception exception) {
+
+                    tolerance++;
                     exception.printStackTrace();
+
+                    if (tolerance >= 2) {
+                        System.err.println("Something fatal happen too often! Program will terminate.");
+                        System.exit(0);
+                    }
+
+                    System.err.println("Something fatal happened! Resetting the whole Live GUI hoping for auto recovery.");
+                    loop.forceReset();
+
                 }
             }
         };
