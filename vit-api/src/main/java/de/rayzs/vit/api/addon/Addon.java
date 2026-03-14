@@ -10,7 +10,7 @@ import java.io.IOException;
 public class Addon {
 
     protected final VITAPI api;
-    protected final JSONObject settings;
+    protected final JSONObject config;
 
     private final AddonDescription description;
 
@@ -23,7 +23,7 @@ public class Addon {
         this.api = api;
         this.description = description;
 
-        final File configFolder = new File(description.getId());
+        final File configFolder = FileDir.ADDONS.getFile(description.getId());
         if (!configFolder.isDirectory()) {
             if (!configFolder.mkdir()) {
                 throw new RuntimeException("Could not create config folder for addon '" + description.getId() + "'!");
@@ -44,7 +44,7 @@ public class Addon {
         }
 
 
-        this.settings = new JSONObject();
+        this.config = new JSONObject();
     }
 
     /**
@@ -84,7 +84,7 @@ public class Addon {
      *
      * @return Settings JSONObject.
      */
-    public JSONObject getSettings() {
-        return this.settings;
+    public JSONObject getConfig() {
+        return this.config;
     }
 }
