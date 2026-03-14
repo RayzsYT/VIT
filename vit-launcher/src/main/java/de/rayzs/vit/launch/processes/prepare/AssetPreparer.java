@@ -461,7 +461,7 @@ public class AssetPreparer {
             final String id = map.getString("uuid");
 
 
-            MatchMap.loadMap(name, url, id);
+            MatchMap.loadMap(id, url, name);
 
             api.getImageProvider().getMaps().putName(id, url);
 
