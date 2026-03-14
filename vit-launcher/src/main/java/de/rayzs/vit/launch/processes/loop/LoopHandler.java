@@ -146,7 +146,7 @@ public class LoopHandler {
             api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
 
 
-        } else if (priorState == SessionState.IN_GAME && state == SessionState.IN_MENU) {
+        } else if (priorState == SessionState.IN_GAME) {
             api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
 
             Game.saveMatch(api.getGame()); // Save match into a file
