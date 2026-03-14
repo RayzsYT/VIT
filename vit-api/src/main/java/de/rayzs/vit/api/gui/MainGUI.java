@@ -73,7 +73,7 @@ public class MainGUI extends GUI {
                 }
         ));
 
-        menuBar.add(createMenu("Help?",
+        menuBar.add(createMenu("Help",
                 item -> {
                     item.setText("Wiki");
 
