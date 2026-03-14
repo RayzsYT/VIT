@@ -28,7 +28,7 @@ public class LoopHandler {
 
     private final boolean hasGui;
 
-    private SessionState priorState;
+    private SessionState priorState = SessionState.VALORANT_NOT_OPEN;
     private long lastTick = System.currentTimeMillis();
 
 
