@@ -25,7 +25,7 @@ import java.util.Map;
 public class LobbyScreen extends Screen {
 
 
-    private final String title = "%s [%s]";
+    private final String title = "Map: %s | Server: %s";
     private final String playerStats = "Lvl.: %s | RR: %s | WR: %.2f%% | HS: %.2f%%";
 
     private final String roleDisplay = String.join("", new String[] {

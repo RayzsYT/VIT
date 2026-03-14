@@ -28,7 +28,7 @@ import java.util.List;
 
 public class LiveScreen extends Screen {
 
-    private final String title = "%s [%s]";
+    private final String title = "Map: %s | Server: %s";
     private final String playerStats = "Lvl.: %s | RR: %s | WR: %.2f%% | HS: %.2f%%";
 
     private final int minRequiredPlayerBanners = 5;
