@@ -400,7 +400,7 @@ public class AssetPreparer {
             final String name = season.optString("displayName");
             final String seasonTypeName = season.optString("type");
 
-            final SeasonType seasonType = seasonTypeName.contains("ACT")
+            final SeasonType seasonType = seasonTypeName.contains("Act")
                     ? SeasonType.ACT : SeasonType.EPISODE;
 
 
