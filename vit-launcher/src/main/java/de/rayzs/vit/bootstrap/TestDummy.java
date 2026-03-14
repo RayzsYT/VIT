@@ -33,10 +33,7 @@ public class TestDummy {
         }
 
 
-        final Collection<MatchMap> maps = MatchMap.getMaps();
-        final MatchMap[] mapsArray = maps.toArray(new MatchMap[0]);
-
-        final MatchMap map = mapsArray[random.nextInt(mapsArray.length)];
+        final MatchMap map = getRandomMap();
 
         final List<Player> players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
@@ -114,6 +111,7 @@ public class TestDummy {
         final float winRate = (float) wins / (float) games;
 
         final PlayerStats playerStats = new PlayerStats(winRate, headshotRate);
+        final MatchMap map = getRandomMap();
 
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
@@ -130,7 +128,7 @@ public class TestDummy {
                         random.nextInt(100),
                         null,
                         new LastCompMatch(
-                                null,
+                                map,
                                 new CompMatchResult(
                                         (random.nextInt(10) <= 4 ? -1 : 1) * random.nextInt(30)
                                 )
@@ -146,17 +144,14 @@ public class TestDummy {
     }
 
     private static Match createRandomMatch() {
-        final Collection<String> maps = VIT.get().getImageProvider().getMaps().getIds();
-        final String[] mapsArray = maps.toArray(new String[0]);
-
-        final String mapId = mapsArray[random.nextInt(mapsArray.length)];
+        final MatchMap map = getRandomMap();
 
         final int wonRounds = random.nextInt(10),
                 lostRounds = random.nextInt(10);
 
         return new Match(
                 String.valueOf(Math.abs(random.nextLong())),
-                mapId,
+                map,
                 new MatchInfo(
                         new Season("", "", SeasonType.ACT, null),
                         random.nextFloat(10),
@@ -178,5 +173,12 @@ public class TestDummy {
                 + UUID.randomUUID().toString().substring(0, random.nextInt(6))
                 + "#"
                 + random.nextInt(10000);
+    }
+
+    private static MatchMap getRandomMap() {
+        final Collection<MatchMap> maps = MatchMap.getMaps();
+        final MatchMap[] mapsArray = maps.toArray(new MatchMap[0]);
+
+        return mapsArray[random.nextInt(mapsArray.length)];
     }
 }
