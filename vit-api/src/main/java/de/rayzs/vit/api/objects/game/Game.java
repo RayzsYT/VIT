@@ -98,10 +98,10 @@ public record Game(
                         final Compressor.CompressedMatch match = compressedMatches[j];
                         matches[j] = new Match(
                                 match.matchId,
-                                match.mapId,
+                                MatchMap.getMapById(match.mapId),
                                 new MatchInfo(
                                         null,
-                                            match.headshotRate,
+                                        match.headshotRate,
                                         match.headShots,
                                         match.bodyShots,
                                         match.legShots,
@@ -135,7 +135,7 @@ public record Game(
                                     compressedPlayer.currentRR,
                                     compressedPlayer.seasonTiers,
                                     new LastCompMatch(
-                                            compressedPlayer.lastCompMatchMapName,
+                                            MatchMap.getMapById(compressedPlayer.lastCompMatchMapId),
                                             new CompMatchResult(
                                                     compressedPlayer.lastEarnedRR
                                             )
@@ -157,12 +157,16 @@ public record Game(
                     }
                 }
 
+                System.out.println("Map id: " + mapId);
+                System.out.println("#1 " + (MatchMap.getMapById(mapId) == null));
+                System.out.println("#2 " + (MatchMap.getMapByUrl(mapId) == null));
+                System.out.println("#3 " + (MatchMap.getMapByName(mapId) == null));
 
                 return new Game(
                         selfPlayer,
                         SessionState.IN_GAME, // Since it's only used to store matches and nothing more.
                         players,
-                        MatchMap.getMapById(game.mapId),
+                        MatchMap.getMapById(mapId),
                         server
                 );
             }
@@ -208,7 +212,7 @@ public record Game(
 
                         compressedMatches[m] = new CompressedMatch(
                                 match.matchId(),
-                                match.mapId(),
+                                match.map().mapId(),
                                 match.stats().headshotRate(),
                                 match.stats().headshots(),
                                 match.stats().bodyShots(),
@@ -245,7 +249,7 @@ public record Game(
                             player.stats().headShotRate(),
                             player.stats().winRate(),
                             hasLatestMatch ? player.competitive().latestMatch().compMatchResult().rr() : 0,
-                            hasLatestMatch ? player.competitive().latestMatch().mapId() : null,
+                            hasLatestMatch ? player.competitive().latestMatch().map().mapId() : null,
                             hasCurrentTier ? player.competitive().rr() : 0,
                             hasCurrentTier ? player.competitive().compRequirements().requiredCompGames() : 5,
                             hasCurrentTier && player.competitive().compRequirements().rankedIn(),
@@ -295,7 +299,7 @@ public record Game(
                 float headshotRate,
                 float winRate,
                 int lastEarnedRR,
-                String lastCompMatchMapName,
+                String lastCompMatchMapId,
                 int currentRR,
                 int compRequirementRounds,
                 boolean compRequirementRankedIn,

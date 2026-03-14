@@ -557,11 +557,11 @@ public class ImplSession implements Session {
 
                 LastCompMatch lastMatch = null;
                 if (latestCompGameObj instanceof JSONObject latestCompGame) {
-                    final String lastPlayedMapId = latestCompGame.getString("MapID");
+                    final String lastPlayedMapUrl = latestCompGame.getString("MapID");
                     final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
 
                     lastMatch = new LastCompMatch(
-                            lastPlayedMapId,
+                            MatchMap.getMapByUrl(lastPlayedMapUrl),
                             new CompMatchResult(lastReceivedRR)
                     );
                 }
@@ -788,7 +788,6 @@ public class ImplSession implements Session {
 
 
         final String mapUrl = matchInfo.getString("mapId");
-        final String mapId = VIT.get().getImageProvider().getMaps().getIdByName(mapUrl);
 
         final String seasonId = matchInfo.getString("seasonId");
         final Season season = Season.getSeasonById(seasonId);
@@ -867,7 +866,7 @@ public class ImplSession implements Session {
 
         return new Match(
                 matchId,
-                mapId,
+                MatchMap.getMapByUrl(mapUrl),
                 new MatchInfo(
                         season, headShotRate,
                         headShots, bodyShots, legShots,

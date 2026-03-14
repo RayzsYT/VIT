@@ -1,8 +1,9 @@
 package de.rayzs.vit.api.objects.player.match;
 
+import de.rayzs.vit.api.objects.items.MatchMap;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 
 public record LastCompMatch(
-        String mapId,                       // ID of map being played on.
+        MatchMap map,                       // Played map
         CompMatchResult compMatchResult     // Comp match results
 ) { }
