@@ -71,7 +71,7 @@ public record Season(
      * @return True if the season is active. False otherwise.
      */
     public static boolean isActive(final Season season) {
-        return SEASON_ACTIVITY.get(season);
+        return SEASON_ACTIVITY.getOrDefault(season, false);
     }
 
     /**
