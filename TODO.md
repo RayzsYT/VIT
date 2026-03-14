@@ -1,2 +1,3 @@
 Checklist:
-- Check if Team Deathmatch works
+- Extract player banner from both Lobby and Live
+  - Make player name & stats updatable
