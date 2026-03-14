@@ -6,6 +6,9 @@ import de.rayzs.vit.api.utils.FileUtils;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class Addon {
 
@@ -16,7 +19,9 @@ public class Addon {
     // Addon dir where all addon related files are stored.
     protected final File addonDir;
 
+    protected File configFile;
     protected JSONObject config;
+
     private boolean enabled = true;
 
     public Addon(
@@ -97,7 +102,45 @@ public class Addon {
         }
 
 
-        this.config = new JSONObject(configFile);
+        this.configFile = configFile;
+
+
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            stringBuilder.append(
+                    String.join("", Files.readAllLines(configFile.toPath()))
+            );
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+
+        this.config = new JSONObject(stringBuilder.toString());
+    }
+
+    /**
+     * Save current config changes.
+     */
+    public void saveConfig() {
+
+        if (this.configFile == null) {
+            throw new NullPointerException("Config couldn't be saved since there's none! Please use 'Addon#loadConfig()' first!");
+        }
+
+
+        try {
+            final FileWriter writer = new FileWriter(this.configFile);
+
+            writer.write(this.config.toString(2));
+            writer.flush();
+            writer.close();
+
+            System.out.println("Successfully updated json object to file...!!");
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
