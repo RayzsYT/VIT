@@ -34,6 +34,8 @@ public record Game(
      * @return True if match could be stored successfully. False otherwise.
      */
     public static boolean saveMatch(final Game game) {
+        System.out.println("Saving match...");
+
         final File saveFile = FileDir.GAMES.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".o");
 
         try {
