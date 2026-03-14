@@ -69,10 +69,12 @@ public class ImplSession implements Session {
 
         if (Request.isAuthTokenSet()) {
             Request.unsetAuthToken();
+            System.out.println("Unset auth token to fetch it again.");
         }
 
         if (Request.areHeadersSet()) {
             Request.unsetHeaders();
+            System.out.println("Unset headers to fetch it again.");
         }
 
         fetchAuthToken();
@@ -97,6 +99,8 @@ public class ImplSession implements Session {
      * Fetch and set the auth token.
      */
     private void fetchAuthToken() {
+        System.out.println("Fetching auth token...");
+
         try {
             String[] lockData = new String(Files.readAllBytes(lockfile.toPath())).split(":");
 
@@ -221,6 +225,7 @@ public class ImplSession implements Session {
      * @param client HttpClient sending the request.
      */
     private void fetchRequestHeaders(final HttpClient client) {
+        System.out.println("Fetching headers...");
 
         // Sending request to receive the required headers
         // for sending requests towards the VALORANT servers.
