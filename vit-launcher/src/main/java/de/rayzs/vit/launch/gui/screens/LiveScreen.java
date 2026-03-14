@@ -325,7 +325,7 @@ public class LiveScreen extends Screen {
 
         currentRankLabel.setToolTipText("Current Rank: " + currentTier.getTierName());
 
-        if (hasPeakTier) {
+        if (peakTier != Tier.UNRANKED) {
             final ImageIcon peakRankImage =
                     peakTier.getImage().getIcon(38, 38, Image.SCALE_SMOOTH);
 
