@@ -46,6 +46,25 @@ public class LoopHandler {
     }
 
 
+    /**
+     * Forces a reset. Basically disabled everything and completely
+     * starts over from scratch. In case something fatal happened.
+     */
+    public void forceReset() {
+        if (Request.isAuthTokenSet()) {
+            Request.unsetAuthToken();
+        }
+
+        if (Request.areHeadersSet()) {
+            Request.unsetHeaders();
+        }
+
+
+        inactiveScreen.load(api, gui);
+        priorState = SessionState.VALORANT_NOT_OPEN;
+    }
+
+
     public void handle() {
 
         if (priorState != null) {
