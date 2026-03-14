@@ -25,7 +25,7 @@ import java.util.Map;
 public class LobbyScreen extends Screen {
 
 
-    private final String title = "v%s [%s]";
+    private final String title = "%s [%s]";
     private final String playerStats = "Lvl.: %s | RR: %s | WR: %.2f%% | HS: %.2f%%";
 
     private final String roleDisplay = String.join("", new String[] {
@@ -59,7 +59,7 @@ public class LobbyScreen extends Screen {
         final Game game = api.getGame();
 
         gui.setTitle(title.formatted(
-                VITAPI.getVersion(),
+                game.map().mapName(),
                 game.server()
         ));
 

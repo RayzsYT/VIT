@@ -28,7 +28,7 @@ import java.util.List;
 
 public class LiveScreen extends Screen {
 
-    private final String title = "v%s [%s]";
+    private final String title = "%s [%s]";
     private final String playerStats = "Lvl.: %s | RR: %s | WR: %.2f%% | HS: %.2f%%";
 
     private final int minRequiredPlayerBanners = 5;
@@ -50,7 +50,10 @@ public class LiveScreen extends Screen {
 
         final Game game = api.getGame();
 
-        gui.setTitle(title.formatted(VITAPI.getVersion(), game.server()));
+        gui.setTitle(title.formatted(
+                game.map().mapName(),
+                game.server()
+        ));
 
         final JPanel contentPane = gui.getContentPane();
         final JPanel topLayerPanel = createTopLayer(api, gui, game.map().mapId());
