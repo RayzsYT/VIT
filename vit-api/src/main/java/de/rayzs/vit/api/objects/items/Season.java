@@ -65,6 +65,16 @@ public record Season(
     }
 
     /**
+     * If season is active.
+     *
+     * @param season Season.
+     * @return True if the season is active. False otherwise.
+     */
+    public static boolean isActive(final Season season) {
+        return SEASON_ACTIVITY.get(season);
+    }
+
+    /**
      * Get active season act.
      *
      * @return Active season act.
