@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.rayzs.vit</groupId>
         <artifactId>VIT</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <artifactId>vit-addon-predict-map</artifactId>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>de.rayzs.vit</groupId>
             <artifactId>vit-api</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

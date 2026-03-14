@@ -22,7 +22,7 @@ public interface VITAPI {
      *
      * @return VIT version.
      */
-    static String getVersion() { return "1.0.4"; }
+    static String getVersion() { return "1.0.5"; }
 
     /**
      * Get the session to reload or fetch
