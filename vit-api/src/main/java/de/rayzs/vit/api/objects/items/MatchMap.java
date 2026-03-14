@@ -26,7 +26,7 @@ public record MatchMap(
             final String mapUrl,
             final String mapName
     ) {
-        final MatchMap map = new MatchMap(mapId, mapUrl, mapName);
+        final MatchMap map = new MatchMap(mapName, mapUrl, mapId);
 
         MAP_NAMES.putIfAbsent(mapName, map);
         MAP_URLS.putIfAbsent(mapUrl, map);
