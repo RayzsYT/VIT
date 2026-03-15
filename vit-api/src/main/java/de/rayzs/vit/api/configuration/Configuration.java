@@ -49,6 +49,15 @@ public class Configuration {
     }
 
     /**
+     * Get config file.
+     *
+     * @return Config file.
+     */
+    public File getFile() {
+        return this.file;
+    }
+
+    /**
      * Updates both {@link Configuration#file} & {@link Configuration#json}
      * fields by re-reading the file input of {@link Configuration#file}.
      *
