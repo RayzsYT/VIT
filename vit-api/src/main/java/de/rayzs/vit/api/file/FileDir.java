@@ -12,7 +12,7 @@ public enum FileDir {
     ROOT                (APP_DATA, "VIT"),
 
 
-    CONFIG              (ROOT,      "config"),
+    CONFIGS             (ROOT,      "configs"),
     STORAGE             (ROOT,      "storage"),
     ADDONS              (ROOT,      "addons"),
     SCRIPTS             (ROOT,      "scripts"),
