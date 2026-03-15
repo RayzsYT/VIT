@@ -65,7 +65,9 @@ public class Configuration {
      */
     public void update() throws IOException {
         this.file = new File(this.absoluteFilePath);
-        this.file.createNewFile(); // In case it does not exist yet
+
+        this.file.getParentFile().mkdirs();     // Create all directories
+        this.file.createNewFile();              // In case it does not exist yet
 
         updateJsonObject();
     }
@@ -77,7 +79,8 @@ public class Configuration {
      * @throws IOException If the operation fails.
      */
     public void save() throws IOException {
-        this.file.createNewFile(); // In case it does not exist yet
+        this.file.getParentFile().mkdirs();     // Create all directories
+        this.file.createNewFile();              // In case it does not exist yet
 
 
         final FileWriter writer = new FileWriter(this.file);
