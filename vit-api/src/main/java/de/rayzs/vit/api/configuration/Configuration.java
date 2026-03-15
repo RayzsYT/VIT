@@ -44,7 +44,7 @@ public class Configuration {
      *
      * @return JSONObject.
      */
-    public JSONObject getJson() {
+    public JSONObject get() {
         return this.json;
     }
 
