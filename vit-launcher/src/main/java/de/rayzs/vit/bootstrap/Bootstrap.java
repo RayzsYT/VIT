@@ -56,6 +56,15 @@ public class Bootstrap {
         VIT.set(api);
 
 
+        // Check if VIT is running on the latest version.
+        // It then asks if the user want to update. If so,
+        // then the rest of the code simply won't proceed.
+        if (new UpdateChecker().wantToUpdate()) {
+            return;
+        }
+
+
+        // Loading assets
         final AssetPreparer prep = new AssetPreparer(api);
 
 
@@ -138,14 +147,6 @@ public class Bootstrap {
                 TestDummy.apply(gui, screen, num, true);
             }
 
-            return;
-        }
-
-
-        // Check if VIT is running on the latest version.
-        // It then asks if the user want to update. If so,
-        // then the rest of the code simply won't proceed.
-        if (new UpdateChecker().wantToUpdate()) {
             return;
         }
 
