@@ -15,10 +15,12 @@ public class DisplayImage {
     private final DownloadElement downloadElement;
     private final FileDir dir;
 
-    private Image image;
-    private ImageIcon icon;
+    private File imageFile;
 
-    private boolean isIcon = false;
+    private ImageIcon icon;
+    private Image image;
+
+    private boolean isIcon = false, isGif = false;
 
     public DisplayImage(
             final String url,
@@ -38,14 +40,15 @@ public class DisplayImage {
         this.dir = dir;
         this.fileName = fileName + "." + fileType;
 
-        this.downloadElement = new DownloadElement(
+        downloadElement = new DownloadElement(
                 this.url,
                 this.fileName
         );
 
-        this.isIcon = fileType.equals("ico");
+        isIcon = fileType.equals("ico");
+        isGif = fileType.equals("gif");
 
-        updateImage();
+        imageFile = dir.getFile(this.fileName);
     }
 
     /**
@@ -55,7 +58,7 @@ public class DisplayImage {
      * @return True if downloaded and stored. False otherwise.
      */
     public boolean doesExist() {
-        return this.image != null;
+        return imageFile != null && imageFile.exists();
     }
 
     /**
@@ -79,23 +82,54 @@ public class DisplayImage {
     /**
      * Updates the image in case it did
      * not load at first.
+     *
+     * @return If image could be loaded or not.
      */
-    public void updateImage() {
-        final File imageFile = dir.getFile(fileName);
+    public boolean updateImage() {
+        imageFile = dir.getFile(fileName);
 
         if (isIcon) {
-            return;
+            return false;
         }
 
         if (imageFile.exists()) {
             try {
-                this.image = ImageIO.read(imageFile);
-                this.icon = new ImageIcon(imageFile.getAbsolutePath());
 
+                if (isGif) {
+                    this.icon = new ImageIcon(imageFile.getAbsolutePath());
+                    this.image = icon.getImage();
+                } else {
+                    this.image = ImageIO.read(imageFile);
+                    this.icon = new ImageIcon(image);
+                }
+
+                return true;
             } catch (Exception exception) {
                 throw new RuntimeException("Could not load image from " + imageFile.getAbsolutePath());
             }
         }
+
+        return false;
+    }
+
+    /**
+     * Deallocate the image to save some
+     * memory in case the image isn't required
+     * anymore. After all, RAM is pricey and
+     * very valuable in this day in age. ^^
+     */
+    public void deallocate() {
+        if (icon != null) {
+            final Image img = icon.getImage();
+            if (img != null) img.flush();
+        }
+
+        if (image != null) {
+            image.flush();
+        }
+
+        icon = null;
+        image = null;
     }
 
     /**
@@ -109,7 +143,7 @@ public class DisplayImage {
             throw new IllegalStateException("This image is an .ico file and cannot be converted into an image icon.");
         }
 
-        if (this.icon == null) {
+        if (this.icon == null && !updateImage()) {
             throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
 
@@ -135,10 +169,6 @@ public class DisplayImage {
             throw new IllegalStateException("This image is an .ico file and cannot be converted into an image icon.");
         }
 
-        if (this.icon == null) {
-            throw new NullPointerException("Image icon does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
-        }
-
         return new ImageIcon(getImage(width, height, hints));
     }
 
@@ -153,7 +183,7 @@ public class DisplayImage {
             throw new IllegalStateException("This image is an .ico file and cannot be converted into an image.");
         }
 
-        if (this.image == null) {
+        if (this.image == null && !updateImage()) {
             throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
 
@@ -179,11 +209,7 @@ public class DisplayImage {
             throw new IllegalStateException("This image is an .ico file and cannot be converted into an image.");
         }
 
-        if (this.image == null) {
-            throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
-        }
-
-        return this.image.getScaledInstance(width, height, hints);
+        return this.getImage().getScaledInstance(width, height, hints);
     }
 
     @Override
