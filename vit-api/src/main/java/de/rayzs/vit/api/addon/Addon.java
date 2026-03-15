@@ -1,6 +1,7 @@
 package de.rayzs.vit.api.addon;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.utils.FileUtils;
 import org.json.JSONObject;
@@ -16,11 +17,11 @@ public class Addon {
 
     private final AddonDescription description;
 
-    // Addon dir where all addon related files are stored.
+    // Addon dir where all addon related files are stored
     protected final File addonDir;
 
-    protected File configFile;
-    protected JSONObject config;
+    // Default config
+    protected final Configuration config;
 
     private boolean enabled = true;
 
@@ -32,6 +33,7 @@ public class Addon {
         this.description = description;
 
         this.addonDir = FileDir.ADDONS.getFile(description.getId());
+        this.config = new Configuration(addonDir, "config.json");
     }
 
     /**
@@ -91,7 +93,7 @@ public class Addon {
      * Does not overwrite or replace an already existing config file
      * and only tries to read it as a JSONObject.
      */
-    protected void loadConfig() {
+    protected void loadDefaultConfig() {
         final String configFileName = "config.json";
 
 
@@ -136,7 +138,7 @@ public class Addon {
             writer.flush();
             writer.close();
 
-            System.out.println("Successfully updated json object to file...!!");
+            System.out.println("Successfully updated json object to file!");
 
         } catch (IOException exception) {
             exception.printStackTrace();
