@@ -6,6 +6,8 @@ import de.rayzs.vit.api.file.FileDir;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -32,6 +34,16 @@ public class MainGUI extends GUI {
         super(title, 1000, 900);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        relocateToLastLocation();
+
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                updateLastLocation();
+            }
+        });
+
 
         this.contentPane = new JPanel(new BorderLayout());
         this.contentPane.setBackground(Colors.BACKGROUND.get());
