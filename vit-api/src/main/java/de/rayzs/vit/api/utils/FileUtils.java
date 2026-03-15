@@ -163,4 +163,48 @@ public class FileUtils {
 
         return null;
     }
+
+    /**
+     * Deletes a file. In case the file is a directory, it will
+     * recursively iterate through all it's elements and nested
+     * folders and delete them each by each.
+     *
+     * @param file File or directory to delete.
+     */
+    public static void delete(final File file) {
+
+        // Just a security check. I don't wish to reset my entire PC after all.
+        if (!file.getAbsolutePath().startsWith(FileDir.ROOT.getFolder().getAbsolutePath())) {
+            throw new IllegalArgumentException("You cannot delete any files or folders that are not related of VIT!");
+        }
+
+        // Base cases
+        if (!file.exists()) {
+            return;
+        }
+
+        if (file.isFile()) {
+
+            if (!file.delete()) {
+                System.err.println("Failed to delete file: " + file.getAbsolutePath());
+            }
+
+            return;
+        }
+
+        // Recursive case
+        if (file.isDirectory()) {
+            final File[] files = file.listFiles();
+
+            if (files != null) {
+                for (final File child : files) {
+                    delete(child);
+                }
+            }
+
+            if (!file.delete()) {
+                System.err.println("Failed to delete directory: " + file.getAbsolutePath());
+            }
+        }
+    }
 }
