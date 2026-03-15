@@ -4,12 +4,9 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.utils.FileUtils;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class Addon {
 
@@ -90,73 +87,42 @@ public class Addon {
     /**
      * Exports and loads the default config.json file from the
      * inner resource path to the {@link Addon#addonDir} folder.
-     * Does not overwrite or replace an already existing config file
-     * and only tries to read it as a JSONObject.
+     * This does not overwrite or replace an already existing config file!
      */
     protected void loadDefaultConfig() {
-        final String configFileName = "config.json";
-
-
-        File configFile = new File(getAddonDir(), configFileName);
-
-        if (!configFile.exists()) {
-            configFile = FileUtils.exportResourceFile(this.getClass(), configFileName, addonDir);
+        if (!config.getFile().exists()) {
+            FileUtils.exportResourceFile(
+                    this.getClass(),
+                    config.getFile().getName(),
+                    addonDir
+            );
         }
 
 
-        this.configFile = configFile;
-
-
-        final StringBuilder stringBuilder = new StringBuilder();
-
         try {
-            stringBuilder.append(
-                    String.join("", Files.readAllLines(configFile.toPath()))
-            );
+            config.update();
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-
-
-        this.config = new JSONObject(stringBuilder.toString());
     }
 
     /**
      * Save current config changes.
      */
     public void saveConfig() {
-
-        if (this.configFile == null) {
-            throw new NullPointerException("Config couldn't be saved since there's none! Please use 'Addon#loadConfig()' first!");
-        }
-
-
         try {
-            final FileWriter writer = new FileWriter(this.configFile);
-
-            writer.write(this.config.toString(2));
-            writer.flush();
-            writer.close();
-
-            System.out.println("Successfully updated json object to file!");
-
+            config.save();
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
     /**
-     * Get default config JSONObject if loaded.
-     * If not loaded yet, call {@link #loadConfig()} first.
+     * Get default addon config.
      *
-     * @return Settings JSONObject.
+     * @return Default addon config.
      */
-    public JSONObject getConfig() {
-
-        if (this.config == null) {
-            throw new NullPointerException("Config not found! Please ensure to call this method here after you called 'Addon#loadConfig()' first.");
-        }
-
-        return this.config;
+    public Configuration getConfig() {
+        return config;
     }
 }
