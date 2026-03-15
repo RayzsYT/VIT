@@ -28,9 +28,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class AssetPreparer {
 
-    private final int lastAssetGuiX, lastAssetGuiY;
-
-
     // Format for the images at valorant-api:
     // maps,     id,     displayicon (small) / splash (normal)
     // agent,    id,     displayicon (small)
@@ -73,6 +70,7 @@ public class AssetPreparer {
                 "Loading...", "Loading all assets."
         );
 
+        loadingGUI.relocateToLastLocation();
         loadingGUI.setAlwaysOnTop(true);
 
 
@@ -114,12 +112,8 @@ public class AssetPreparer {
         client.close();
 
 
-        // Move MainGUI to asset window, in case someone moved it to a
-        // less annoying position.
-        this.lastAssetGuiX = loadingGUI.getLocation().x;
-        this.lastAssetGuiY = loadingGUI.getLocation().y;
-
         // Close uninterpretable gui.
+        loadingGUI.updateLastLocation();
         loadingGUI.dispose();
 
 
@@ -338,24 +332,6 @@ public class AssetPreparer {
         System.out.println("Finished loading assets!");
     }
 
-
-    /**
-     * Last x location of asset gui before disposal.
-     *
-     * @return Last x location of asset gui.
-     */
-    public int getLastAssetGuiX() {
-        return this.lastAssetGuiX;
-    }
-
-    /**
-     * Last y location of asset gui before disposal.
-     *
-     * @return Last y location of asset gui.
-     */
-    public int getLastAssetGuiY() {
-        return this.lastAssetGuiY;
-    }
 
     /**
      * Sends a request to the valorant-api
