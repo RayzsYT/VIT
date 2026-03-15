@@ -16,6 +16,7 @@ import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.request.RequestMethod;
 import de.rayzs.vit.api.utils.FileUtils;
 import de.rayzs.vit.api.utils.StringUtils;
+import de.rayzs.vit.bootstrap.OutputLogger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -163,15 +164,23 @@ public class AssetPreparer {
                 final OptionGUI optionGUI = OptionGUI.create(
                         "Confirmation required!",
                         "Yes", "No",
-                        "You are about to install VIT. Would you like to start the installation process?"
+                        "You are about to install VIT. Would you like to proceed?"
                 );
 
                 // When denied, ignore action and close program.
                 if (optionGUI.getResponse() == -1) {
+                    OutputLogger.shutdown(); // Shutdowns the output logger
 
+                    // Telling the console that the system is going to shut down, since
+                    // the installation was denied. Needs to be printed after disabling
+                    // the custom OutputLogger, since it disables the logger once the
+                    // next console message is sent.
                     System.out.println("Cancelled installation setup!");
 
+                    // Deleting every VIT file.
+                    FileUtils.delete(FileDir.ROOT.getFolder());
                     System.exit(0);
+
                     return;
                 }
 
