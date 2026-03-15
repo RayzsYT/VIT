@@ -22,10 +22,10 @@ public class ExampleAddon extends Addon {
     public void onEnable() {
 
         // Load default config
-        loadConfig();
+        loadDefaultConfig();
 
         // Read prefix from config
-        final String prefix = getConfig().getString("prefix");
+        final String prefix = getConfig().get().getString("prefix");
         System.out.println(prefix + "Example Addon is enabled");
 
 
