@@ -1,5 +1,6 @@
 package de.rayzs.vit.api.configuration;
 
+import de.rayzs.vit.api.file.FileDir;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -22,6 +23,9 @@ public class Configuration {
         this(new File(absoluteFilePath));
     }
 
+    public Configuration(final FileDir fileDir, final String fileName) {
+        this(new File(fileDir.getFolder(), fileName));
+    }
 
     public Configuration(final File directory, final String fileName) {
         this(new File(directory, fileName));
