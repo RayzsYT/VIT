@@ -4,7 +4,6 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.download.DownloadElement;
 import de.rayzs.vit.api.download.DownloadProcess;
 import de.rayzs.vit.api.file.FileDir;
-import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.gui.DownloadGUI;
 import de.rayzs.vit.api.gui.OptionGUI;
