@@ -1,9 +1,13 @@
 package de.rayzs.vit.api.gui;
 
+import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.image.SystemImages;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GUI extends JFrame {
 
@@ -24,7 +28,33 @@ public class GUI extends JFrame {
         setSize(width, height);
     }
 
+    public void relocateToLastLocation() {
+        final Configuration settings = VIT.get().getSettings();
+        final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
+        final int x = lastLocation.getInt("x");
+        final int y = lastLocation.getInt("y");
+
+        if (x == 0 && y == 0) {
+            return;
+        }
+
+        setLocation(x, y);
+    }
+
+    public void updateLastLocation() {
+        final Configuration settings = VIT.get().getSettings();
+        final JSONObject lastLocation = settings.get().getJSONObject("last-location");
+
+        lastLocation.put("x", getLocationOnScreen().x);
+        lastLocation.put("y", getLocationOnScreen().y);
+
+        try {
+            settings.save();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
     public enum Colors {
 
