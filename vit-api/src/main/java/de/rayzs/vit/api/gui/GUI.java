@@ -39,16 +39,45 @@ public class GUI extends JFrame {
         final Configuration settings = VIT.get().getSettings();
         final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
-        final int x = lastLocation.getInt("x");
-        final int y = lastLocation.getInt("y");
+        final int storedX = lastLocation.getInt("x");
+        final int storedY = lastLocation.getInt("y");
 
-        if (x == 0 && y == 0) {
+        if (storedX == 0 && storedY == 0) {
             return;
         }
 
+
+        /*
+        This code is supposed to check whether the gui is out of the screen or not.
+        Unfortunately, it is kinda off. I'll check it later sometime, but for now, I'll
+        ignore this implementation and leave it be.
+
+
+        final GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        final int screenDevices = graphicsEnvironment.getScreenDevices().length;
+
+        int minX = 0, minY = 0, tMaxX = 0, tMaxY = 0;
+        for (GraphicsDevice device : graphicsEnvironment.getScreenDevices()) {
+            final Rectangle bounds = device.getDefaultConfiguration().getBounds();
+
+            minX = Math.min(minX, bounds.x);
+            minY = Math.min(minY, bounds.y);
+
+            tMaxX = Math.max(tMaxX, bounds.x + bounds.width);
+            tMaxY = Math.max(tMaxY, bounds.y + bounds.height);
+        }
+
+        final int maxX = ((tMaxX - minX) / screenDevices) + getWidth();
+        final int maxY = ((tMaxY - minY) / screenDevices) + getHeight();
+
+
+        final int x = Math.max(minX, Math.min(storedX + xOffset, maxX));
+        final int y = Math.max(minY, Math.min(storedY + yOffset, maxY));
+         */
+
         setLocation(
-                x + xOffset,
-                y + yOffset
+                xOffset + storedX,
+                yOffset + storedY
         );
     }
 
