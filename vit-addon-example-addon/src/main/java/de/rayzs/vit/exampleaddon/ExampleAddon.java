@@ -2,9 +2,12 @@ package de.rayzs.vit.exampleaddon;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.addon.Addon;
+import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventAdapter;
 import de.rayzs.vit.api.addon.AddonDescription;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
+
+import java.io.IOException;
 
 public class ExampleAddon extends Addon {
 
@@ -27,9 +30,22 @@ public class ExampleAddon extends Addon {
 
 
         // Set a new value to a config.
-        config.put("lol", "skrr");
+        config.get().put("lol", "skrr");
         // Apply and save your config changes.
         saveConfig();
+
+
+
+        // Another config file
+        Configuration configuration = new Configuration(getAddonDir(), "settings.json");
+        configuration.get().put("test", true);
+        configuration.get().put("name", "Some name");
+
+        try {
+            configuration.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         // Register an event
