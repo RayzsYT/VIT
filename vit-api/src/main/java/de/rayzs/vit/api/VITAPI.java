@@ -1,6 +1,7 @@
 package de.rayzs.vit.api;
 
 import de.rayzs.vit.api.addon.AddonManager;
+import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
@@ -23,6 +24,13 @@ public interface VITAPI {
      * @return VIT version.
      */
     static String getVersion() { return "1.0.6"; }
+
+    /**
+     * Default VIT settings.
+     *
+     * @return Default VIT settings.
+     */
+    Configuration getSettings();
 
     /**
      * Get the session to reload or fetch
