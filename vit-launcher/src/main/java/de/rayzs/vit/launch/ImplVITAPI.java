@@ -2,29 +2,50 @@ package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.addon.AddonManager;
+import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventManager;
+import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
+import de.rayzs.vit.api.utils.FileUtils;
+
+import java.io.File;
 
 public class ImplVITAPI implements VITAPI {
 
-    private final ImplEventManager eventManager;
-    private final ImplAddonManager addonManager;
-
     private final ImageProvider imageProvider;
+    private final EventManager eventManager;
+    private final AddonManager addonManager;
+
+    private final Configuration settings;
     private final Session session;
 
     private Game game;
     private Weapon selectedWeapon = Weapon.VANDAL;
 
     public ImplVITAPI() {
+
+
+        // Load default settings
+        this.settings = loadConfig(
+                "configs/settings.json",
+                FileDir.CONFIGS
+        );
+
+
+        // Initialize all implementations
         this.session = new ImplSession();
         this.imageProvider = new ImplImageProvider();
 
         this.eventManager = new ImplEventManager();
         this.addonManager = new ImplAddonManager(this);
+    }
+
+    @Override
+    public Configuration getSettings() {
+        return this.settings;
     }
 
     @Override
@@ -73,5 +94,27 @@ public class ImplVITAPI implements VITAPI {
     @Override
     public void setSelectedWeapon(final Weapon selectedWeapon) {
         this.selectedWeapon = selectedWeapon;
+    }
+
+    /**
+     * Extracts a default config file and initializes it.
+     * In case the file is already extracted, it won't override
+     * it and initialize {@link Configuration} with the already
+     * existing file. Purpose is only for this class only and
+     * is not relevant for anyone else here.
+     *
+     * @param innerFilePath Inner file path. (Resource path)
+     * @param outerFileDir Folder where to extract the file to.
+     *
+     * @return Extracted {@link Configuration}.
+     */
+    private Configuration loadConfig(final String innerFilePath, final FileDir outerFileDir) {
+        final File settingsFile = FileUtils.exportResourceFile(
+                null,
+                innerFilePath,
+                outerFileDir
+        );
+
+        return new Configuration(settingsFile);
     }
 }
