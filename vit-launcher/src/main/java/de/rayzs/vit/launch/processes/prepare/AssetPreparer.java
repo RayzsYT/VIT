@@ -147,7 +147,7 @@ public class AssetPreparer {
             // Indicators if VIT was already installed or not. Depending on that,
             // the popup messages will change.
             final File installedFile = FileDir.ROOT.getFile(".installed");
-            final boolean installedBefore = FileDir.ROOT.getFile(".installed").exists();
+            final boolean installedBefore = installedFile.exists();
 
 
             if (!installedBefore) {
@@ -304,7 +304,7 @@ public class AssetPreparer {
                 // Create shortcut on Desktop?
                 final OptionGUI startNowGUI = OptionGUI.create(
                         "Start VIT now?",
-                        "LET'S GO", "not now",
+                        "LET'S GO!", "Not now.",
                         "Would you like to start VIT now?"
                 );
 
