@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.gui.screens.game;
+package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
@@ -10,11 +10,10 @@ import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.gui.screens.game.elements.banners.LivePlayerBanner;
-import de.rayzs.vit.launch.gui.screens.game.elements.banners.PlayerBanner;
-import de.rayzs.vit.launch.gui.screens.Screen;
-import de.rayzs.vit.launch.gui.screens.game.elements.window.LivePlayerWindow;
-import de.rayzs.vit.launch.gui.screens.game.elements.window.PlayerWindow;
+import de.rayzs.vit.launch.screens.game.elements.banners.LivePlayerBanner;
+import de.rayzs.vit.launch.screens.game.elements.banners.PlayerBanner;
+import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.game.elements.window.LivePlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;

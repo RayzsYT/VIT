@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.gui.screens.game.elements.window;
+package de.rayzs.vit.launch.screens.game.elements.window;
 
 import de.rayzs.vit.api.objects.player.Player;
 

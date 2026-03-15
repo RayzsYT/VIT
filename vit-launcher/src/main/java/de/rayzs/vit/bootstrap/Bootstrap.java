@@ -9,9 +9,9 @@ import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.ImplVITAPI;
 import de.rayzs.vit.launch.processes.loop.LoopHandler;
 import de.rayzs.vit.launch.processes.prepare.AssetPreparer;
-import de.rayzs.vit.launch.gui.screens.game.LiveScreen;
-import de.rayzs.vit.launch.gui.screens.game.LobbyScreen;
-import de.rayzs.vit.launch.gui.screens.Screen;
+import de.rayzs.vit.launch.screens.game.LiveScreen;
+import de.rayzs.vit.launch.screens.game.LobbyScreen;
+import de.rayzs.vit.launch.screens.Screen;
 import de.rayzs.vit.launch.processes.prepare.UpdateChecker;
 
 import java.io.File;

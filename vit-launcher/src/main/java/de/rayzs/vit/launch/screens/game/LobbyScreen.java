@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.gui.screens.game;
+package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
@@ -7,9 +7,9 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.gui.screens.Screen;
-import de.rayzs.vit.launch.gui.screens.game.elements.banners.LobbyPlayerBanner;
-import de.rayzs.vit.launch.gui.screens.game.elements.window.LobbyPlayerWindow;
+import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.game.elements.banners.LobbyPlayerBanner;
+import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;

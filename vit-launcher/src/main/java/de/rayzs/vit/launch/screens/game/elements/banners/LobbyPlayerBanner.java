@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.gui.screens.game.elements.banners;
+package de.rayzs.vit.launch.screens.game.elements.banners;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
@@ -7,18 +7,12 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.utils.ImageUtils;
-import de.rayzs.vit.launch.gui.screens.game.ActiveScreen;
+import de.rayzs.vit.launch.screens.game.ActiveScreen;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.net.URI;
 
-public class LivePlayerBanner extends PlayerBanner {
+public class LobbyPlayerBanner extends PlayerBanner {
 
 
     /**
@@ -30,13 +24,13 @@ public class LivePlayerBanner extends PlayerBanner {
      * @param player Player.
      * @param screen Current active screen.
      */
-    public LivePlayerBanner(
+    public LobbyPlayerBanner(
             final VITAPI api,
             final Game game,
             final Player player,
             final ActiveScreen screen
     ) {
-        super(api, game, player, screen, PlayerBannerType.LIVE);
+        super(api, game, player, screen, PlayerBannerType.LOBBY);
 
 
         // Set cursor when entering banner panel
@@ -76,21 +70,11 @@ public class LivePlayerBanner extends PlayerBanner {
 
         center.add(Box.createVerticalStrut(6));
 
-        playerStats.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        playerStats.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         playerStats.setForeground(GUI.Colors.STATS_TEXT_FOREGROUND.get());
         center.add(playerStats);
 
         center.add(Box.createVerticalGlue());
-
-
-        weaponImage.setAlignmentX(Component.LEFT_ALIGNMENT);
-        for (final MouseListener mouseListener : banner.getMouseListeners()) {
-            weaponImage.addMouseListener(mouseListener);
-        }
-
-
-
-        center.add(weaponImage);
         inner.add(center, BorderLayout.CENTER);
 
         final JPanel rankPanel = new JPanel() {

@@ -1,23 +1,22 @@
-package de.rayzs.vit.launch.gui.screens.other;
+package de.rayzs.vit.launch.screens.other;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.image.SystemImages;
-import de.rayzs.vit.launch.gui.screens.Screen;
+import de.rayzs.vit.launch.screens.Screen;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class LoadingScreen extends Screen {
+public class InactiveScreen extends Screen {
 
-    private final String defaultText = "Waiting";
-    private final JLabel textLabel = new JLabel(defaultText);
+    private JLabel textLabel;
 
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
         gui.reset();
-        gui.setTitle(this.defaultText);
+        gui.setTitle("Waiting for VALORANT to start...");
 
 
         final JPanel contentPane = gui.getContentPane();
@@ -36,7 +35,8 @@ public class LoadingScreen extends Screen {
 
 
 
-        this.textLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
+        this.textLabel = new JLabel("VALORANT NOT FOUND!");
+        this.textLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         this.textLabel.setForeground(Color.WHITE);
         this.textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -46,9 +46,9 @@ public class LoadingScreen extends Screen {
 
 
         final JLabel logo = new JLabel(
-                SystemImages.LOADING
+                SystemImages.ERROR
                         .getDisplayImage()
-                        .getIcon()
+                        .getIcon(200, 200, Image.SCALE_SMOOTH)
         );
 
 
@@ -62,10 +62,6 @@ public class LoadingScreen extends Screen {
 
         contentPane.add(panel, BorderLayout.CENTER);
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
-    }
-
-    public void resetText() {
-        this.textLabel.setText(this.defaultText);
     }
 
     public void updateText(final String text) {

@@ -1,10 +1,10 @@
-package de.rayzs.vit.launch.gui.screens;
+package de.rayzs.vit.launch.screens;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.launch.gui.screens.game.elements.banners.PlayerBanner;
-import de.rayzs.vit.launch.gui.screens.game.elements.window.PlayerWindow;
+import de.rayzs.vit.launch.screens.game.elements.banners.PlayerBanner;
+import de.rayzs.vit.launch.screens.game.elements.window.PlayerWindow;
 
 import java.util.HashMap;
 import java.util.Map;
