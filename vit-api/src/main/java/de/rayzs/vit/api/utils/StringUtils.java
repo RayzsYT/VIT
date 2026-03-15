@@ -1,5 +1,8 @@
 package de.rayzs.vit.api.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringUtils {
 
     /**
@@ -64,5 +67,45 @@ public class StringUtils {
         }
 
         return (prefix + number).replace(".", ",");
+    }
+
+    /**
+     * Automatically modifies a String by replacing all of its
+     * arguments with the corresponding value.
+     *
+     * <pre>
+     *  {@code
+     *      String raw       = "I am %name% and like the number %num%!";
+     *      String formatted = replace(raw, "%num%", 2, %name%, "Player");
+     *      // Out: I am Player and like the number 2!
+     *  }
+     * </pre>
+     *
+     * @param source Source String.
+     * @param replacements Replacements.
+     *
+     * @return Formatted String.
+     */
+    public static String replace(String source, final String... replacements) {
+
+        // Map of replacements: %num%, 23
+        final Map<String, String> map = new HashMap<>();
+
+        String key = null;
+        for (final String part : replacements) {
+
+            if (key == null) {
+                key = part;
+                continue;
+            }
+
+            map.put(key, part);
+        }
+
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            source = source.replace(entry.getKey(), entry.getValue());
+        }
+
+        return source;
     }
 }
