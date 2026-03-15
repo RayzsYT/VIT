@@ -19,6 +19,22 @@ public class OutputLogger extends PrintStream {
 
 
     /**
+     * Stops the logger.
+     */
+    public static void shutdown() {
+
+        if (!initialized) {
+            throw new IllegalStateException("Output logger is not initialized!");
+        }
+
+        initialized = false;
+
+        System.setErr(System.err);
+        System.setOut(System.out);
+    }
+
+
+    /**
      * Initializes the logger. Should
      * only be called once during runtime.
      *
@@ -62,7 +78,6 @@ public class OutputLogger extends PrintStream {
             final Level level
     ) {
         super(out);
-
         this.writer = writer;
 
         this.out = out;
@@ -71,6 +86,19 @@ public class OutputLogger extends PrintStream {
 
     @Override
     public void write(byte[] buf, int off, int len) {
+        if (!initialized) {
+
+            try {
+                writer.close();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+
+            super.write(buf, off, len);
+            return;
+        }
+
+
         try {
             final String text = new String(buf, off, len);
             final String line = text.contains("\n") ? text : constructMessage(text);
