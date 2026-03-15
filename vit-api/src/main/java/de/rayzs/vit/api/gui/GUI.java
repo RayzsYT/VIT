@@ -29,6 +29,13 @@ public class GUI extends JFrame {
     }
 
     public void relocateToLastLocation() {
+        relocateToLastLocation(0, 0);
+    }
+
+    public void relocateToLastLocation(
+            final int xOffset,
+            final int yOffset
+    ) {
         final Configuration settings = VIT.get().getSettings();
         final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
@@ -39,15 +46,21 @@ public class GUI extends JFrame {
             return;
         }
 
-        setLocation(x, y);
+        setLocation(
+                x + xOffset,
+                y + yOffset
+        );
     }
 
     public void updateLastLocation() {
         final Configuration settings = VIT.get().getSettings();
         final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
-        lastLocation.put("x", getLocationOnScreen().x);
-        lastLocation.put("y", getLocationOnScreen().y);
+        final int x = getLocationOnScreen().x;
+        final int y = getLocationOnScreen().y;
+
+        lastLocation.put("x", x);
+        lastLocation.put("y", y);
 
         try {
             settings.save();
