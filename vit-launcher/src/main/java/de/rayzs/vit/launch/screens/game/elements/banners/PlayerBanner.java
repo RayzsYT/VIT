@@ -8,7 +8,7 @@ import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.screens.game.ActiveScreen;
+import de.rayzs.vit.launch.screens.game.GameScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,7 +67,7 @@ public abstract class PlayerBanner {
             final VITAPI api,
             final Game game,
             final Player player,
-            final ActiveScreen screen,
+            final GameScreen screen,
             final PlayerBannerType bannerType
     ) {
 

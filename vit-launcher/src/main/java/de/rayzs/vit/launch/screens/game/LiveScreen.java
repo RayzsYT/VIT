@@ -20,7 +20,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class LiveScreen extends Screen implements ActiveScreen {
+public class LiveScreen extends Screen implements GameScreen {
 
 
     @Override

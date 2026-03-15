@@ -2,7 +2,7 @@ package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.objects.player.Player;
 
-public interface ActiveScreen {
+public interface GameScreen {
 
     String TITLE = "Map: %map% | Server: %server%";
 

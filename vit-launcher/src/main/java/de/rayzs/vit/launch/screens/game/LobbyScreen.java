@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Locale;
 
-public class LobbyScreen extends Screen implements ActiveScreen {
+public class LobbyScreen extends Screen implements GameScreen {
 
     private final String roleDisplay = String.join("", new String[] {
             "<html><div style='",

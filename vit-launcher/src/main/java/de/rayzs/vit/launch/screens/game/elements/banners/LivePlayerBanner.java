@@ -7,7 +7,7 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Season;
 import de.rayzs.vit.api.objects.items.Tier;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.launch.screens.game.ActiveScreen;
+import de.rayzs.vit.launch.screens.game.GameScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class LivePlayerBanner extends PlayerBanner {
             final VITAPI api,
             final Game game,
             final Player player,
-            final ActiveScreen screen
+            final GameScreen screen
     ) {
         super(api, game, player, screen, PlayerBannerType.LIVE);
 
