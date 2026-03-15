@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.Optional;
 
 public class UpdateChecker {
@@ -21,6 +22,15 @@ public class UpdateChecker {
     private boolean updated = true, wantToUpdate = false;
 
     public UpdateChecker() {
+
+        // ignore update check in case VIT is not installed at the moment.
+        final File installedFile = FileDir.ROOT.getFile(".installed");
+        final boolean installedBefore = installedFile.exists();
+
+        if (!installedBefore) {
+            return;
+        }
+
 
         final Request request = Request.createRequest(
                 RequestMethod.GET,
