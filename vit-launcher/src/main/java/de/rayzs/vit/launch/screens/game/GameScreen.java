@@ -14,4 +14,9 @@ public interface GameScreen {
      * @param y Y location.
      */
     void openPlayerWindow(final Player player, final int x, final int y);
+
+    /**
+     * Clears entire cache.
+     */
+    void clearCache();
 }

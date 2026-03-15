@@ -10,6 +10,7 @@ import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.Screen;
 import de.rayzs.vit.launch.screens.game.elements.banners.LobbyPlayerBanner;
 import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
+import de.rayzs.vit.launch.screens.game.elements.window.PlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -129,6 +130,17 @@ public class LobbyScreen extends Screen implements GameScreen {
         banner.add(roleInfo);
 
         return banner;
+    }
+
+
+    /**
+     * Clears entire cache.
+     */
+    @Override
+    public void clearCache() {
+        playerWindows.values().forEach(PlayerWindow::dispose);
+        playerWindows.clear();
+        playerBanners.clear();
     }
 
 

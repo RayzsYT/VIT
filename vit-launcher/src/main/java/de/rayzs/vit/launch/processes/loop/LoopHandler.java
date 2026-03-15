@@ -135,11 +135,17 @@ public class LoopHandler {
             case VALORANT_NOT_OPEN -> {
                 if (!hasGui) return;
 
+                liveScreen.clearCache();
+                lobbyScreen.clearCache();
+
                 inactiveScreen.load(api, gui);
             }
 
             case IN_MENU -> {
                 if (!hasGui) return;
+
+                liveScreen.clearCache();
+                lobbyScreen.clearCache();
 
                 loadingScreen.load(api, gui);
             }
@@ -149,6 +155,7 @@ public class LoopHandler {
             }
 
             case IN_GAME -> {
+                lobbyScreen.clearCache();
                 loadGameScreen(state, liveScreen);
             }
         }

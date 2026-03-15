@@ -14,6 +14,7 @@ import de.rayzs.vit.launch.screens.game.elements.banners.LivePlayerBanner;
 import de.rayzs.vit.launch.screens.game.elements.banners.PlayerBanner;
 import de.rayzs.vit.launch.screens.Screen;
 import de.rayzs.vit.launch.screens.game.elements.window.LivePlayerWindow;
+import de.rayzs.vit.launch.screens.game.elements.window.PlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -246,6 +247,17 @@ public class LiveScreen extends Screen implements GameScreen {
             final int y
     ) {
         playerWindows.get(player.id()).show(x, y);
+    }
+
+
+    /**
+     * Clears entire cache.
+     */
+    @Override
+    public void clearCache() {
+        playerWindows.values().forEach(PlayerWindow::dispose);
+        playerWindows.clear();
+        playerBanners.clear();
     }
 
 
