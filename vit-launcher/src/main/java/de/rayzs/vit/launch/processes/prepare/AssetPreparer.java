@@ -70,7 +70,7 @@ public class AssetPreparer {
                 "Loading...", "Loading all assets."
         );
 
-        loadingGUI.relocateToLastLocation();
+        loadingGUI.relocateToLastLocation(300, 300);
         loadingGUI.setAlwaysOnTop(true);
 
 
@@ -113,7 +113,6 @@ public class AssetPreparer {
 
 
         // Close uninterpretable gui.
-        loadingGUI.updateLastLocation();
         loadingGUI.dispose();
 
 
