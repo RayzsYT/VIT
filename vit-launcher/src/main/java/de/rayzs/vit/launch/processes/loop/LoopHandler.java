@@ -9,7 +9,9 @@ import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.gui.UpdateMainGuiEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
 import de.rayzs.vit.api.event.events.system.tick.TickEvent;
+import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
@@ -135,18 +137,14 @@ public class LoopHandler {
             case VALORANT_NOT_OPEN -> {
                 if (!hasGui) return;
 
-                liveScreen.clearCache();
-                lobbyScreen.clearCache();
-
+                resetCache();
                 inactiveScreen.load(api, gui);
             }
 
             case IN_MENU -> {
                 if (!hasGui) return;
 
-                liveScreen.clearCache();
-                lobbyScreen.clearCache();
-
+                resetCache();
                 loadingScreen.load(api, gui);
             }
 
@@ -178,6 +176,7 @@ public class LoopHandler {
             api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
 
             Game.saveMatch(api.getGame()); // Save match into a file
+            api.setGame(null);
         }
 
 
@@ -202,5 +201,26 @@ public class LoopHandler {
         api.setGame(game);
 
         if (hasGui) displayScreen.load(api, gui);
+    }
+
+    /**
+     * Reset cache of lobby or live screen
+     * and all its evolved images to free
+     * some memory.
+     */
+    private void resetCache() {
+        liveScreen.clearCache();
+        lobbyScreen.clearCache();
+
+
+        // Deallocate all images that are not necessary anymore.
+
+        api.getImageProvider().getImages(FileDir.AGENTS).forEach(DisplayImage::deallocate);
+
+        api.getImageProvider().getImages(FileDir.WEAPONS).forEach(DisplayImage::deallocate);
+
+        api.getImageProvider().getImages(FileDir.MAPS).forEach(DisplayImage::deallocate);
+        api.getImageProvider().getImages(FileDir.MAPS_SMALL).forEach(DisplayImage::deallocate);
+        api.getImageProvider().getImages(FileDir.MAPS_NORMAL).forEach(DisplayImage::deallocate);
     }
 }
