@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.gui;
+package de.rayzs.vit.launch.gui.screens.game.elements.window;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.gui.GUI;
@@ -12,7 +12,7 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 
-public class LivePlayerWindow extends GUI {
+public class LivePlayerWindow extends GUI implements PlayerWindow {
 
 
     private final String matchDisplay = String.join("", new String[] {
@@ -367,27 +367,9 @@ public class LivePlayerWindow extends GUI {
      * @param x Mouse x location.
      * @param y Mouse y location.
      */
+    @Override
     public void show(final int x, final int y) {
         setLocation(x, y);
         setVisible(true);
-    }
-
-    /**
-     * Shortens a player name to a constant size.
-     * Used for names to guarantee that longs names
-     * don't move the buttons.
-     *
-     * @param player Player.
-     *
-     * @return Shorten player name.
-     */
-    private String shortenPlayerName(final Player player) {
-        final String name = player.name();
-        final int max = 18;
-
-        if (name.length() <= max)
-            return name;
-
-        return name.substring(0, max) + "...";
     }
 }
