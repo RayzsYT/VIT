@@ -100,6 +100,7 @@ public class StringUtils {
             }
 
             map.put(key, part);
+            key = null;
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
