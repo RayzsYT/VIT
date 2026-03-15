@@ -1,3 +1,3 @@
 Checklist:
-- Extract player banner from both Lobby and Live
-  - Make player name & stats updatable
+- Check memory leak (GUI not cleaned properly?)
+  - Heap check somehow
