@@ -75,8 +75,6 @@ public class UpdateChecker {
 
             final String assetName = asset.getString("name");
 
-            System.out.println("Found: " + assetName);
-
             if (!assetName.endsWith(".jar")) {
                 continue;
             }
