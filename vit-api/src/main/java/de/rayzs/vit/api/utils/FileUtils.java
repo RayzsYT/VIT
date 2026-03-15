@@ -65,6 +65,9 @@ public class FileUtils {
                 return outputFile;
             }
 
+            // Create directory if they don't exist yet
+            outputFile.getParentFile().mkdirs();
+
             final OutputStream outputStream = new FileOutputStream(outputFile);
             final byte[] buffer = new byte[1024];
 

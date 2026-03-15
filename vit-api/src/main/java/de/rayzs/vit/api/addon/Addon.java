@@ -91,8 +91,6 @@ public class Addon {
      */
     protected void loadDefaultConfig() {
         if (!config.getFile().exists()) {
-            config.getFile().getParentFile().mkdirs();
-
             FileUtils.exportResourceFile(
                     this.getClass(),
                     config.getFile().getName(),
