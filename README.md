@@ -12,7 +12,7 @@ VIT can only be used on and is designed to work for **Windows** computers only.
 
 Requires at least [**Java 17 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).
 <br>
-Simply use the **x64 Installer** version and install it.
+Simply download and install the **x64 Installer** variant.
 
 <br><br>
 
