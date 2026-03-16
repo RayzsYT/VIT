@@ -33,7 +33,7 @@ public class PopupGUI extends GUI {
     ) {
         super(title, 350, 180);
 
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         final JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Colors.BACKGROUND.get());
