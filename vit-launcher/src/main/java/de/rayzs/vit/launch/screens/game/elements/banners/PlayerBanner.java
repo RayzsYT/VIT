@@ -21,9 +21,6 @@ public abstract class PlayerBanner {
 
     private final PlayerBannerType bannerType;
 
-    // Stats display below player name
-    protected final String statsDisplay = "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%";
-
     protected final String livePlayerNameDisplay = String.join("", new String[]{
             "<html><div style='color: rgba(%d, %d, %d, 1); ",
             "font-size: 13px;",
@@ -166,6 +163,11 @@ public abstract class PlayerBanner {
                 ? " (" + StringUtils.formatNumber(player.competitive().latestMatch().compMatchResult().rr()) + ")"
                 : "";
 
+
+        final String statsDisplay = api.getSettings().get().optString(
+                "player-statistics",
+                "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
+        );
 
         playerStats.setText(StringUtils.replace(statsDisplay,
                 "%level%", levelText,

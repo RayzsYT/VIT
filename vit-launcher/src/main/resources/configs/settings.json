@@ -3,5 +3,6 @@
   "last-location": {
     "x": 0,
     "y": 0
-  }
+  },
+  "player-statistics": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
 }
