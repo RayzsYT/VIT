@@ -52,6 +52,33 @@ public class MainGUI extends GUI {
         final JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Colors.BACKGROUND.get());
 
+        menuBar.add(createMenu("General",
+                item -> {
+                    item.setText("Save Match");
+
+                    item.addActionListener(action -> {
+                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
+                                .relocateToLastLocation(300, 300);
+                    });
+
+                }, item -> {
+                    item.setText("Load Match");
+
+                    item.addActionListener(action -> {
+                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
+                                .relocateToLastLocation(300, 300);
+                    });
+
+                }, item -> {
+                    item.setText("Settings");
+
+                    item.addActionListener(action -> {
+                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
+                                .relocateToLastLocation(300, 300);
+                    });
+                }
+        ));
+
         menuBar.add(createMenu("Addons",
                 item -> {
                     item.setText("Open addons folder");
