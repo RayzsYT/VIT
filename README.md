@@ -4,20 +4,6 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 
 <br><br>
 
-# What it can do
-
-- View player related information by left-clicking on a player.
-  - Shows player skins.
-  - Shows latest played competitive matches and their outcomes.
-- View how much RR someone has and lost after their last competitive match.
-- View headshot, & win-rate of all players.
-- View the current and peak rank of all players.
-  - Hovering over the peak rank shows you in which season that player achieved that rank.
-- Copy player names instantly. (Double right-click on the player)
-- Open player stats on tracker.gg instantly. (Middle mouse click on the player)
-- Interactable API with [**addon system**](https://github.com/RayzsYT/VIT?tab=readme-ov-file#addons--developer-api).
-<br><br>
-
 # Requirements
 
 Since VALORANT can only be played on Windows computers, 
