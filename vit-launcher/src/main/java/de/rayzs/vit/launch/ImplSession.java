@@ -352,6 +352,8 @@ public class ImplSession implements Session {
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
+        final int loadPlayerMatchesCount = VIT.get().getSettings().get().optInt("load-player-matches-count", 5);
+
         PlayerCompetitive playerCompetitive = null;
         String matchId = null;
         String mapId, server;
@@ -593,7 +595,7 @@ public class ImplSession implements Session {
             final Request matchHistoryRequest = Request.createRequest(
                     RequestMethod.GET,
                     RequestDest.PD,
-                    "mmr/v1/players/" + playerId + "/competitiveupdates?startIndex=0&endIndex=" + MATCH_HISTORY_NUM + "&queue=competitive"
+                    "mmr/v1/players/" + playerId + "/competitiveupdates?startIndex=0&endIndex=" + loadPlayerMatchesCount + "&queue=competitive"
             );
 
 
