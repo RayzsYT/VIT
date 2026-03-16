@@ -1,0 +1,180 @@
+{
+  "menus": {
+    "valorant-not-found": {
+      "title": "VIT | VALORANT not found!",
+      "text": "VALORANT not found!"
+    },
+    "waiting": {
+      "title": "VIT | Waiting for match...",
+      "text": "Waiting..."
+    },
+    "loading": {
+      "title": "VIT | Map: %map%",
+      "text": "Loaded %players% players..."
+    },
+    "in-game": {
+      "title": "VIT | Map: %map% | Server: %server%",
+      "buttons": {
+        "reload-button-text": "Reload"
+      },
+      "player-statistics": {
+        "format": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
+        "level": {
+          "shown": "%level%",
+          "hidden": "?"
+        },
+        "rr": {
+          "with-last-rr": "%rr% (%last_received_rr%)",
+          "no-last-rr": "%rr%"
+        },
+        "win-rate": {
+          "available": "%win_rate%%",
+          "not-available": "?"
+        },
+        "headshot-rate": {
+          "available": "%headshot_rate%",
+          "not-available": "?"
+        }
+      },
+      "name-display": {
+        "self": {
+          "text": "You",
+          "size": 13,
+          "color": {
+            "red": 250,
+            "green": 255,
+            "blue": 181,
+            "alpha": 1
+          }
+        },
+        "attacker": {
+          "text": "%player%",
+          "size": 13,
+          "color": {
+            "red": 255,
+            "green": 99,
+            "blue": 71,
+            "alpha": 1
+          }
+        },
+        "defender": {
+          "text": "%player%",
+          "size": 13,
+          "color": {
+            "red": 0,
+            "green": 255,
+            "blue": 255,
+            "alpha": 1
+          }
+        }
+      },
+      "stripe-color": {
+        "attacker": {
+          "red": 206,
+          "green": 62,
+          "blue": 62,
+          "alpha": 1
+        },
+        "defender": {
+          "red": 59,
+          "green": 110,
+          "blue": 245,
+          "alpha": 1
+        }
+      }
+    },
+    "in-agent-selection": {
+      "title": "VIT | Map: %map% | Server: %server%",
+      "buttons": {
+        "reload-button-text": "Reload"
+      },
+      "team-role-display": {
+        "attacker": {
+          "text": "ATTACKING",
+          "size": 60,
+          "color": {
+            "red": 248,
+            "green": 155,
+            "blue": 155,
+            "alpha": 1
+          }
+        },
+        "defender": {
+          "text": "DEFENDING",
+          "size": 60,
+          "color": {
+            "red": 161,
+            "green": 196,
+            "blue": 255,
+            "alpha": 1
+          }
+        }
+      },
+      "player-statistics": {
+        "format": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
+        "level": {
+          "shown": "%level%",
+          "hidden": "?"
+        },
+        "rr": {
+          "with-last-rr": "%rr% (%last_received_rr%)",
+          "no-last-rr": "%rr%"
+        },
+        "win-rate": {
+          "available": "%win_rate%%",
+          "not-available": "?"
+        },
+        "headshot-rate": {
+          "available": "%headshot_rate%",
+          "not-available": "?"
+        }
+      },
+      "name-display": {
+        "self": {
+          "text": "You",
+          "size": 13,
+          "color": {
+            "red": 250,
+            "green": 255,
+            "blue": 181,
+            "alpha": 1
+          }
+        },
+        "attacker": {
+          "text": "%player%",
+          "size": 13,
+          "color": {
+            "red": 255,
+            "green": 99,
+            "blue": 71,
+            "alpha": 1
+          }
+        },
+        "defender": {
+          "text": "%player%",
+          "size": 13,
+          "color": {
+            "red": 0,
+            "green": 255,
+            "blue": 255,
+            "alpha": 1
+          }
+        }
+      },
+      "stripe-color": {
+        "attacker": {
+          "red": 206,
+          "green": 62,
+          "blue": 62,
+          "alpha": 1
+        },
+        "defender": {
+          "red": 59,
+          "green": 110,
+          "blue": 245,
+          "alpha": 1
+        }
+      }
+    }
+  }
+}
