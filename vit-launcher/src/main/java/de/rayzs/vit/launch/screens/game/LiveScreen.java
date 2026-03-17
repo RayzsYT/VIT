@@ -134,6 +134,10 @@ public class LiveScreen extends Screen implements GameScreen {
 
             contentPane.remove(playersWaitingPanel);
             contentPane.add(playersPanel, BorderLayout.CENTER);
+
+            // Images are already loaded and printed. So no further need for them now.
+            clearImageCache();
+
             playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
         }).start();
 
@@ -281,17 +285,6 @@ public class LiveScreen extends Screen implements GameScreen {
             final int y
     ) {
         playerWindows.get(player.id()).show(x, y);
-    }
-
-
-    /**
-     * Clears entire cache.
-     */
-    @Override
-    public void clearCache() {
-        playerWindows.values().forEach(PlayerWindow::dispose);
-        playerWindows.clear();
-        playerBanners.clear();
     }
 
 

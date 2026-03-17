@@ -1,8 +1,11 @@
 package de.rayzs.vit.launch.screens.game;
 
+import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
@@ -96,6 +99,10 @@ public class LobbyScreen extends Screen implements GameScreen {
 
             contentPane.remove(playersWaitingPanel);
             contentPane.add(playersPanel, BorderLayout.CENTER);
+
+            // Images are already loaded and printed. So no further need for them now.
+            clearImageCache();
+
             playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
         }).start();
 
@@ -167,17 +174,6 @@ public class LobbyScreen extends Screen implements GameScreen {
         banner.add(roleInfo);
 
         return banner;
-    }
-
-
-    /**
-     * Clears entire cache.
-     */
-    @Override
-    public void clearCache() {
-        playerWindows.values().forEach(PlayerWindow::dispose);
-        playerWindows.clear();
-        playerBanners.clear();
     }
 
 

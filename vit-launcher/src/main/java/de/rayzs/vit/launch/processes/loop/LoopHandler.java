@@ -153,7 +153,7 @@ public class LoopHandler {
             }
 
             case IN_GAME -> {
-                lobbyScreen.clearCache();
+                lobbyScreen.clearEntireCache();
                 loadGameScreen(state, liveScreen);
             }
         }
@@ -209,18 +209,7 @@ public class LoopHandler {
      * some memory.
      */
     private void resetCache() {
-        liveScreen.clearCache();
-        lobbyScreen.clearCache();
-
-
-        // Deallocate all images that are not necessary anymore.
-
-        api.getImageProvider().getImages(FileDir.AGENTS).forEach(DisplayImage::deallocate);
-
-        api.getImageProvider().getImages(FileDir.WEAPONS).forEach(DisplayImage::deallocate);
-
-        api.getImageProvider().getImages(FileDir.MAPS).forEach(DisplayImage::deallocate);
-        api.getImageProvider().getImages(FileDir.MAPS_SMALL).forEach(DisplayImage::deallocate);
-        api.getImageProvider().getImages(FileDir.MAPS_NORMAL).forEach(DisplayImage::deallocate);
+        liveScreen.clearEntireCache();
+        lobbyScreen.clearEntireCache();
     }
 }
