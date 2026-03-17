@@ -193,6 +193,8 @@ public class LiveScreen extends Screen implements GameScreen {
 
                 super.paintComponent(graphics);
                 graphics.drawImage(mapImage, 0, 0, null);
+
+                mapImage.flush();
             }
         };
 
