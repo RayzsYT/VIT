@@ -76,6 +76,16 @@ public class MainGUI extends GUI {
                         PopupGUI.create("", "Alright", "Just placeholder. Still in development")
                                 .relocateToLastLocation(300, 300);
                     });
+                }, item -> {
+                    item.setText("Need Help?");
+
+                    item.addActionListener(action -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/wiki"));
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
                 }
         ));
 
@@ -108,20 +118,6 @@ public class MainGUI extends GUI {
                                 + (System.currentTimeMillis() - start) + "ms!"
                         );
 
-                    });
-                }
-        ));
-
-        menuBar.add(createMenu("Help",
-                item -> {
-                    item.setText("Wiki");
-
-                    item.addActionListener(action -> {
-                        try {
-                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/wiki"));
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
                     });
                 }
         ));
@@ -159,20 +155,6 @@ public class MainGUI extends GUI {
                     item.addActionListener(action -> {
                         try {
                             Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/issues"));
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
-                    });
-                }
-        ));
-
-        menuBar.add(createMenu("About",
-                item -> {
-                    item.setText("Github");
-
-                    item.addActionListener(action -> {
-                        try {
-                            Desktop.getDesktop().browse(new URI("https://github.com/rayzsyt/vit"));
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
