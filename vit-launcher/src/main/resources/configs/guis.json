@@ -14,6 +14,7 @@
     },
     "in-game": {
       "title": "VIT | Map: %map% | Server: %server%",
+      "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
         "reload-button-text": "Reload"
       },
@@ -85,6 +86,7 @@
     },
     "in-agent-selection": {
       "title": "VIT | Map: %map% | Server: %server%",
+      "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
         "reload-button-text": "Reload"
       },
