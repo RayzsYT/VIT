@@ -13,7 +13,6 @@
         <module>vit-api</module>
         <module>vit-launcher</module>
         <module>vit-addon-example-addon</module>
-        <module>vit-addon-predict-map</module>
     </modules>
 
     <properties>

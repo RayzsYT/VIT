@@ -1,8 +1,0 @@
-{
-  "id": "map-predictor",
-  "author": "Rayzs_YT",
-  "purpose": "Sends a console message with the map name once a match is found.",
-  "version": "1.0.0",
-  "main": "de.rayzs.vit.mp.MapPredictAddon",
-  "website": "https://github.com/RayzsYT/VIT"
-}
