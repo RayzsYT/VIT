@@ -18,7 +18,6 @@ public class DisplayImage {
     private File imageFile;
 
     private ImageIcon icon;
-    private Image image;
 
     private boolean isIcon = false, isGif = false;
 
@@ -94,14 +93,7 @@ public class DisplayImage {
 
         if (imageFile.exists()) {
             try {
-
-                if (isGif) {
-                    this.icon = new ImageIcon(imageFile.getAbsolutePath());
-                    this.image = icon.getImage();
-                } else {
-                    this.image = ImageIO.read(imageFile);
-                    this.icon = new ImageIcon(image);
-                }
+                this.icon = new ImageIcon(imageFile.getAbsolutePath());
 
                 return true;
             } catch (Exception exception) {
@@ -121,15 +113,13 @@ public class DisplayImage {
     public void deallocate() {
         if (icon != null) {
             final Image img = icon.getImage();
-            if (img != null) img.flush();
-        }
 
-        if (image != null) {
-            image.flush();
+            if (img != null) {
+                img.flush();
+            }
         }
 
         icon = null;
-        image = null;
     }
 
     /**
@@ -183,11 +173,11 @@ public class DisplayImage {
             throw new IllegalStateException("This image is an .ico file and cannot be converted into an image.");
         }
 
-        if (this.image == null && !updateImage()) {
+        if (this.icon == null && !updateImage()) {
             throw new NullPointerException("Image does not exist! (url=" + this.url + ", filename=" + this.fileName + " )");
         }
 
-        return this.image;
+        return this.icon.getImage();
     }
 
     /**
@@ -219,7 +209,6 @@ public class DisplayImage {
                 ", fileName='" + fileName + '\'' +
                 ", downloadElement=" + downloadElement +
                 ", dir=" + dir +
-                ", image=" + image +
                 ", icon=" + icon +
                 ", isIcon=" + isIcon +
                 '}';
