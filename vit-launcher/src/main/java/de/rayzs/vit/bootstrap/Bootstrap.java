@@ -13,6 +13,8 @@ import de.rayzs.vit.launch.screens.game.LiveScreen;
 import de.rayzs.vit.launch.screens.game.LobbyScreen;
 import de.rayzs.vit.launch.screens.Screen;
 import de.rayzs.vit.launch.processes.prepare.UpdateChecker;
+import de.rayzs.vit.launch.screens.other.InactiveScreen;
+import de.rayzs.vit.launch.screens.other.LoadingScreen;
 
 import java.io.File;
 import java.util.Locale;
@@ -136,6 +138,9 @@ public class Bootstrap {
                 final Screen screen = switch (name) {
                     case "live" -> new LiveScreen();
                     case "lobby" -> new LobbyScreen();
+                    case "loading" -> new LoadingScreen();
+                    case "inactive" -> new InactiveScreen();
+
                     default -> throw new IllegalStateException("Invalid screen name! (" + name + ")");
                 };
 
