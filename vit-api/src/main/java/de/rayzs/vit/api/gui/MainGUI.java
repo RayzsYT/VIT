@@ -76,6 +76,7 @@ public class MainGUI extends GUI {
                         PopupGUI.create("", "Alright", "Just placeholder. Still in development")
                                 .relocateToLastLocation(300, 300);
                     });
+
                 }, item -> {
                     item.setText("Need Help?");
 
@@ -86,6 +87,7 @@ public class MainGUI extends GUI {
                             exception.printStackTrace();
                         }
                     });
+
                 }
         ));
 
@@ -100,6 +102,7 @@ public class MainGUI extends GUI {
                             exception.printStackTrace();
                         }
                     });
+
                 }, item -> {
                     item.setText("Reload all addons");
 
@@ -117,8 +120,8 @@ public class MainGUI extends GUI {
                                 + " addons in "
                                 + (System.currentTimeMillis() - start) + "ms!"
                         );
-
                     });
+
                 }
         ));
 
@@ -149,6 +152,7 @@ public class MainGUI extends GUI {
                             }
                         }
                     });
+
                 }, item -> {
                     item.setText("Report issue");
 
@@ -159,6 +163,7 @@ public class MainGUI extends GUI {
                             exception.printStackTrace();
                         }
                     });
+
                 }
         ));
 
