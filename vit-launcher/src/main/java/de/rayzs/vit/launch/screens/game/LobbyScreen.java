@@ -47,23 +47,58 @@ public class LobbyScreen extends Screen implements GameScreen {
                 api.getGame().map().mapId()
         );
 
+        contentPane.add(topLayerPanel, BorderLayout.NORTH);
+
 
         final JPanel playersPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         playersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         playersPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
 
-        for (Player player : api.getGame().players()) {
-            final LobbyPlayerBanner playerBanner = new LobbyPlayerBanner(api, game, player, this);
-
-            playerWindows.put(player.id(), new LobbyPlayerWindow(player));
-            playerBanners.put(player.id(), playerBanner);
-            playersPanel.add(playerBanner.getBanner());
-        }
+        final JPanel playersWaitingPanel = new JPanel();
+        playersWaitingPanel.setBorder(BorderFactory.createEmptyBorder(100, 10, 10, 10));
 
 
-        contentPane.add(topLayerPanel, BorderLayout.NORTH);
-        contentPane.add(playersPanel, BorderLayout.CENTER);
+        final JLabel playersWaitingLabel = new JLabel();
+
+        playersWaitingLabel.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
+        playersWaitingPanel.setBackground(GUI.Colors.BACKGROUND.get());
+
+        playersWaitingLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        playersWaitingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        playersWaitingLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        playersWaitingPanel.add(playersWaitingLabel);
+
+        contentPane.add(playersWaitingPanel, BorderLayout.CENTER);
+
+
+        new Thread(() -> {
+
+            final Player[] players = game.players();
+            final int max = players.length;
+
+            playersWaitingLabel.setText(loadingPlayerBannersText.formatted(0, max));
+
+            for (int i = 0; i < max; i++) {
+                final Player player = players[i];
+                final LobbyPlayerBanner playerBanner = new LobbyPlayerBanner(api, game, player, this);
+
+                playerWindows.put(player.id(), new LobbyPlayerWindow(player));
+                playerBanners.put(player.id(), playerBanner);
+
+                playerBanner.getBanner().setVisible(false);
+                playersPanel.add(playerBanner.getBanner());
+
+                playersWaitingLabel.setText(loadingPlayerBannersText.formatted(i, max));
+            }
+
+            contentPane.remove(playersWaitingPanel);
+            contentPane.add(playersPanel, BorderLayout.CENTER);
+            playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
+        }).start();
+
+
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
 

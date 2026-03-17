@@ -37,6 +37,7 @@ public class LiveScreen extends Screen implements GameScreen {
 
         final JPanel contentPane = gui.getContentPane();
         final JPanel topLayerPanel = createTopLayer(api, gui, game.map().mapId());
+        contentPane.add(topLayerPanel, BorderLayout.NORTH);
 
         final JPanel playersPanel = new JPanel(new GridLayout(0, 2, 10, 10));
         playersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -68,43 +69,75 @@ public class LiveScreen extends Screen implements GameScreen {
         );
 
 
-        for (int i = 0; i < max; i++) {
-            final boolean shouldCreateEmptyBanner = game.players().length == 1
-                    || !team2Players.isEmpty() && i < minRequiredPlayerBanners;
+        final JPanel playersWaitingPanel = new JPanel();
+        playersWaitingPanel.setBorder(BorderFactory.createEmptyBorder(100, 10, 10, 10));
 
-            if (i < team1Players.size()) {
-                final Player player = team1Players.get(i);
-                final PlayerBanner playerBanner = new LivePlayerBanner(
-                        api, game, player, this
-                );
 
-                playerWindows.put(player.id(), new LivePlayerWindow(player));
-                playerBanners.put(player.id(), playerBanner);
-                playersPanel.add(playerBanner.getBanner());
+        final JLabel playersWaitingLabel = new JLabel();
 
-            } else if (shouldCreateEmptyBanner) {
-                playersPanel.add(createEmptyPlayerBanner());
+        playersWaitingLabel.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
+        playersWaitingPanel.setBackground(GUI.Colors.BACKGROUND.get());
+
+        playersWaitingLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        playersWaitingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        playersWaitingLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        playersWaitingPanel.add(playersWaitingLabel);
+
+        contentPane.add(playersWaitingPanel, BorderLayout.CENTER);
+
+        new Thread(() -> {
+            final int maxPlayers = game.players().length;
+            int loaded = 0;
+
+            playersWaitingLabel.setText(loadingPlayerBannersText.formatted(loaded, maxPlayers));
+
+            for (int i = 0; i < max; i++) {
+                final boolean shouldCreateEmptyBanner = game.players().length == 1
+                        || !team2Players.isEmpty() && i < minRequiredPlayerBanners;
+
+                if (i < team1Players.size()) {
+                    final Player player = team1Players.get(i);
+                    final PlayerBanner playerBanner = new LivePlayerBanner(
+                            api, game, player, this
+                    );
+
+                    playerWindows.put(player.id(), new LivePlayerWindow(player));
+                    playerBanners.put(player.id(), playerBanner);
+
+                    playerBanner.getBanner().setVisible(false);
+                    playersPanel.add(playerBanner.getBanner());
+
+                    playersWaitingLabel.setText(loadingPlayerBannersText.formatted(++loaded, maxPlayers));
+                } else if (shouldCreateEmptyBanner) {
+                    playersPanel.add(createEmptyPlayerBanner());
+                }
+
+                if (i < team2Players.size()) {
+                    final Player player = team2Players.get(i);
+                    final PlayerBanner playerBanner = new LivePlayerBanner(
+                            api, game, player, this
+                    );
+
+                    playerWindows.put(player.id(), new LivePlayerWindow(player));
+                    playerBanners.put(player.id(), playerBanner);
+
+                    playerBanner.getBanner().setVisible(false);
+                    playersPanel.add(playerBanner.getBanner());
+
+                    playersWaitingLabel.setText(loadingPlayerBannersText.formatted(++loaded, maxPlayers));
+                } else if (shouldCreateEmptyBanner) {
+                    playersPanel.add(createEmptyPlayerBanner());
+                }
+
             }
 
-            if (i < team2Players.size()) {
-                final Player player = team2Players.get(i);
-                final PlayerBanner playerBanner = new LivePlayerBanner(
-                        api, game, player, this
-                );
-
-                playerWindows.put(player.id(), new LivePlayerWindow(player));
-                playerBanners.put(player.id(), playerBanner);
-                playersPanel.add(playerBanner.getBanner());
-
-            } else if (shouldCreateEmptyBanner) {
-                playersPanel.add(createEmptyPlayerBanner());
-            }
-
-        }
+            contentPane.remove(playersWaitingPanel);
+            contentPane.add(playersPanel, BorderLayout.CENTER);
+            playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
+        }).start();
 
 
-        contentPane.add(topLayerPanel, BorderLayout.NORTH);
-        contentPane.add(playersPanel, BorderLayout.CENTER);
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
 
