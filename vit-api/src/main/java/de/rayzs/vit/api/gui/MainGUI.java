@@ -34,6 +34,8 @@ public class MainGUI extends GUI {
         super(title, 1000, 900);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setResizable(true);
         relocateToLastLocation();
 
 
