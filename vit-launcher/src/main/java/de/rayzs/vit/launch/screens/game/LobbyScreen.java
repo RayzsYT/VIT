@@ -44,6 +44,7 @@ public class LobbyScreen extends Screen implements GameScreen {
         final JPanel topLayerPanel = createTopLayer(
                 api,
                 game,
+                gui,
                 api.getGame().map().mapId()
         );
 
@@ -111,34 +112,35 @@ public class LobbyScreen extends Screen implements GameScreen {
      *
      * @param api VITAPI.
      * @param game Game.
-     * @param mapImageId Id of the map being played on.
+     * @param gui GUI. Required for reloading.
+     * @param mapImageId ID of the map being played on.
      *
      * @return Created top layer.
      */
     private JPanel createTopLayer(
             final VITAPI api,
             final Game game,
+            final MainGUI gui,
             final String mapImageId
     ) {
 
-        // Top map image. Will be behind the control boxes
-        // like reload and weapon selection.
-        final Image mapImage = ImageUtils.darkenImage(ImageUtils.cropImage(api
-                        .getImageProvider()
-                        .getMaps()
-                        .getImage(mapImageId)
-                        .getImage(),
-                1000,
-                200
-        ), 0.58f);
-
-
-
         final JPanel banner = new JPanel() {
+
             @Override
             public void paintComponent(final Graphics graphics) {
-                super.paintComponent(graphics);
 
+                // Top map image. Will be behind the control boxes
+                // like reload and weapon selection.
+                final Image mapImage = ImageUtils.darkenImage(ImageUtils.cropImage(api
+                                .getImageProvider()
+                                .getMaps()
+                                .getImage(mapImageId)
+                                .getImage(),
+                        gui.getWidth(),
+                        200
+                ), 0.58f);
+
+                super.paintComponent(graphics);
                 graphics.drawImage(mapImage, 0, 0, null);
             }
         };

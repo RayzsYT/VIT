@@ -176,16 +176,17 @@ public class LiveScreen extends Screen implements GameScreen {
 
         final JPanel banner = new JPanel() {
 
-            // Top map image. Will be behind the control boxes
-            // like reload and weapon selection.
-            private final Image mapImage = ImageUtils.cropImage(
-                    api.getImageProvider().getMaps().getImage(mapImageId).getImage(),
-                    1000,
-                    200
-            );
-
             @Override
             public void paintComponent(final Graphics graphics) {
+
+                // Top map image. Will be behind the control boxes
+                // like reload and weapon selection.
+                final Image mapImage = ImageUtils.cropImage(
+                        api.getImageProvider().getMaps().getImage(mapImageId).getImage(),
+                        gui.getWidth(),
+                        200
+                );
+
                 super.paintComponent(graphics);
                 graphics.drawImage(mapImage, 0, 0, null);
             }
