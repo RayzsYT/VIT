@@ -117,7 +117,7 @@ public class MainGuiUpdater {
         if (gui == null) return; // Ignore if gui is not set!
 
 
-        if (api.getGame() != null) {
+        if (api.getGame() == null) {
             throw new NullPointerException("No running game instance found!");
         }
 
