@@ -26,6 +26,8 @@ public class LoopHandler {
     public LoopHandler(final VITAPI api, final MainGUI gui) {
         this.api = api;
         this.guiUpdater = new MainGuiUpdater(api, gui);
+
+        this.guiUpdater.handle(priorState);
     }
 
 
