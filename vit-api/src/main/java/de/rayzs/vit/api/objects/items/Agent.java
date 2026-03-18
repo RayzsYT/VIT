@@ -40,7 +40,8 @@ public enum Agent {
     BRIMSTONE   ("Brimstone",   AgentRole.CONTROLLER),
     OMEN        ("Omen",        AgentRole.CONTROLLER),
     VIPER       ("Viper",       AgentRole.CONTROLLER),
-    HARBOR      ("Harbor",      AgentRole.CONTROLLER),;
+    MIKS        ("Miks",      AgentRole.CONTROLLER),
+    HARBOR      ("Harbor",      AgentRole.CONTROLLER);
 
 
     private String agentId;
