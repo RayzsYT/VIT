@@ -9,11 +9,11 @@
       "text": "Waiting..."
     },
     "loading": {
-      "title": "VIT | Map: %map%",
+      "title": "VIT | Map: %map%, Server: %server% (Fetching player data)",
       "text": "Loaded %players% players..."
     },
     "in-game": {
-      "title": "VIT | Map: %map% | Server: %server%",
+      "title": "VIT | Map: %map%, Server: %server%",
       "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
         "reload-button-text": "Reload"
@@ -85,7 +85,7 @@
       }
     },
     "in-agent-selection": {
-      "title": "VIT | Map: %map% | Server: %server%",
+      "title": "VIT | Map: %map%, Server: %server%",
       "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
         "reload-button-text": "Reload"
