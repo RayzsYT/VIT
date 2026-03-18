@@ -149,7 +149,7 @@ public class ImplSession implements Session {
                         parts = line.substring(versionIndex).split("-");
 
                         final List<String> partsList = new ArrayList<>(Arrays.asList(parts));
-                        if (partsList.size() >= 2) {
+                        if (partsList.size() >= 2 && !partsList.get(2).equalsIgnoreCase("shipping")) {
                             partsList.add(2, "shipping");
                         }
 
