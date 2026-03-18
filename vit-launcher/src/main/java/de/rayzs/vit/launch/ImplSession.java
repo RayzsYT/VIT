@@ -336,6 +336,7 @@ public class ImplSession implements Session {
      * all players and the map being played on.
      *
      * @param state Current session state.
+     * @param preGameConsumer Consumer before game object is actually built.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
      * @return Constructed {@link Game} object.
@@ -343,7 +344,7 @@ public class ImplSession implements Session {
     @Override
     public Game constructGame(
             final SessionState state,
-            final Consumer<MatchMap> mapFoundConsumer,
+            final Consumer<PreGameInitializeEvent> preGameConsumer,
             final Consumer<Integer> playerLoadConsumer
     ) {
 
@@ -435,7 +436,7 @@ public class ImplSession implements Session {
         server = preGameInitializeEvent.getServer();
 
 
-        mapFoundConsumer.accept(map);
+        preGameConsumer.accept(preGameInitializeEvent);
 
 
         // Fetch the loadouts of all players.

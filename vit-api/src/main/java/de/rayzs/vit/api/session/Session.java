@@ -1,7 +1,7 @@
 package de.rayzs.vit.api.session;
 
+import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
 import de.rayzs.vit.api.objects.game.Game;
-import de.rayzs.vit.api.objects.items.MatchMap;
 import de.rayzs.vit.api.objects.player.Player;
 
 import java.net.http.HttpClient;
@@ -52,13 +52,14 @@ public interface Session {
      * all players and the map being played on.
      *
      * @param state Current session state.
+     * @param preGameConsumer Consumer before game object is actually built.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
      * @return Constructed {@link Game} object.
      */
     Game constructGame(
             final SessionState state,
-            final Consumer<MatchMap> mapFoundConsumer,
+            final Consumer<PreGameInitializeEvent> preGameConsumer,
             final Consumer<Integer> playerLoadConsumer
     );
 

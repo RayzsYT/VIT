@@ -4,7 +4,7 @@ import de.rayzs.vit.api.objects.player.Player;
 
 public interface GameScreen {
 
-    String TITLE = "Map: %map% | Server: %server%";
+    String TITLE = "Map: %map%, Server: %server%";
 
     /**
      * Open a player window at the exact location.
