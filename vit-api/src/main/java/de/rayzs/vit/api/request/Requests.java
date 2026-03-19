@@ -166,6 +166,24 @@ public class Requests {
             }
         }
 
+
+
+        public static class Content {
+            private Content() {}
+
+
+            /**
+             * Current content like active seasons etc... (Haven't checked any further actually)
+             */
+            public static JSONObject getContent(final HttpClient client) {
+                return getAsJsonObject(
+                        client,
+                        RequestDest.SHARED,
+                        "content-service/v3/content"
+                );
+            }
+        }
+
     }
 
 
@@ -231,8 +249,8 @@ public class Requests {
              * Sends a request to receive the names of the players
              * whose player-ids are written inside the {@link JSONArray}.
              */
-            public static JSONObject sendPlayerNameRequest(final HttpClient client, final JSONArray playerIds) {
-                return sendAndGetAsJsonObject(
+            public static JSONArray sendPlayerNameRequest(final HttpClient client, final JSONArray playerIds) {
+                return sendAndGetAsJsonArray(
                         client,
                         RequestDest.PD,
                         "name-service/v2/players",
