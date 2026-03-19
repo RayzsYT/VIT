@@ -172,7 +172,7 @@ public class Bootstrap {
                     exception.printStackTrace();
 
                     if (tolerance >= 2) {
-                        System.err.println("Something fatal happen too often! Program will terminate.");
+                        System.err.println("Something fatal happened way too often! Program will terminate.");
                         System.exit(0);
                     }
 
