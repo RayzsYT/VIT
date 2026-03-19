@@ -15,6 +15,7 @@ import de.rayzs.vit.api.objects.player.match.LastCompMatch;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
+import de.rayzs.vit.api.request.Requests;
 import de.rayzs.vit.api.session.Session;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
@@ -229,15 +230,9 @@ public class ImplSession implements Session {
 
         // Sending request to receive the required headers
         // for sending requests towards the VALORANT servers.
-        final Request request = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.LOCAL,
-                "entitlements/v1/token"
-        );
+        final JSONObject json = Requests.Get.General.fetchToken(client);
 
-        final Optional<String> result = request.sendAndGet(client);
-
-        if (result.isEmpty()) {
+        if (json == null) {
             throw new NullPointerException("Request failed!");
         }
 
@@ -245,7 +240,6 @@ public class ImplSession implements Session {
             throw new NullPointerException("Current version is not set yet! Please only call this method here once 'fetchRequestUrls' has been called first.");
         }
 
-        final JSONObject json = new JSONObject(result.get());
 
         final String accessToken = json.getString("accessToken");
         final String entitlementToken = json.getString("token");
@@ -281,27 +275,20 @@ public class ImplSession implements Session {
         }
 
 
-        final Request request = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.LOCAL,
-                "chat/v4/presences"
-        );
+        final JSONObject presence = Requests.Get.General.fetchPresence(client);
 
-
-        final Optional<String> result = request.sendAndGet(this.client);
-
-        if (result.isEmpty()) {
+        if (presence == null) {
             return SessionState.VALORANT_NOT_OPEN;
         }
 
 
-        final JSONArray presences = new JSONObject(result.get()).getJSONArray("presences");
+        final JSONArray presences = presence.getJSONArray("presences");
 
         for (Object presenceObj : presences) {
-            final JSONObject presence = (JSONObject) presenceObj;
+            final JSONObject currentPresence = (JSONObject) presenceObj;
 
-            final String product = presence.getString("product");
-            final String playerId = presence.getString("puuid");
+            final String product = currentPresence.getString("product");
+            final String playerId = currentPresence.getString("puuid");
 
             if (!product.equalsIgnoreCase("valorant") || !playerId.equalsIgnoreCase(this.selfPlayerId)) {
                 continue;
@@ -312,7 +299,7 @@ public class ImplSession implements Session {
             // is enabled, the private key isn't fully build yet.
             // So to avoid any confusions or any issues, we'll simply ignore
             // it in that exact time and wait for the next iteration.
-            final Object encodedPrivateObj = presence.get("private");
+            final Object encodedPrivateObj = currentPresence.get("private");
             if (! (encodedPrivateObj instanceof String encodedPrivate)) {
                 continue;
             }
@@ -356,84 +343,44 @@ public class ImplSession implements Session {
         final int loadPlayerMatchesCount = VIT.get().getSettings().get().optInt("load-player-matches-count", 5);
 
         PlayerCompetitive playerCompetitive = null;
-        String matchId = null;
-        String mapId, server;
 
-
-        // Fetch match id
-        switch (state) {
-            case IN_GAME -> {
-                final Request matchRequest = Request.createRequest(
-                        RequestMethod.GET,
-                        RequestDest.GLZ,
-                        "core-game/v1/players/" + selfPlayerId
-                );
-
-
-                final Optional<String> matchResult = matchRequest.sendAndGet(client);
-                if (matchResult.isPresent()) {
-                    matchId = new JSONObject(matchResult.get()).getString("MatchID");
-                }
-            }
-
-
-            case IN_LOBBY -> {
-
-                // Checking their pre-game match. This is practically just
-                // the lobby where just select your agents usually.
-
-                final Request pregameRequest = Request.createRequest(
-                        RequestMethod.GET,
-                        RequestDest.GLZ,
-                        "pregame/v1/players/" + selfPlayerId
-                );
-
-                final Optional<String> pregameResult = pregameRequest.sendAndGet(client);
-                if (pregameResult.isEmpty()) {
-                    throw new NullPointerException("Failed to construct game object! Failed to fetch match id.");
-                }
-
-                matchId = new JSONObject(pregameResult.get()).getString("MatchID");
-            }
-
-            default -> {
-                // Well, kinda makes no sense at all. But who knows?
-                throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + state.name() + ")");
-            }
+        if (!state.isInsideMatch()) {
+            throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + state.name() + ")");
         }
 
 
-        final Request matchDetailsRequest = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.GLZ,
-                state.getInternalName() + "/v1/matches/" + matchId
-        );
+        final JSONObject initialMatchJson = Requests.Get.Match.fetchMatchData(client, state, selfPlayerId);
 
-        final Optional<String> matchDetailsResult = matchDetailsRequest.sendAndGet(client);
-        if (matchDetailsResult.isEmpty()) {
-            throw new NullPointerException("Failed to construct game object! Failed to fetch match details.");
+        if (initialMatchJson == null) {
+            throw new IllegalStateException("Failed to fetch match data!");
         }
+
+
+        final String matchId = initialMatchJson.getString("MatchID");
 
 
         // Fetch match information
-        final JSONObject match = new JSONObject(matchDetailsResult.get());
+        final JSONObject match = Requests.Get.Match.fetchLiveMatchDetails(client, state, matchId);
+
+        if (match == null) {
+            throw new NullPointerException("Failed to construct game object! Failed to fetch match details.");
+        }
+
 
         String tmpServer = match.getString("GamePodID");
         tmpServer = tmpServer.substring(0, tmpServer.lastIndexOf("-"));
         tmpServer = tmpServer.substring(tmpServer.lastIndexOf("-") + 1);
         tmpServer = Character.toUpperCase(tmpServer.charAt(0)) + tmpServer.substring(1);
 
-        server = tmpServer;
-
 
         final PreGameInitializeEvent preGameInitializeEvent = VIT.get().getEventManager().call(new PreGameInitializeEvent(
-                state, server, MatchMap.getMapByUrl(match.getString("MapID"))
+                state, tmpServer, MatchMap.getMapByUrl(match.getString("MapID"))
         ));
 
         final MatchMap map = preGameInitializeEvent.getMap();
 
-        mapId = map.mapId();
-        server = preGameInitializeEvent.getServer();
+        final String mapId = map.mapId();
+        final String server = preGameInitializeEvent.getServer();
 
 
         preGameConsumer.accept(preGameInitializeEvent);
@@ -441,19 +388,11 @@ public class ImplSession implements Session {
 
         // Fetch the loadouts of all players.
 
-        final Request loadoutsRequest = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.GLZ,
-                state.getInternalName() + "/v1/matches/" + matchId + "/loadouts"
-        );
-
-        final Optional<String> loadoutsResult = loadoutsRequest.sendAndGet(client);
-        if (loadoutsResult.isEmpty()) {
+        final JSONArray loadouts = Requests.Get.Player.fetchPlayerLayouts(client, state, matchId);
+        if (loadouts == null) {
             throw new NullPointerException("Failed to construct game object! Failed to fetch match loadouts.");
         }
 
-
-        final JSONArray loadouts = new JSONObject(loadoutsResult.get()).getJSONArray("Loadouts");
         // Player id, Skin inventory
         final Map<String, PlayerInventory> playerInventories = state == SessionState.IN_GAME
                 ? fetchInventory(loadouts)
@@ -508,20 +447,12 @@ public class ImplSession implements Session {
 
         // Asking VALORANT for the information of the players inside
         // our match.
-        final Request playerNamesRequest = Request.createRequest(
-                RequestMethod.PUT,
-                RequestDest.PD,
-                "name-service/v2/players",
-                playersArray.toString()
-        );
-
-        final Optional<String> playerNameResult = playerNamesRequest.sendAndGet(client);
-        if (playerNameResult.isEmpty()) {
+        final JSONArray playerNames = Requests.Send.Player.sendPlayerNameRequest(client, playersArray);
+        if (playerNames == null) {
             throw new NullPointerException("Failed to construct game object! Failed to fetch player names.");
         }
 
 
-        final JSONArray playerNames = new JSONArray(playerNameResult.get());
         final Map<String, String> playerNamesMap = new HashMap<>(); // Player ID, Name + Tag
 
         for (int i = 0; i < playerNames.length(); i++) {
@@ -543,18 +474,9 @@ public class ImplSession implements Session {
 
 
             // Competitive information about the player...
-            final Request competitiveRequest = Request.createRequest(
-                    RequestMethod.GET,
-                    RequestDest.PD,
-                    "mmr/v1/players/" + playerId
-            );
+            final JSONObject rank = Requests.Get.Player.fetchPlayersMMR(client, playerId);
 
-
-
-            final Optional<String> competitiveResult = competitiveRequest.sendAndGet(client);
-            if (competitiveResult.isPresent()) {
-                final JSONObject rank = new JSONObject(competitiveResult.get());
-
+            if (rank != null) {
                 final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
 
                 final JSONObject competitive = rank.getJSONObject("QueueSkills").getJSONObject("competitive");
@@ -590,22 +512,11 @@ public class ImplSession implements Session {
 
 
 
-            // Only fetches 15 matches of the player. Should be enough.
-            final Request matchHistoryRequest = Request.createRequest(
-                    RequestMethod.GET,
-                    RequestDest.PD,
-                    "mmr/v1/players/" + playerId + "/competitiveupdates?startIndex=0&endIndex=" + loadPlayerMatchesCount + "&queue=competitive"
-            );
-
-
-            // Fetch match history by starting with played match ids
-
-            final Optional<String> matchHistoryResult = matchHistoryRequest.sendAndGet(client);
+            // Only fetches a certain amount of matches of the player. Should be enough. By default, it's set to 5 matches.
+            final JSONObject matchHistory = Requests.Get.Match.fetchMatchHistory(client, playerId, 0, loadPlayerMatchesCount);
             final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
-            if (matchHistoryResult.isPresent()) {
-
-                final JSONObject matchHistory = new JSONObject(matchHistoryResult.get());
+            if (matchHistory != null) {
 
                 if (matchHistory.has("Matches")) {
                     final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
@@ -624,38 +535,27 @@ public class ImplSession implements Session {
 
 
                         // Now trying to get the match information
-
-                        final Request matchDataRequest = Request.createRequest(
-                                RequestMethod.GET,
-                                RequestDest.PD,
-                                "match-details/v1/matches/" + playedMatchId
-                        );
-
-                        final Optional<String> matchDataResult = matchDataRequest.sendAndGet(client);
+                        final JSONObject matchDetails = Requests.Get.Match.fetchPastMatchDetails(client, matchId);
 
 
                         // Simply cancel the process to fetch the  match history of that player.
                         // Most of the time, when the first match-id failed, then the others fail as well.
                         // So better not asking for the others.
-                        if (matchDataResult.isEmpty()) {
+                        if (matchDetails == null) {
                             System.err.println("Failed to fetch match details for " + playerName + "! Ignoring match history of that player entirely to prevent spamming the VALORANT API any further.");
                             break;
                         }
 
 
-                        if (matchDataResult.get().charAt(0) == '{') {
-                            // Construct match stats to add in the list of match history.
+                        // Construct match stats to add in the list of match history.
+                        final Match historyMatch = constructMatch(
+                                playerId,
+                                gainedRR,
+                                playedMatchId,
+                                matchDetails
+                        );
 
-                            final JSONObject playedMatchDetails = new JSONObject(matchDataResult.get());
-                            final Match historyMatch = constructMatch(
-                                    playerId,
-                                    gainedRR,
-                                    playedMatchId,
-                                    playedMatchDetails
-                            );
-
-                            playedMatchesList.add(historyMatch);
-                        }
+                        playedMatchesList.add(historyMatch);
                     }
                 }
             }
@@ -906,20 +806,12 @@ public class ImplSession implements Session {
             array.put(player.id());
         }
 
-        final Request request = Request.createRequest(
-                RequestMethod.PUT,
-                RequestDest.PD,
-                "name-service/v2/players",
-                array.toString()
-        );
-
-        final Optional<String> result = request.sendAndGet(client);
-        if (result.isEmpty()) {
-            throw new NullPointerException("Failed to update player names!");
+        final JSONArray response = Requests.Send.Player.sendPlayerNameRequest(client, array);
+        if (response == null) {
+            throw new NullPointerException("Failed to update player names.");
         }
 
 
-        final JSONArray response = new JSONArray(result.get());
         final Map<String, String> playerNamesMap = new HashMap<>();
 
         for (int i = 0; i < response.length(); i++) {
@@ -1009,18 +901,14 @@ public class ImplSession implements Session {
             return;
         }
 
-        final Request contentRequest = Request.createRequest(
-                RequestMethod.GET,
-                RequestDest.SHARED,
-                "content-service/v3/content"
-        );
 
-        final Optional<String> contentResult = contentRequest.sendAndGet(client);
-        if (contentResult.isEmpty()) {
-            throw new RuntimeException("Failed to fetch seasons!");
+        final JSONObject content = Requests.Get.Content.getContent(client);
+
+        if (content == null) {
+            throw new RuntimeException("Failed to fetch seasons! (Actually failed to receive content)");
         }
 
-        final JSONArray seasonsArray = new JSONObject(contentResult.get()).getJSONArray("Seasons");
+        final JSONArray seasonsArray = content.getJSONArray("Seasons");
 
         for (Object seasonObj : seasonsArray) {
             final JSONObject seasonJson = (JSONObject) seasonObj;
