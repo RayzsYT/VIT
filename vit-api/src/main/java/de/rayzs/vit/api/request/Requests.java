@@ -19,6 +19,31 @@ public class Requests {
         private Get() {}
 
 
+        public static class General {
+            private General() {}
+
+
+            public static JSONObject fetchPresence(final HttpClient client) {
+                return getAsJsonObject(
+                        client,
+                        RequestDest.LOCAL,
+                        "chat/v4/presences"
+                );
+            }
+
+
+            public static JSONObject fetchToken(final HttpClient client) {
+                return getAsJsonObject(
+                        client,
+                        RequestDest.LOCAL,
+                        "entitlements/v1/token"
+                );
+            }
+
+
+        }
+
+
         /**
          * Match data
          */
