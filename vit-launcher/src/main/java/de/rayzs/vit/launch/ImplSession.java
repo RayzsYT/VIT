@@ -471,13 +471,11 @@ public class ImplSession implements Session {
         Team ownTeam = null;
 
         if (state == SessionState.IN_LOBBY) {
-            final String teamId = match
+            ownTeam = Team.getTeamById(match
                     .getJSONArray("Teams")
                     .getJSONObject(0)
-                    .getString("TeamID");
-
-            ownTeam = teamId.equalsIgnoreCase("blue")
-                    ? Team.DEFEND : Team.ATTACK;
+                    .getString("TeamID")
+            );
         }
 
 
@@ -673,8 +671,8 @@ public class ImplSession implements Session {
             final String playerTitleId = identity.getString("PlayerTitleID");
 
             final Team team = state == SessionState.IN_LOBBY
-                    ? ownTeam : playerJson.getString("TeamID").equalsIgnoreCase("blue")
-                    ? Team.DEFEND : Team.ATTACK;
+                    ? ownTeam
+                    : Team.getTeamById(playerJson.getString("TeamID"));
 
             final PlayerSettings settings = new PlayerSettings(
                     levelHidden,
@@ -813,13 +811,13 @@ public class ImplSession implements Session {
 
 
         // Prevent team of the player whose match it is.
-        String playerTeam = "";
+        String playerTeamId = "";
         for (final Object playerObj : matchDetails.getJSONArray("players")) {
             final JSONObject player = (JSONObject) playerObj;
             final String teamId = player.getString("teamId");
 
             if (player.getString("subject").equalsIgnoreCase(playerId)) {
-                playerTeam = teamId;
+                playerTeamId = teamId;
                 break;
             }
         }
@@ -858,7 +856,7 @@ public class ImplSession implements Session {
 
 
 
-        final boolean isTeam1 = playerTeam.equalsIgnoreCase(team1Id);
+        final boolean isTeam1 = playerTeamId.equalsIgnoreCase(team1Id);
 
         final int wonRounds = isTeam1 ? team1Wins : team2Wins;
         final int lostRounds = isTeam1 ? team2Wins : team1Wins;
