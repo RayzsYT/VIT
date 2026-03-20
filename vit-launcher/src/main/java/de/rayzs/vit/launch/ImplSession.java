@@ -528,6 +528,13 @@ public class ImplSession implements Session {
 
                         final JSONObject playedMatch = (JSONObject) playedMatchObj;
 
+
+                        final String seasonId = playedMatch.getString("SeasonID");
+                        if (!Season.isActive(Season.getSeasonById(seasonId))) {
+                            continue;
+                        }
+
+
                         final String playedMatchId = playedMatch.getString("MatchID");
                         final int gainedRR = playedMatch.has("RankedRatingEarned")
                                 ? playedMatch.getInt("RankedRatingEarned")
