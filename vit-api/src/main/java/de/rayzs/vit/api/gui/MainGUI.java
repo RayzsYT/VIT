@@ -218,7 +218,7 @@ public class MainGUI extends GUI {
 
                     item.addActionListener(action -> {
                         try {
-                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/issues"));
+                            Desktop.getDesktop().browse(new URI("https://github.com/RayzsYT/VIT/issues/new"));
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
