@@ -32,9 +32,9 @@ public record Game(
      *
      * @param game Match to store.
      *
-     * @return True if match could be stored successfully. False otherwise.
+     * @return The saved file if successful. NULL otherwise.
      */
-    public static boolean saveMatch(final Game game) {
+    public static File saveMatch(final Game game) {
         System.out.println("Saving match...");
 
         final String fileName = String.format("%s-%s.o",
@@ -53,13 +53,13 @@ public record Game(
             write.writeObject(compressedGame);
             write.close();
 
-            return true;
+            return saveFile;
 
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
-        return false;
+        return null;
     }
 
     /**
