@@ -3,6 +3,7 @@ package de.rayzs.vit.launch.screens.game;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
@@ -179,8 +180,10 @@ public class LobbyScreen extends Screen implements GameScreen {
         dodgeButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
 
         dodgeButton.addActionListener(event -> {
-            dodgeButton.setEnabled(false);
-            System.out.println("Dodge not available yet.");
+            PopupGUI.create(
+                    "Not available yet",
+                    "Alright",
+                    "This feature is unfortunately not available yet. :c");
         });
 
         controls.add(dodgeButton);
