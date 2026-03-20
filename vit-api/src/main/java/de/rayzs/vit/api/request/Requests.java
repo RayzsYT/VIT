@@ -241,8 +241,7 @@ public class Requests {
                 ) != null;
                 */
 
-                System.out.println("Not allowed unfortunately and closed.");
-
+                System.out.println("Not allowed unfortunately. Closed!");
                 return false;
             }
 
