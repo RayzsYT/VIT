@@ -97,10 +97,21 @@ public class MainGUI extends GUI {
 
 
                             if (option.getResponse() == 1) {
+
+
                                 try {
-                                    Desktop.getDesktop().open(FileDir.GAMES.getFolder());
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
+                                    Desktop.getDesktop().browseFileDirectory(savedMatchFile);
+                                } catch (Exception exception) {
+
+                                    // Called on Windows 10 since Java Windows 10
+                                    // somehow has some issues regarding the method
+                                    // called above.
+
+                                    try {
+                                        Desktop.getDesktop().open(FileDir.GAMES.getFolder());
+                                    } catch (IOException ioException) {
+                                        exception.printStackTrace();
+                                    }
                                 }
                             }
 
@@ -192,8 +203,8 @@ public class MainGUI extends GUI {
 
                                     try {
                                         Desktop.getDesktop().open(file);
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
                                     }
                                 }
 
