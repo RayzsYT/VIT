@@ -535,13 +535,13 @@ public class ImplSession implements Session {
 
 
                         // Now trying to get the match information
-                        final JSONObject matchDetails = Requests.Get.Match.fetchPastMatchDetails(client, matchId);
+                        final JSONObject playedMatchDetails = Requests.Get.Match.fetchPastMatchDetails(client, playedMatchId);
 
 
                         // Simply cancel the process to fetch the  match history of that player.
                         // Most of the time, when the first match-id failed, then the others fail as well.
                         // So better not asking for the others.
-                        if (matchDetails == null) {
+                        if (playedMatchDetails == null) {
                             System.err.println("Failed to fetch match details for " + playerName + "! Ignoring match history of that player entirely to prevent spamming the VALORANT API any further.");
                             break;
                         }
@@ -552,7 +552,7 @@ public class ImplSession implements Session {
                                 playerId,
                                 gainedRR,
                                 playedMatchId,
-                                matchDetails
+                                playedMatchDetails
                         );
 
                         playedMatchesList.add(historyMatch);
