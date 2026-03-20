@@ -229,12 +229,21 @@ public class Requests {
              * @return TRUE if successful. FALSE otherwise.
              */
             public static boolean quitPreGameMatch(final HttpClient client, final String matchId) {
+
+                // Request denied! (https://glz-eu-1.eu.a.pvp.net//pregame/v1/matches/***/quit)
+                // Response: Method Not Allowed
+                /*
                 return sendAndGetAsString(
                         client,
                         RequestDest.GLZ,
                         "/pregame/v1/matches/" + matchId + "/quit",
                         ""
                 ) != null;
+                */
+
+                System.out.println("Not allowed unfortunately and closed.");
+
+                return false;
             }
 
 
