@@ -180,13 +180,7 @@ public class LobbyScreen extends Screen implements GameScreen {
 
         dodgeButton.addActionListener(event -> {
             dodgeButton.setEnabled(false);
-
-            System.out.println("Sending dodge request!");
-
-            Requests.Send.Match.quitPreGameMatch(
-                    api.getSession().getClient(),
-                    api.getGame().currentMatch().matchId()
-            );
+            System.out.println("Dodge not available yet.");
         });
 
         controls.add(dodgeButton);
