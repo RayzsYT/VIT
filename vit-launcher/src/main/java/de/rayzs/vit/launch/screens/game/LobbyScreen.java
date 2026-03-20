@@ -1,11 +1,9 @@
 package de.rayzs.vit.launch.screens.game;
 
-import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
-import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
-import de.rayzs.vit.api.image.DisplayImage;
+import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
@@ -13,7 +11,6 @@ import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.Screen;
 import de.rayzs.vit.launch.screens.game.elements.banners.LobbyPlayerBanner;
 import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
-import de.rayzs.vit.launch.screens.game.elements.window.PlayerWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +21,7 @@ public class LobbyScreen extends Screen implements GameScreen {
     private final String roleDisplay = String.join("", new String[] {
             "<html><div style='",
             "color: rgba(%d, %d, %d, 1); ",
-            "font-size: 60px;'><b>",
+            "font-size: 40px;'><b>",
             "%s",
             "</b></div></html>"
     });
@@ -154,8 +151,37 @@ public class LobbyScreen extends Screen implements GameScreen {
             }
         };
 
+
+        final int gridRows = 3;
+        final int gridCols = 3;
+
+
         banner.setPreferredSize(new Dimension(1000, 200));
-        banner.setLayout(new GridBagLayout());
+        banner.setLayout(new GridLayout(gridRows, gridCols));
+
+
+
+        final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        controls.setOpaque(false);
+
+        final JButton dodgeButton = new BeautifiedButton(
+                "Dodge!",
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND,
+                GUI.Colors.TEXT_FOREGROUND,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_PRESSED,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_RELEASED
+        );
+
+        dodgeButton.setFocusPainted(false);
+        dodgeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        dodgeButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+
+        dodgeButton.addActionListener(event -> {
+            System.out.println("Dodged!");
+        });
+
+        controls.add(dodgeButton);
 
 
         final Color roleColor = switch (game.self().team()) {
@@ -173,7 +199,13 @@ public class LobbyScreen extends Screen implements GameScreen {
         roleInfo.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
         roleInfo.setOpaque(false);
 
-        banner.add(roleInfo);
+
+        final Component[][] elements = new Component[gridRows][gridCols];{};
+
+        elements[0][0] = controls;
+        elements[1][1] = roleInfo;
+
+        insertElementsInGrid(elements, banner);
 
         return banner;
     }
@@ -193,5 +225,24 @@ public class LobbyScreen extends Screen implements GameScreen {
             final int y
     ) {
         playerWindows.get(player.id()).show(x, y);
+    }
+
+    private void insertElementsInGrid(final Component[][] elements, final JPanel gridPanel) {
+
+        for (int y = 0; y < elements.length; y++) {
+            for (int x = 0; x < elements[y].length; x++) {
+                Component element = elements[x][y];
+
+                if (elements[y][x] == null) {
+                    final JPanel placeholder = new JPanel();
+                    placeholder.setOpaque(false);
+
+                    element = placeholder;
+                }
+
+                gridPanel.add(element);
+            }
+        }
+
     }
 }
