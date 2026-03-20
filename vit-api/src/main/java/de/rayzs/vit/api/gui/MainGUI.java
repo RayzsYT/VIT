@@ -3,8 +3,10 @@ package de.rayzs.vit.api.gui;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.objects.game.Game;
 
 import javax.swing.*;
+import javax.swing.plaf.PopupMenuUI;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -58,10 +60,22 @@ public class MainGUI extends GUI {
                 item -> {
                     item.setText("Save Match");
 
-                    item.addActionListener(action -> {
-                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
-                                .relocateToLastLocation(300, 300);
-                    });
+                    if (VIT.get().getGame() == null) {
+                        PopupGUI.create(
+                                "Error!",
+                                "Oh mb sry",
+                                "There's no game running!"
+                        );
+
+                        return;
+                    }
+
+                    Game.saveMatch(VIT.get().getGame());
+                    PopupGUI.create(
+                            "Done!",
+                            "Okay!",
+                            "Done! Game saved under %localappdata%/VIT/storage/games as ''"
+                    );
 
                 }, item -> {
                     item.setText("Load Match");
