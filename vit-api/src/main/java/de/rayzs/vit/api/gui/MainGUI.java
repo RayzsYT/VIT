@@ -60,29 +60,62 @@ public class MainGUI extends GUI {
                 item -> {
                     item.setText("Save Match");
 
-                    if (VIT.get().getGame() == null) {
-                        PopupGUI.create(
-                                "Error!",
-                                "Oh mb sry",
-                                "There's no game running!"
-                        );
+                    item.addActionListener(action -> {
+                        if (VIT.get().getGame() == null) {
+                            PopupGUI.create(
+                                    "Error!",
+                                    "Oh mb sry",
+                                    "There's no game running!"
+                            );
 
-                        return;
-                    }
+                            return;
+                        }
 
-                    Game.saveMatch(VIT.get().getGame());
-                    PopupGUI.create(
-                            "Done!",
-                            "Okay!",
-                            "Done! Game saved under %localappdata%/VIT/storage/games as ''"
-                    );
+                        final File savedMatchFile = Game.saveMatch(VIT.get().getGame());
+
+                        if (savedMatchFile == null) {
+                            PopupGUI.create(
+                                    "Error!",
+                                    "Oh Okay",
+                                    "Something bad happened and the file couldn't be saved!"
+                            );
+
+                            return;
+                        }
+
+                        new Thread(() -> {
+                            final OptionGUI option = OptionGUI.create(
+                                    "Done!",
+                                    "Open folder!",
+                                    "Close!",
+                                    "Done. Game saved as:\n",
+                                    savedMatchFile.getName()
+                            );
+
+                            option.relocateToLastLocation(300, 300);
+
+
+
+                            if (option.getResponse() == 1) {
+                                try {
+                                    Desktop.getDesktop().open(FileDir.GAMES.getFolder());
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                }
+                            }
+
+                        }).start();
+                    });
 
                 }, item -> {
                     item.setText("Load Match");
 
                     item.addActionListener(action -> {
-                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
-                                .relocateToLastLocation(300, 300);
+                        PopupGUI.create(
+                                "",
+                                "Alright",
+                                "Not implemented yet!"
+                        ).relocateToLastLocation(300, 300);
                     });
 
                 }, item -> {
