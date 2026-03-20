@@ -38,6 +38,7 @@ public class TestDummy {
         final List<Player> players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             players.add(createRandomPlayer(i % 2 == 0 ? Team.ATTACK : Team.DEFEND));
+            //players.add(createRandomPlayer(Team.DEFEND));
         }
 
         final Player self = players.getFirst();
