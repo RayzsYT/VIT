@@ -21,6 +21,7 @@ public record Game(
         Player self,            // Self player
         SessionState state,     // State
         Player[] players,       // Players
+        Match currentMatch,     // Current match
         MatchMap map,           // ID of map
         String server           // Connected server
 ) {
@@ -170,6 +171,7 @@ public record Game(
                         selfPlayer,
                         SessionState.IN_GAME, // Since it's only used to store matches and nothing more.
                         players,
+                        null,
                         MatchMap.getMapById(mapId),
                         server
                 );

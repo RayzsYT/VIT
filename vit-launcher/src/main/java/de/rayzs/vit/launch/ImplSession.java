@@ -656,6 +656,12 @@ public class ImplSession implements Session {
                 selfPlayer,
                 state,
                 registeredPlayers.toArray(new Player[0]),
+                new Match(
+                        matchId,
+                        map,
+                        null,
+                        null
+                ),
                 map,
                 server
         );

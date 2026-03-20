@@ -6,6 +6,7 @@ import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
+import de.rayzs.vit.api.request.Requests;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.Screen;
@@ -178,7 +179,14 @@ public class LobbyScreen extends Screen implements GameScreen {
         dodgeButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
 
         dodgeButton.addActionListener(event -> {
-            System.out.println("Dodged!");
+            dodgeButton.setEnabled(false);
+
+            System.out.println("Sending dodge request!");
+
+            Requests.Send.Match.quitPreGameMatch(
+                    api.getSession().getClient(),
+                    api.getGame().currentMatch().matchId()
+            );
         });
 
         controls.add(dodgeButton);
