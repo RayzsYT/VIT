@@ -1,12 +1,14 @@
-package de.rayzs.vit.api.gui;
+package de.rayzs.vit.launch.screens.main;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.gui.OptionGUI;
+import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.objects.game.Game;
 
 import javax.swing.*;
-import javax.swing.plaf.PopupMenuUI;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

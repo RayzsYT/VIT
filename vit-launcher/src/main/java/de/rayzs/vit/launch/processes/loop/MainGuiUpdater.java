@@ -2,7 +2,7 @@ package de.rayzs.vit.launch.processes.loop;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.event.events.gui.UpdateMainGuiEvent;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.screens.game.LiveScreen;
 import de.rayzs.vit.launch.screens.game.LobbyScreen;

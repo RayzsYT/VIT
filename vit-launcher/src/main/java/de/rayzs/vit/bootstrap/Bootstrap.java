@@ -3,7 +3,8 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
 import de.rayzs.vit.api.file.FileDir;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.ImplVITAPI;
@@ -92,7 +93,7 @@ public class Bootstrap {
 
         final MainGUI gui = initializeMainGuiEvent.isCancelled()
                 ? null
-                : initializeMainGuiEvent.getGui();
+                : (MainGUI) initializeMainGuiEvent.getGui();
 
 
         // Test screen

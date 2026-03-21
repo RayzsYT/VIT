@@ -3,7 +3,7 @@ package de.rayzs.vit.api.event.events.gui;
 import de.rayzs.vit.api.event.Cancellable;
 import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.session.SessionState;
 
 /**
@@ -13,13 +13,13 @@ import de.rayzs.vit.api.session.SessionState;
 public class UpdateMainGuiEvent extends Event implements Cancellable {
 
     private final SessionState state;
-    private final MainGUI gui;
+    private final GUI gui;
 
     private boolean cancelled = false;
 
     public UpdateMainGuiEvent(
             final SessionState state,
-            final MainGUI gui
+            final GUI gui
     ) {
        this.state = state;
        this.gui = gui;
@@ -41,7 +41,7 @@ public class UpdateMainGuiEvent extends Event implements Cancellable {
      *
      * @return Main gui.
      */
-    public MainGUI getGui() {
+    public GUI getGui() {
         return this.gui;
     }
 

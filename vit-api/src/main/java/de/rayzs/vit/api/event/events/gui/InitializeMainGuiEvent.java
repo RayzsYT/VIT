@@ -2,19 +2,19 @@ package de.rayzs.vit.api.event.events.gui;
 
 import de.rayzs.vit.api.event.Cancellable;
 import de.rayzs.vit.api.event.Event;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.api.gui.GUI;
 
 /**
  * Called once when the gui is initialized for the very first time.
  */
 public class InitializeMainGuiEvent extends Event implements Cancellable {
 
-    private final MainGUI gui;
+    private final GUI gui;
 
     private boolean cancelled = false;
 
     public InitializeMainGuiEvent(
-            final MainGUI gui
+            final GUI gui
     ) {
        this.gui = gui;
     }
@@ -36,7 +36,7 @@ public class InitializeMainGuiEvent extends Event implements Cancellable {
      *
      * @return Main gui.
      */
-    public MainGUI getGui() {
+    public GUI getGui() {
         return this.gui;
     }
 

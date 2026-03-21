@@ -3,7 +3,7 @@ package de.rayzs.vit.launch.screens;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.file.FileDir;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.image.DisplayImage;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.launch.screens.game.elements.banners.PlayerBanner;

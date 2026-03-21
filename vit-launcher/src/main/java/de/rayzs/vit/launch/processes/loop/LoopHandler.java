@@ -8,7 +8,7 @@ import de.rayzs.vit.api.event.events.game.match.GamePreMatchStartEvent;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
 import de.rayzs.vit.api.event.events.system.tick.TickEvent;
-import de.rayzs.vit.api.gui.MainGUI;
+import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
