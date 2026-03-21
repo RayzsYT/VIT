@@ -1,6 +1,7 @@
 package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
@@ -10,6 +11,8 @@ import de.rayzs.vit.api.objects.player.match.LastCompMatch;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
+import de.rayzs.vit.api.objects.player.party.Party;
+import de.rayzs.vit.api.objects.player.party.PartyColors;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.screens.Screen;
 
@@ -64,6 +67,8 @@ public class TestDummy {
             Game.saveMatch(game);
         }
     }
+
+    static int i = 0;
 
 
     private static Player createRandomPlayer(final Team team) {
@@ -141,7 +146,11 @@ public class TestDummy {
                         )
                 ),
                 playerStats,
-                null,
+                new Party(
+                        "...",
+                        PartyColors.getPartyColor(i++),
+                        new Player[] {}
+                ),
                 matches.toArray(new Match[0])
         );
     }
