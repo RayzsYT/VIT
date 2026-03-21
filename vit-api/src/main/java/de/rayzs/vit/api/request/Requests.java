@@ -168,6 +168,15 @@ public class Requests {
 
             /**
              * Fetch the party id the player belongs to.
+             * {
+             *   "IsCrossPlayEnabled": false,
+             *   "Version": ** no matter **,
+             *   "Invites": null,
+             *   "CurrentPartyID": "***************",
+             *   "Requests": [],
+             *   "PlatformInfo": { ** no matter ** },
+             *   "Subject": "** censored **"
+             * }
              */
             public static JSONObject fetchPlayerParty(final HttpClient client, final String playerId) {
                 return getAsJsonObject(
