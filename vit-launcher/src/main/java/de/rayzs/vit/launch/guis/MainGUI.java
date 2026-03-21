@@ -1,4 +1,4 @@
-package de.rayzs.vit.launch.screens.main;
+package de.rayzs.vit.launch.guis;
 
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.VITAPI;
@@ -134,9 +134,14 @@ public class MainGUI extends GUI {
                 }, item -> {
                     item.setText("Settings");
 
+                    final SettingsGUI settingsGUI = new SettingsGUI();
+                    settingsGUI.setLocation(
+                            getLocation().x + 300,
+                            getLocation().y + 300
+                    );
+
                     item.addActionListener(action -> {
-                        PopupGUI.create("", "Alright", "Just placeholder. Still in development")
-                                .relocateToLastLocation(300, 300);
+                        settingsGUI.setVisible(true);
                     });
 
                 }, item -> {
