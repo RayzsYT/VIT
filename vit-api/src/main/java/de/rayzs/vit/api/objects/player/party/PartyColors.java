@@ -6,13 +6,13 @@ public class PartyColors {
 
     // Constant colors
     private static final Color[] COLORS = new Color[] {
-            new Color(145, 59, 211),
-            new Color(92, 190, 19),
-            new Color(70, 140, 230),
-            new Color(220, 90, 170),
-            new Color(255, 140, 60),
-            new Color(50, 200, 170),
-            new Color(200, 200, 90)
+            new Color(255, 255, 255),
+            new Color(255, 255, 0),
+            new Color(142, 0, 173),
+            new Color(246, 188, 147),
+            new Color(7, 255, 0),
+            new Color(222, 138, 189),
+            new Color(156, 255, 232)
     };
 
     /**
