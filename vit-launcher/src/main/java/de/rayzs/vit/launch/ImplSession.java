@@ -628,6 +628,7 @@ public class ImplSession implements Session {
                     inventory,
                     playerCompetitive,
                     new PlayerStats(winRate, headshotRate),
+                    null,
                     playedMatchesList.toArray(new Match[0])
             ));
 
@@ -852,6 +853,7 @@ public class ImplSession implements Session {
                     player.inventory(),
                     player.competitive(),
                     player.stats(),
+                    null,
                     player.playedMatches()
             );
         }

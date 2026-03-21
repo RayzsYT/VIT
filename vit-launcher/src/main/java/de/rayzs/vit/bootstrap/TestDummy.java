@@ -141,6 +141,7 @@ public class TestDummy {
                         )
                 ),
                 playerStats,
+                null,
                 matches.toArray(new Match[0])
         );
     }

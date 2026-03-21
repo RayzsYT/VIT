@@ -3,6 +3,7 @@ package de.rayzs.vit.api.objects.player;
 import de.rayzs.vit.api.objects.items.Agent;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.player.match.Match;
+import de.rayzs.vit.api.objects.player.party.Party;
 
 public record Player(
         String id,                          // Player id
@@ -16,5 +17,6 @@ public record Player(
         PlayerInventory inventory,          // Skin inventory
         PlayerCompetitive competitive,      // Stored competitive information
         PlayerStats stats,                  // Player stats
+        Party party,                        // Party the player belongs to
         Match[] playedMatches               // Played matches
 ) { }

@@ -6,6 +6,7 @@ import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.player.Player;
+import de.rayzs.vit.api.objects.player.party.Party;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.game.GameScreen;
@@ -44,7 +45,7 @@ public abstract class PlayerBanner {
 
 
     // Updatable panels:
-    protected final JPanel stripe           = new JPanel();
+    protected final JPanel stripe;
 
     // Updatable labels:
     protected final JLabel playerName       = new JLabel();
@@ -82,6 +83,32 @@ public abstract class PlayerBanner {
                 graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 graphics2D.setColor(GUI.Colors.BANNER_BACKGROUND.get());
                 graphics2D.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+            }
+        };
+
+        this.stripe = new JPanel() {
+
+            final int partyHeight = 10;
+
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                super.paintComponent(graphics);
+
+                final Color background = getBackground();
+                final Party party = player.party();
+
+                // Top part for showing parties
+                graphics.setColor(party == null ? background : party.partyColor());
+                graphics.fillRect(0, 0, getWidth(), partyHeight);
+
+                // Bottom part for showing what team role
+                graphics.setColor(background);
+                graphics.fillRect(
+                        0,
+                        partyHeight,
+                        getWidth(),
+                        getHeight() - partyHeight
+                );
             }
         };
 
