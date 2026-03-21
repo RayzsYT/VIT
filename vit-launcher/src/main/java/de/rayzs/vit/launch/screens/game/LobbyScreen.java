@@ -2,6 +2,7 @@ package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
@@ -16,6 +17,9 @@ import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LobbyScreen extends Screen implements GameScreen {
 
@@ -165,8 +169,11 @@ public class LobbyScreen extends Screen implements GameScreen {
         final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         controls.setOpaque(false);
 
-        final JButton dodgeButton = new BeautifiedButton(
-                "Dodge!",
+        final String randomButtonName = "Wait %ds";
+        final AtomicInteger randomButtonCountdown = new AtomicInteger(10);
+
+        final JButton randomButton = new BeautifiedButton(
+                randomButtonName.formatted(randomButtonCountdown.get()),
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND,
                 GUI.Colors.TEXT_FOREGROUND,
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
@@ -174,18 +181,47 @@ public class LobbyScreen extends Screen implements GameScreen {
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND_RELEASED
         );
 
-        dodgeButton.setFocusPainted(false);
-        dodgeButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        dodgeButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        randomButton.setEnabled(false);
 
-        dodgeButton.addActionListener(event -> {
+        // Allows random agent select button after certain amount of time
+        new Timer().schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                if (api.getSessionState() != SessionState.IN_LOBBY) {
+                    cancel();
+                    return;
+                }
+
+                if (randomButtonCountdown.get() == 1) {
+                    randomButton.setText("Select Random Agent!");
+                    randomButton.setEnabled(true);
+
+                    cancel();
+                    return;
+                }
+
+                randomButton.setText(
+                        randomButtonName.formatted(
+                                randomButtonCountdown.decrementAndGet()
+                        )
+                );
+            }
+        }, 1000, 1000);
+
+        randomButton.setFocusPainted(false);
+        randomButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        randomButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+
+        randomButton.addActionListener(event -> {
             PopupGUI.create(
                     "Not available yet",
                     "Alright",
                     "This feature is unfortunately not available yet. :c");
         });
 
-        controls.add(dodgeButton);
+        controls.add(randomButton);
 
 
         final Color roleColor = switch (game.self().team()) {
