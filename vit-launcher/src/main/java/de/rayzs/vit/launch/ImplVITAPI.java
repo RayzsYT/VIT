@@ -61,7 +61,7 @@ public class ImplVITAPI implements VITAPI {
     }
 
     @Override
-    public void setSessionState(final SessionState state) {
+    public void updateSessionState(final SessionState state) {
         this.state = state;
     }
 

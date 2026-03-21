@@ -54,7 +54,7 @@ public interface VITAPI {
      *
      * @param state New session state.
      */
-    void setSessionState(final SessionState state);
+    void updateSessionState(final SessionState state);
 
     /**
      * Get the instance of the event manager.

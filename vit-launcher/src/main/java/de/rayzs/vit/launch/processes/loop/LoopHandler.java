@@ -128,6 +128,7 @@ public class LoopHandler {
         }
 
 
+        api.updateSessionState(state);
         priorState = state;
     }
 
