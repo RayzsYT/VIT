@@ -9,10 +9,10 @@ public class PartyColors {
             new Color(255, 255, 255),
             new Color(255, 255, 0),
             new Color(142, 0, 173),
-            new Color(246, 188, 147),
             new Color(7, 255, 0),
-            new Color(222, 138, 189),
-            new Color(156, 255, 232)
+            new Color(115, 115, 115),
+            new Color(234, 134, 0),
+            new Color(0, 0, 0)
     };
 
     /**
