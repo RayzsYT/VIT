@@ -1,7 +1,7 @@
 package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
-import de.rayzs.vit.launch.screens.main.MainGUI;
+import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.*;

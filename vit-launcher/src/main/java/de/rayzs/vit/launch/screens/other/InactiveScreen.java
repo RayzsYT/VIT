@@ -2,7 +2,7 @@ package de.rayzs.vit.launch.screens.other;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
-import de.rayzs.vit.launch.screens.main.MainGUI;
+import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.image.SystemImages;
 import de.rayzs.vit.launch.screens.Screen;
 

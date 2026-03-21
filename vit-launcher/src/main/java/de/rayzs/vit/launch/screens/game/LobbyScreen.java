@@ -3,7 +3,7 @@ package de.rayzs.vit.launch.screens.game;
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.session.SessionState;
-import de.rayzs.vit.launch.screens.main.MainGUI;
+import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
