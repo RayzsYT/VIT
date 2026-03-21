@@ -43,7 +43,7 @@ public interface Session {
      *
      * @return SessionState.
      */
-    SessionState getSessionState();
+    SessionState fetchSessionState();
 
 
 

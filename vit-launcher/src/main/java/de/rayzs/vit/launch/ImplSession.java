@@ -271,7 +271,7 @@ public class ImplSession implements Session {
      * @return SessionState.
      */
     @Override
-    public SessionState getSessionState() {
+    public SessionState fetchSessionState() {
 
 
         if (this.selfPlayerId == null) {
