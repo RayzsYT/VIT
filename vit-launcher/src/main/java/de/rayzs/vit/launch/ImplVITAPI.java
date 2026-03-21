@@ -9,6 +9,7 @@ import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
+import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.utils.FileUtils;
 
 import java.io.File;
@@ -22,8 +23,9 @@ public class ImplVITAPI implements VITAPI {
     private final Configuration settings;
     private final Session session;
 
-    private Game game;
     private Weapon selectedWeapon = Weapon.VANDAL;
+    private SessionState state;
+    private Game game;
 
     public ImplVITAPI() {
 
@@ -51,6 +53,16 @@ public class ImplVITAPI implements VITAPI {
     @Override
     public Session getSession() {
         return this.session;
+    }
+
+    @Override
+    public SessionState getSessionState() {
+        return this.state;
+    }
+
+    @Override
+    public void setSessionState(final SessionState state) {
+        this.state = state;
     }
 
     @Override

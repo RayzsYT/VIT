@@ -7,6 +7,7 @@ import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
+import de.rayzs.vit.api.session.SessionState;
 
 import java.text.SimpleDateFormat;
 
@@ -40,6 +41,20 @@ public interface VITAPI {
      * @return Session.
      */
     Session getSession();
+
+    /**
+     * Get current session state.
+     *
+     * @return Current session state.
+     */
+    SessionState getSessionState();
+
+    /**
+     * Update session state.
+     *
+     * @param state New session state.
+     */
+    void setSessionState(final SessionState state);
 
     /**
      * Get the instance of the event manager.
