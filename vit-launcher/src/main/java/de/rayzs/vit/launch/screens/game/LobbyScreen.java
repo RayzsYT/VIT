@@ -7,7 +7,6 @@ import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.request.Requests;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.Screen;
