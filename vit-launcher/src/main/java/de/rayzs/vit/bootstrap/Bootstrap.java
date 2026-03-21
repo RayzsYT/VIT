@@ -4,6 +4,7 @@ import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.screens.main.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.utils.StringUtils;
@@ -136,11 +137,25 @@ public class Bootstrap {
                 }
 
                 final String name = args[0].substring(testIndex).toLowerCase(Locale.ROOT);
-                final Screen screen = switch (name) {
-                    case "live" -> new LiveScreen();
-                    case "lobby" -> new LobbyScreen();
-                    case "loading" -> new LoadingScreen();
-                    case "inactive" -> new InactiveScreen();
+                final Screen screen;
+
+                switch (name) {
+                    case "live" -> {
+                        api.updateSessionState(SessionState.IN_GAME);
+                        screen = new LiveScreen();
+                    }
+                    case "lobby" -> {
+                        api.updateSessionState(SessionState.IN_LOBBY);
+                        screen = new LobbyScreen();
+                    }
+                    case "loading" -> {
+                        api.updateSessionState(SessionState.IN_LOBBY);
+                        screen = new LoadingScreen();
+                    }
+                    case "inactive" -> {
+                        api.updateSessionState(SessionState.VALORANT_NOT_OPEN);
+                        screen = new InactiveScreen();
+                    }
 
                     default -> throw new IllegalStateException("Invalid screen name! (" + name + ")");
                 };
