@@ -88,27 +88,31 @@ public abstract class PlayerBanner {
 
         this.stripe = new JPanel() {
 
-            final int partyHeight = 10;
+            final int partyHeight = 50;
 
             @Override
             protected void paintComponent(Graphics graphics) {
                 super.paintComponent(graphics);
 
                 final Color background = getBackground();
-                final Party party = player.party();
+                final Color partyColor = player.party() == null
+                        ? background
+                        : player.party().partyColor();
+
+                final Graphics2D graphics2D = (Graphics2D) graphics;
+                final GradientPaint gradient = new GradientPaint(
+                        0, 0, partyColor,
+                        0, partyHeight, background
+                );
+
 
                 // Top part for showing parties
-                graphics.setColor(party == null ? background : party.partyColor());
-                graphics.fillRect(0, 0, getWidth(), partyHeight);
+                graphics2D.setPaint(gradient);
+                graphics2D.fillRect(0, 0, getWidth(), partyHeight);
 
                 // Bottom part for showing what team role
-                graphics.setColor(background);
-                graphics.fillRect(
-                        0,
-                        partyHeight,
-                        getWidth(),
-                        getHeight() - partyHeight
-                );
+                graphics2D.setColor(background);
+                graphics2D.fillRect(0, partyHeight, getWidth(), getHeight() - partyHeight);
             }
         };
 
