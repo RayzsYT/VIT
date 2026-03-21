@@ -23,8 +23,8 @@ public class ImplVITAPI implements VITAPI {
     private final Configuration settings;
     private final Session session;
 
+    private SessionState state = SessionState.VALORANT_NOT_OPEN;
     private Weapon selectedWeapon = Weapon.VANDAL;
-    private SessionState state;
     private Game game;
 
     public ImplVITAPI() {
