@@ -9,6 +9,8 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.*;
 import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
+import de.rayzs.vit.api.objects.player.party.Party;
+import de.rayzs.vit.api.objects.player.party.PartyColors;
 import de.rayzs.vit.api.objects.player.season.SeasonStats;
 import de.rayzs.vit.api.objects.player.season.SeasonTiers;
 import de.rayzs.vit.api.objects.player.match.LastCompMatch;
@@ -419,16 +421,32 @@ public class ImplSession implements Session {
 
 
         // Preparing a json of players whose names we want
-        // to ask for.
+        // to ask for. We also use the opportunity to check
+        // for each and every user's party id.
+
+        final Map<String, Set<String>> playerParties = new HashMap<>(); // Party id, Set of player ids
         final JSONArray playersArray = new JSONArray();
+
         for (Object playerObj : players) {
 
             final JSONObject player = (JSONObject) playerObj;
             final String playerId = player.getString("Subject");
 
+
+            final JSONObject party = null; // Requests.Get.Player.fetchPlayerParty(client, playerId);
+            if (party != null) {
+                final String partyId = party.getString("CurrentPartyID");
+
+                playerParties.computeIfAbsent(
+                        partyId,
+                        k -> new HashSet<>()
+                ).add(playerId);
+            }
+
             /*
-            In order to be RIOT compliant, incognito users won't be checked.
-            Because it bypasses the streamer-protection:
+            In order to be compliant and not expose any streamers,
+            incognito users won't be checked. Otherwise, the true name
+            of those players will be exposed, which might lead to a ban.
             */
 
             final JSONObject identity = player.getJSONObject("PlayerIdentity");
@@ -442,6 +460,27 @@ public class ImplSession implements Session {
             }
 
             incognitoPlayerIds.add(playerId);
+        }
+
+
+        // Now filtering for any parties that have less than 2 members.
+        playerParties.entrySet().removeIf(entry -> entry.getValue().size() <= 1);
+
+        final Map<String, Party> parties = new HashMap<>(); // Party id, Party
+
+        { // Never done that before, but I want to do this in a separate scope. :]
+            int partyIndex = 0;
+            for (Map.Entry<String, Set<String>> entry : playerParties.entrySet()) {
+                final String partyId = entry.getKey();
+
+                final Party party = new Party(
+                        partyId,
+                        PartyColors.getPartyColor(partyIndex++),
+                        new Player[20] // Might sound weird, but just in case someone has a weird and huuuge custom game. xd
+                );
+
+                parties.put(partyId, party);
+            }
         }
 
 
@@ -628,7 +667,7 @@ public class ImplSession implements Session {
                     inventory,
                     playerCompetitive,
                     new PlayerStats(winRate, headshotRate),
-                    null,
+                    parties.get(playerId),
                     playedMatchesList.toArray(new Match[0])
             ));
 
@@ -650,6 +689,27 @@ public class ImplSession implements Session {
 
         if (selfPlayer == null) {
             throw new NullPointerException("Self Player could not be found! (" + registeredPlayers.size() + " players)");
+        }
+
+
+        // Well, since everything's complete and it's obvious it's working,
+        // imma now gonna implement the actual party members to each party
+        // object.
+
+        for (final Player registeredPlayer : registeredPlayers) {
+            final Party party = registeredPlayer.party();
+            if (party == null) continue;
+
+            for (int i = 0; i < party.members().length; i++) {
+                final Player[] members = party.members();
+
+                if (members[i] == null) {
+                    // Found free slot
+
+                    members[i] = registeredPlayer;
+                    break;
+                }
+            }
         }
 
 
