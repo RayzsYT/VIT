@@ -79,7 +79,10 @@ public class LoopHandler {
         }
 
 
-        final TickEvent tickEvent = api.getEventManager().call(new TickEvent(api.getSession().getSessionState()));
+        final TickEvent tickEvent = api.getEventManager().call(
+                new TickEvent( api.getSession().fetchSessionState() )
+        );
+
         final SessionState state = tickEvent.getState();
 
 
