@@ -102,6 +102,7 @@ public class LoopHandler {
         );
 
 
+        api.updateSessionState(state);
         guiUpdater.handle(state);
 
 
@@ -131,7 +132,6 @@ public class LoopHandler {
         }
 
 
-        api.updateSessionState(state);
         priorState = state;
     }
 
