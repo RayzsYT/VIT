@@ -1,6 +1,8 @@
 package de.rayzs.vit.launch;
 
 import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.database.Database;
+import de.rayzs.vit.api.database.DatabaseHandler;
 import de.rayzs.vit.api.event.events.game.GameInitializedEvent;
 import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
 import de.rayzs.vit.api.event.events.player.PreFetchPlayerNameEvent;
@@ -710,6 +712,13 @@ public class ImplSession implements Session {
                     break;
                 }
             }
+        }
+
+
+        // Refresh database of seen players
+        final DatabaseHandler seenPlayersDatabase = Database.SEEN_PLAYERS.get();
+        for (final Player registeredPlayer : registeredPlayers) {
+            // Update database and read known info
         }
 
 
