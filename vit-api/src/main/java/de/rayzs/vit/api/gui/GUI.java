@@ -116,6 +116,18 @@ public class GUI extends JFrame {
         PROGRESS_BAR_BACKGROUND                     (BACKGROUND),
 
 
+        SETTINGS_BACKGROUND                         (41, 41, 61),
+        SETTINGS_FOREGROUND                         (TEXT_FOREGROUND),
+        SETTINGS_SIDEBAR_BACKGROUND                 (61, 61, 86),
+        SETTINGS_SECTION_BOX_BACKGROUND             (41, 41, 61),
+        SETTINGS_SECTION_BACKGROUND                 (35, 35, 54),
+        SETTINGS_SECTION_FOREGROUND                 (SETTINGS_FOREGROUND),
+        SETTINGS_SECTION_HOVER                      (59, 59, 84),
+        SETTINGS_SECTION_PRESSED                    (76, 76, 101),
+        SETTINGS_BOX_BACKGROUND                     (new Color(109, 109, 138)),
+        SETTINGS_SCROLLBAR                          (67, 67, 99),
+
+
         MAIN_CONTROL_BUTTON                         (206, 62, 62),
 
         LOBBY_ROLE_ATTACKING                        (248, 155, 155),
