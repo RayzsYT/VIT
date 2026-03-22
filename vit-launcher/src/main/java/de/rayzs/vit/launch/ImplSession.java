@@ -987,6 +987,9 @@ public class ImplSession implements Session {
         }
 
 
+        wait(BEFORE_LOADING_DATA_ONCE);
+
+
         final JSONObject content = Requests.Get.Content.getContent(client);
 
         if (content == null) {
@@ -1133,14 +1136,31 @@ public class ImplSession implements Session {
         }
 
 
+        wait(BEFORE_LOADING_DATA_ONCE);
+
+
         final JSONObject agents = Requests.Get.Player.fetchPlayerAvailableItem(
                 client,
                 selfPlayerId,
                 AvailableItem.AGENTS
         );
 
-        System.out.println(agents);
+        final JSONArray entitlements = agents.getJSONArray("Entitlements");
+        final List<Agent> agentList = new ArrayList<>();
 
+        for (Object entitlementObj : entitlements) {
+            final JSONObject entitlement = (JSONObject) entitlementObj;
+            final String agentId = entitlement.getString("ItemID");
+
+            final Agent agent = Agent.getAgentById(agentId);
+            if (agent == null) {
+                throw new NullPointerException("No agent found by the id: " + agentId);
+            }
+
+            agentList.add(agent);
+        }
+
+        VIT.get().updateOwningAgents(agentList.toArray(new Agent[0]));
     }
 
 
