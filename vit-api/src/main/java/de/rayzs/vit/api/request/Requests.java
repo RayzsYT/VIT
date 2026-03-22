@@ -238,20 +238,13 @@ public class Requests {
              * @return TRUE if successful. FALSE otherwise.
              */
             public static boolean quitPreGameMatch(final HttpClient client, final String matchId) {
-
-                // Request denied! (https://glz-eu-1.eu.a.pvp.net//pregame/v1/matches/***/quit)
-                // Response: Method Not Allowed
-                /*
                 return sendAndGetAsString(
                         client,
+                        RequestMethod.POST,
                         RequestDest.GLZ,
-                        "/pregame/v1/matches/" + matchId + "/quit",
+                        "pregame/v1/matches/" + matchId + "/quit",
                         ""
                 ) != null;
-                */
-
-                System.out.println("Not allowed unfortunately. Closed!");
-                return false;
             }
 
 
@@ -260,8 +253,9 @@ public class Requests {
              */
             public static boolean selectAgent(final HttpClient client, final String matchId, final String agentId) {
                 return sendAndGetAsString(client,
+                        RequestMethod.POST,
                         RequestDest.GLZ,
-                        "/pregame/v1/matches/" + matchId + "/select/" + agentId,
+                        "pregame/v1/matches/" + matchId + "/select/" + agentId,
                         ""
                 ) != null;
             }
@@ -273,6 +267,7 @@ public class Requests {
              */
             public static boolean lockAgent(final HttpClient client, final String matchId, final String agentId) {
                 return sendAndGetAsString(client,
+                        RequestMethod.POST,
                         RequestDest.GLZ,
                         "/pregame/v1/matches/" + matchId + "/lock/" + agentId,
                         ""
@@ -294,6 +289,7 @@ public class Requests {
             public static JSONArray sendPlayerNameRequest(final HttpClient client, final JSONArray playerIds) {
                 return sendAndGetAsJsonArray(
                         client,
+                        RequestMethod.PUT,
                         RequestDest.PD,
                         "name-service/v2/players",
                         playerIds.toString()
@@ -369,11 +365,12 @@ public class Requests {
      */
     private static JSONObject sendAndGetAsJsonObject(
             final HttpClient client,
+            final RequestMethod method,
             final RequestDest dest,
             final String urlPath,
             final String body
     ) {
-        final String result = sendAndGetAsString(client, dest, urlPath, body);
+        final String result = sendAndGetAsString(client, method, dest, urlPath, body);
 
         return result != null ? new JSONObject(result) : null;
     }
@@ -383,11 +380,12 @@ public class Requests {
      */
     private static JSONArray sendAndGetAsJsonArray(
             final HttpClient client,
+            final RequestMethod method,
             final RequestDest dest,
             final String urlPath,
             final String body
     ) {
-        final String result = sendAndGetAsString(client, dest, urlPath, body);
+        final String result = sendAndGetAsString(client, method, dest, urlPath, body);
 
         return result != null ? new JSONArray(result) : null;
     }
@@ -397,12 +395,13 @@ public class Requests {
      */
     private static String sendAndGetAsString(
             final HttpClient client,
+            final RequestMethod method,
             final RequestDest dest,
             final String urlPath,
             final String body
     ) {
         final Request request = Request.createRequest(
-                RequestMethod.PUT,
+                method,
                 dest,
                 urlPath,
                 body
