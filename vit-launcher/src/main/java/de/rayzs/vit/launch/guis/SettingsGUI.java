@@ -6,9 +6,7 @@ import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SettingsGUI extends GUI {
@@ -34,36 +32,18 @@ public class SettingsGUI extends GUI {
         contentPanel.setBackground(Colors.SETTINGS_SIDEBAR_BACKGROUND.get());
 
 
-        final Section guiSection = new Section("GUI");
-        guiSection.addTextSetting("Name", "name", "");
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addTextSetting("Description", "description", "");
-        guiSection.addTextSetting("Description", "description", "");
-        guiSection.addTextSetting("Description", "description", "");
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
-        guiSection.addCheckBoxSetting("pep2", false);
+        final Section scanSection = new Section("Scan Settings");
 
-        final Section settingsSection = new Section("Settings");
-        settingsSection.addTextSetting("Lol", "sss", "");
-        settingsSection.addTextSetting("Skrr", "eofijw", "");
-        settingsSection.addCheckBoxSetting("pep1", true);
-        settingsSection.addCheckBoxSetting("pep2", false);
+        scanSection.addNumberSetting("Amount of Player Matches", 5);
+        scanSection.addCheckBoxSetting("Scan Player Parties", false);
 
-        sidebar.add(createSidebarButton(guiSection));
-        sidebar.add(createSidebarButton(settingsSection));
+        sidebar.add(createSidebarButton(scanSection));
 
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
 
 
-        switchSection(guiSection);
+        switchSection(scanSection);
     }
 
     private JButton createSidebarButton(final Section section) {
@@ -112,7 +92,7 @@ public class SettingsGUI extends GUI {
         contentPanel.repaint();
     }
 
-    private class Section {
+    private static class Section {
 
         private final String name;
         private final JPanel panel;
@@ -120,6 +100,7 @@ public class SettingsGUI extends GUI {
 
         private final Map<String, JTextArea> textAreas = new HashMap<>();
         private final Map<String, JCheckBox> checkBoxes = new HashMap<>();
+        private final Map<String, JSpinner> spinners = new HashMap<>();
 
         public Section(String name) {
             this.name = name;
@@ -186,7 +167,7 @@ public class SettingsGUI extends GUI {
                 final String placeholder,
                 final String defaultText
         ) {
-            int row = panel.getComponentCount() / 2;
+            final int row = panel.getComponentCount() / 2;
 
             final JLabel label = new JLabel(name);
             label.setForeground(Colors.SETTINGS_FOREGROUND.get());
@@ -215,11 +196,43 @@ public class SettingsGUI extends GUI {
             panel.add(textArea, right);
         }
 
+        public void addNumberSetting(
+                final String name,
+                final int defaultVal
+        ) {
+            final int row = panel.getComponentCount() / 2;
+
+            final JLabel label = new JLabel(name);
+            label.setForeground(Colors.SETTINGS_FOREGROUND.get());
+
+            final JSpinner spinner = new JSpinner(new SpinnerNumberModel(defaultVal, 0, 15, 1));
+            final JFormattedTextField spinnerTextArea = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+            spinnerTextArea.setEditable(false);
+
+            spinner.setForeground(Colors.SETTINGS_FOREGROUND.get());
+            spinner.setBackground(Colors.SETTINGS_BOX_BACKGROUND.get());
+
+            spinner.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            spinners.put(name, spinner);
+
+            final GridBagConstraints left = createConstraints(row);
+            panel.add(label, left);
+
+            final GridBagConstraints right = createConstraints(row);
+
+            right.gridx = 1;
+            right.fill = GridBagConstraints.HORIZONTAL;
+            right.weightx = 1;
+
+            panel.add(spinner, right);
+        }
+
         public void addCheckBoxSetting(
                 final String name,
                 final boolean defaultValue
         ) {
-            int row = panel.getComponentCount() / 2;
+            final int row = panel.getComponentCount() / 2;
 
             final JLabel label = new JLabel(name);
             label.setForeground(Colors.SETTINGS_FOREGROUND.get());
