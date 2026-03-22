@@ -259,7 +259,7 @@ public class LobbyScreen extends Screen implements GameScreen {
             );
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
 
                 Requests.Send.Match.lockAgent(
                         api.getSession().getClient(),
