@@ -1146,7 +1146,16 @@ public class ImplSession implements Session {
         );
 
         final JSONArray entitlements = agents.getJSONArray("Entitlements");
-        final List<Agent> agentList = new ArrayList<>();
+        final List<Agent> agentList = new ArrayList<>(
+                // Default agents everyone has
+                Arrays.asList(
+                        Agent.SOVA,
+                        Agent.SAGE,
+                        Agent.PHOENIX,
+                        Agent.BRIMSTONE,
+                        Agent.JETT
+                )
+        );
 
         for (Object entitlementObj : entitlements) {
             final JSONObject entitlement = (JSONObject) entitlementObj;
@@ -1159,6 +1168,8 @@ public class ImplSession implements Session {
 
             agentList.add(agent);
         }
+
+        System.out.println(Arrays.toString(agentList.toArray()));
 
         VIT.get().updateOwningAgents(agentList.toArray(new Agent[0]));
     }
