@@ -84,15 +84,15 @@ public class ImplVITAPI implements VITAPI {
 
     @Override
     public Agent[] getOwningAgents() {
-        if (this.owningAgents == null) {
-            throw new RuntimeException("Cannot set owning agents, since it's already set!");
-        }
-
         return this.owningAgents;
     }
 
     @Override
     public void updateOwningAgents(Agent... agents) {
+        if (this.owningAgents != null) {
+            throw new RuntimeException("Cannot set owning agents, since it's already set!");
+        }
+
         this.owningAgents = agents;
     }
 
