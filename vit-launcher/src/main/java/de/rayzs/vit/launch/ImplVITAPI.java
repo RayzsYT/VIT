@@ -7,6 +7,7 @@ import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.items.Agent;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
 import de.rayzs.vit.api.session.SessionState;
@@ -25,6 +26,7 @@ public class ImplVITAPI implements VITAPI {
 
     private SessionState state = SessionState.VALORANT_NOT_OPEN;
     private Weapon selectedWeapon = Weapon.VANDAL;
+    private Agent[] owningAgents;
     private Game game;
 
     public ImplVITAPI() {
@@ -78,6 +80,20 @@ public class ImplVITAPI implements VITAPI {
     @Override
     public ImageProvider getImageProvider() {
         return this.imageProvider;
+    }
+
+    @Override
+    public Agent[] getOwningAgents() {
+        if (this.owningAgents == null) {
+            throw new RuntimeException("Cannot set owning agents, since it's already set!");
+        }
+
+        return this.owningAgents;
+    }
+
+    @Override
+    public void updateOwningAgents(Agent... agents) {
+        this.owningAgents = agents;
     }
 
     @Override

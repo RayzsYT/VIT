@@ -5,6 +5,7 @@ import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
+import de.rayzs.vit.api.objects.items.Agent;
 import de.rayzs.vit.api.objects.items.Weapon;
 import de.rayzs.vit.api.session.Session;
 import de.rayzs.vit.api.session.SessionState;
@@ -55,6 +56,20 @@ public interface VITAPI {
      * @param state New session state.
      */
     void updateSessionState(final SessionState state);
+
+    /**
+     * Update array of all agents the current
+     * instance owns. Can only be done once!
+     */
+    void updateOwningAgents(Agent... agents);
+
+    /**
+     * Array of all agents the current instance
+     * owns and can play.
+     *
+     * @return Array of all owning agents.
+     */
+    Agent[] getOwningAgents();
 
     /**
      * Get the instance of the event manager.
