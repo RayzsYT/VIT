@@ -340,6 +340,7 @@ public class ImplSession implements Session {
     ) {
 
         updateSeasonActivity();     // Update all season activities.
+        updateOwningAgents();       // Update all agents the own instance owns.
 
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
@@ -1119,6 +1120,27 @@ public class ImplSession implements Session {
                 lastMatch,
                 compRequirements
         );
+    }
+
+
+    /**
+     * Fetch and updates agents own instance is owning.
+     */
+    private void updateOwningAgents() {
+
+        if (VIT.get().getOwningAgents() != null) {
+            return;
+        }
+
+
+        final JSONObject agents = Requests.Get.Player.fetchPlayerAvailableItem(
+                client,
+                selfPlayerId,
+                AvailableItem.AGENTS
+        );
+
+        System.out.println(agents);
+
     }
 
 
