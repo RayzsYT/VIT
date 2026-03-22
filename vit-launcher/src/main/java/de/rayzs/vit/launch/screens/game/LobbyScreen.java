@@ -2,9 +2,11 @@ package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.gui.PopupGUI;
+import de.rayzs.vit.api.objects.items.Agent;
+import de.rayzs.vit.api.request.Requests;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.guis.MainGUI;
-import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
@@ -17,6 +19,7 @@ import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -170,7 +173,25 @@ public class LobbyScreen extends Screen implements GameScreen {
         controls.setOpaque(false);
 
         final String randomButtonName = "Wait %ds";
-        final AtomicInteger randomButtonCountdown = new AtomicInteger(10);
+        final AtomicInteger randomButtonCountdown = new AtomicInteger(5);
+
+        final JButton dodgeButton = new BeautifiedButton(
+                "Dodge!",
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND,
+                GUI.Colors.TEXT_FOREGROUND,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_PRESSED,
+                GUI.Colors.CONTROL_BUTTON_BACKGROUND_RELEASED
+        );
+
+        dodgeButton.addActionListener(event -> {
+            dodgeButton.setEnabled(false);
+
+            Requests.Send.Match.quitPreGameMatch(
+                    api.getSession().getClient(),
+                    api.getGame().currentMatch().matchId()
+            );
+        });
 
         final JButton randomButton = new BeautifiedButton(
                 randomButtonName.formatted(randomButtonCountdown.get()),
@@ -195,7 +216,7 @@ public class LobbyScreen extends Screen implements GameScreen {
                 }
 
                 if (randomButtonCountdown.get() == 1) {
-                    randomButton.setText("Select Random Agent!");
+                    randomButton.setText("Play Random Agent!");
                     randomButton.setEnabled(true);
 
                     cancel();
@@ -215,12 +236,44 @@ public class LobbyScreen extends Screen implements GameScreen {
         randomButton.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
 
         randomButton.addActionListener(event -> {
-            PopupGUI.create(
-                    "Not available yet",
-                    "Alright",
-                    "This feature is unfortunately not available yet. :c");
+            randomButton.setEnabled(false);
+
+            final Agent[] owningAgents = api.getOwningAgents();
+
+            if (owningAgents == null) {
+                PopupGUI.create(
+                        "Warning!",
+                        "Oh okay...",
+                        "For some reason, no agents you own could be found!"
+                );
+
+                return;
+            }
+
+            final Agent randomAgent = owningAgents[new Random().nextInt(randomButtonName.length())];
+
+            Requests.Send.Match.selectAgent(
+                    api.getSession().getClient(),
+                    api.getGame().currentMatch().matchId(),
+                    randomAgent.getAgentId()
+            );
+
+            try {
+                Thread.sleep(500);
+
+                Requests.Send.Match.lockAgent(
+                        api.getSession().getClient(),
+                        api.getGame().currentMatch().matchId(),
+                        randomAgent.getAgentId()
+                );
+
+            } catch (final InterruptedException exception) {
+                exception.printStackTrace();
+            }
         });
 
+
+        controls.add(dodgeButton);
         controls.add(randomButton);
 
 
