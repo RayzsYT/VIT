@@ -194,7 +194,7 @@ public class Configuration {
             return get(nextJson, nextPath);
         }
 
-        return json.get(path);
+        return json.has(path) ? json.get(path) : null;
     }
 
     /**
@@ -228,7 +228,7 @@ public class Configuration {
                 nextJson = json.getJSONObject(pathName);
             } else {
                 nextJson = new JSONObject();
-                json.put(pathName, nextPath);
+                json.put(pathName, nextJson);
             }
 
             set(nextJson, nextPath, value);
