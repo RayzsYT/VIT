@@ -24,7 +24,6 @@ import de.rayzs.vit.api.session.Session;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
-import de.rayzs.vit.api.request.RequestMethod;
 import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
