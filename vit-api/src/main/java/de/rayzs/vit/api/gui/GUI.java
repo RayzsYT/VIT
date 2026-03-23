@@ -3,7 +3,6 @@ package de.rayzs.vit.api.gui;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.image.SystemImages;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,10 +36,9 @@ public class GUI extends JFrame {
             final int yOffset
     ) {
         final Configuration settings = VIT.get().getSettings();
-        final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
-        final int storedX = lastLocation.getInt("x");
-        final int storedY = lastLocation.getInt("y");
+        final int storedX = settings.getInt("last-location.x");
+        final int storedY = settings.getInt("last-location.y");
 
         if (storedX == 0 && storedY == 0) {
             return;
@@ -83,13 +81,12 @@ public class GUI extends JFrame {
 
     public void updateLastLocation() {
         final Configuration settings = VIT.get().getSettings();
-        final JSONObject lastLocation = settings.get().getJSONObject("last-location");
 
         final int x = getLocationOnScreen().x;
         final int y = getLocationOnScreen().y;
 
-        lastLocation.put("x", x);
-        lastLocation.put("y", y);
+        settings.set("last-location.x", x)
+                .set("last-location.y", y);
 
         try {
             settings.save();
