@@ -6,7 +6,6 @@ import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
 import de.rayzs.vit.api.objects.player.Player;
-import de.rayzs.vit.api.objects.player.party.Party;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.game.GameScreen;
