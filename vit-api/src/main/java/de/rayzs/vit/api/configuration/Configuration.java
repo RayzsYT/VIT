@@ -1,6 +1,7 @@
 package de.rayzs.vit.api.configuration;
 
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -48,9 +49,194 @@ public class Configuration {
      *
      * @return JSONObject.
      */
-    public JSONObject get() {
+    public JSONObject getJsonObject() {
         return this.json;
     }
+
+    /**
+     * Get an object at a path. If the object is not found
+     * there, it will be set instead using the default value,
+     * saves the change, and returns the default value.
+     *
+     * @param path Path.
+     * @param defaultValue Default value in case nothing's found.
+     *
+     * @return Returns the value of the path or the default value.
+     */
+    public <T> T getOrSet(final String path, final T defaultValue) {
+        final Object object = this.get(path);
+
+        if (object == null) {
+            setAndSave(path, defaultValue);
+            return defaultValue;
+        }
+
+        return (T) object;
+    }
+
+    /**
+     * Set a value and saves the file after wards.
+     *
+     * @param path Path where to set the value at.
+     * @param value Value to set.
+     */
+    public void setAndSave(final String path, final Object value) {
+        set(json, path, value);
+
+        try {
+            save();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    /**
+     * Get String of path.
+     *
+     * @param path Path.
+     *
+     * @return String.
+     */
+    public String getString(final String path) {
+        final Object value = this.json.get(path);
+
+        if (value instanceof String str) {
+            return str;
+        }
+
+        throw new RuntimeException("Value of " + path + " is not a String!");
+    }
+
+    /**
+     * Get Integer of path.
+     *
+     * @param path Path.
+     *
+     * @return Integer.
+     */
+    public int getInt(final String path) {
+        final Object value = this.json.get(path);
+
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+
+        throw new RuntimeException("Value of " + path + " is not an Integer!");
+    }
+
+    /**
+     * Get Float of path.
+     *
+     * @param path Path.
+     *
+     * @return Float.
+     */
+    public float getFloat(final String path) {
+        final Object value = this.json.get(path);
+
+        if (value instanceof Number number) {
+            return number.floatValue();
+        }
+
+        throw new RuntimeException("Value of " + path + " is not a Float!");
+    }
+
+    /**
+     * Get Double of path.
+     *
+     * @param path Path.
+     *
+     * @return Double.
+     */
+    public double getDouble(final String path) {
+        final Object value = this.json.get(path);
+
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+
+        throw new RuntimeException("Value of " + path + " is not a Double!");
+    }
+
+    /**
+     * Recursively gets an object from the json if
+     * the path for it or the object exists.
+     *
+     * @param path Current path.
+     *
+     * @return Found object at path. Returns NULL if the path does not exist or no object exist at the end of the path.
+     */
+    public Object get(final String path) {
+        return get(json, path);
+    }
+
+    /**
+     * Recursively gets an object from the json if
+     * the path for it or the object exists.
+     *
+     * @param json Current json.
+     * @param path Current path.
+     *
+     * @return Found object at path. Returns NULL if the path does not exist or no object exist at the end of the path.
+     */
+    private Object get(final JSONObject json, final String path) {
+        final int index = StringUtils.searchIndex(".", path);
+
+        if (index != -1) {
+            final String nextPath = path.substring(index);
+            final String pathName = path.substring(0, index - 1);
+
+            if (!json.has(pathName)) {
+                return null;
+            }
+
+            final JSONObject nextJson = json.getJSONObject(pathName);
+            return get(nextJson, nextPath);
+        }
+
+        return json.get(path);
+    }
+
+    /**
+     * Set a value.
+     *
+     * @param path Path where to set the value at.
+     * @param value Value to set.
+     */
+    public void set(final String path, final Object value) {
+        set(json, path, value);
+    }
+
+    /**
+     * Recursively adds an object to the json.
+     *
+     * @param json Current json.
+     * @param path Current path.
+     * @param value Value to set.
+     */
+    private void set(final JSONObject json, final String path, final Object value) {
+        final int index = StringUtils.searchIndex(".", path);
+
+        if (index != -1) {
+            final String nextPath = path.substring(index);
+            final String pathName = path.substring(0, index - 1);
+
+            final JSONObject nextJson;
+
+            if (json.has(pathName)) {
+                nextJson = json.getJSONObject(pathName);
+            } else {
+                nextJson = new JSONObject();
+                json.put(pathName, nextPath);
+            }
+
+            set(nextJson, nextPath, value);
+            return;
+        }
+
+        json.put(path, value);
+    }
+
 
     /**
      * Get config file.
