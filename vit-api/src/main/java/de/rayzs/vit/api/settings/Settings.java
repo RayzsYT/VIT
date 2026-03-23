@@ -9,8 +9,13 @@ import java.util.Locale;
  * all settings that should exist globally.
  */
 public enum Settings {
-    
-    
+
+
+    // Last window location (Main GUI)
+    LAST_WINDOW_LOC_X             ("last-window-location.x",  0),
+    LAST_WINDOW_LOC_Y             ("last-window-location.y",  0),
+
+
     // Scan
     SCAN_PLAYER_MATCHES_AMOUNT      ("scan.player-matches-amount",  5),
     SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",    false);
