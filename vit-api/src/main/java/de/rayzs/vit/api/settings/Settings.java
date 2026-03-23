@@ -16,6 +16,9 @@ public enum Settings {
     SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",    false);
 
 
+
+
+
     private final Object defaultObj;
     private final String path;
 
@@ -37,7 +40,17 @@ public enum Settings {
      *
      * @return Value of setting.
      */
-    public <T> T get() {
+    public <T> T read() {
         return (T) VIT.get().getSettings().getOrSet(path, defaultObj);
+    }
+
+    /**
+     * Update a setting and write it into the file
+     * directly and saves the changes.
+     *
+     * @param value New value.
+     */
+    public void update(final Object value) {
+        VIT.get().getSettings().setAndSave(path, value);
     }
 }
