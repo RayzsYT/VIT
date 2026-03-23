@@ -4,5 +4,4 @@ Checklist:
   - Store PlayerID | MatchId | Agent | Timestamp
 - There is a LAYOUT for pre-game matches (valorant-api docs on github)
   - Check if possible to fetch skins during pre-match
-- Make Settings object in API for easier updating config file automatically and applying settings to settings gui automatically.
-  - Make setting for scanning parties.
+- Apply new Settings object to SettingsGUI and update it's values once saved
