@@ -203,8 +203,9 @@ public class Configuration {
      * @param path Path where to set the value at.
      * @param value Value to set.
      */
-    public void set(final String path, final Object value) {
+    public Configuration set(final String path, final Object value) {
         set(json, path, value);
+        return this;
     }
 
     /**
