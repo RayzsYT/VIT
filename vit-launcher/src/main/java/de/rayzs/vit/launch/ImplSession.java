@@ -345,7 +345,7 @@ public class ImplSession implements Session {
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
-        final int loadPlayerMatchesCount = VIT.get().getSettings().get().optInt("load-player-matches-count", 5);
+        final int loadPlayerMatchesCount = VIT.get().getSettings().getOrSet("load-player-matches-count", 5);
 
         PlayerCompetitive playerCompetitive = null;
 
