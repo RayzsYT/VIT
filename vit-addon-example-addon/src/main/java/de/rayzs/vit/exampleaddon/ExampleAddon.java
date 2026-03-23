@@ -25,12 +25,12 @@ public class ExampleAddon extends Addon {
         loadDefaultConfig();
 
         // Read prefix from config
-        final String prefix = getConfig().get().getString("prefix");
+        final String prefix = getConfig().getString("prefix");
         System.out.println(prefix + "Example Addon is enabled");
 
 
         // Set a new value to a config.
-        config.get().put("lol", "skrr");
+        config.set("lol", "skrr");
         // Apply and save your config changes.
         saveConfig();
 
@@ -38,8 +38,8 @@ public class ExampleAddon extends Addon {
 
         // Another config file
         Configuration configuration = new Configuration(getAddonDir(), "settings.json");
-        configuration.get().put("test", true);
-        configuration.get().put("name", "Some name");
+        configuration.set("test", true);
+        configuration.set("name", "Some name");
 
         try {
             configuration.save();
