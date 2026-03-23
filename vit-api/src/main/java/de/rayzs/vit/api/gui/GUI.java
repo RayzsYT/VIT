@@ -1,12 +1,10 @@
 package de.rayzs.vit.api.gui;
 
-import de.rayzs.vit.api.VIT;
-import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.image.SystemImages;
+import de.rayzs.vit.api.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class GUI extends JFrame {
 
@@ -35,10 +33,9 @@ public class GUI extends JFrame {
             final int xOffset,
             final int yOffset
     ) {
-        final Configuration settings = VIT.get().getSettings();
 
-        final int storedX = settings.getInt("last-location.x");
-        final int storedY = settings.getInt("last-location.y");
+        final int storedX = Settings.LAST_WINDOW_LOC_X.read();
+        final int storedY = Settings.LAST_WINDOW_LOC_Y.read();
 
         if (storedX == 0 && storedY == 0) {
             return;
@@ -80,19 +77,11 @@ public class GUI extends JFrame {
     }
 
     public void updateLastLocation() {
-        final Configuration settings = VIT.get().getSettings();
-
         final int x = getLocationOnScreen().x;
         final int y = getLocationOnScreen().y;
 
-        settings.set("last-location.x", x)
-                .set("last-location.y", y);
-
-        try {
-            settings.save();
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        Settings.LAST_WINDOW_LOC_X.update(x);
+        Settings.LAST_WINDOW_LOC_Y.update(y);
     }
 
     public enum Colors {
