@@ -2,6 +2,7 @@ package de.rayzs.vit.api;
 
 import de.rayzs.vit.api.file.FileDir;
 import de.rayzs.vit.api.image.SystemImages;
+import de.rayzs.vit.api.settings.Settings;
 
 public class VIT {
 
@@ -38,12 +39,12 @@ public class VIT {
             throw new IllegalArgumentException("VIT API is already initialized!");
         }
 
+        API = api;
+
 
         // Called so they create the necessary folders and files.
         FileDir.values();
         SystemImages.values();
-
-
-        API = api;
+        Settings.values();
     }
 }
