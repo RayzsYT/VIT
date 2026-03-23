@@ -189,7 +189,7 @@ public abstract class PlayerBanner {
                 : "";
 
 
-        final String statsDisplay = api.getSettings().get().optString(
+        final String statsDisplay = api.getSettings().getOrSet(
                 "player-statistics",
                 "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
         );
