@@ -1,8 +1,10 @@
 {
-  "load-player-matches-count": 5,
-  "last-location": {
-    "x": 0,
-    "y": 0
+  "scan": {
+    "scan-player-parties": false,
+    "player-matches-amount": 5
   },
-  "player-statistics": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
+  "last-window-location": {
+    "x": 370,
+    "y": 78
+  }
 }
