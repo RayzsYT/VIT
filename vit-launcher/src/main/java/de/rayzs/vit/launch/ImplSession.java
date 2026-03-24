@@ -24,6 +24,7 @@ import de.rayzs.vit.api.session.Session;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
+import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -344,7 +345,7 @@ public class ImplSession implements Session {
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
-        final int loadPlayerMatchesCount = VIT.get().getSettings().getOrSet("load-player-matches-count", 5);
+        final int loadPlayerMatchesCount = Settings.SCAN_PLAYER_MATCHES_AMOUNT.read();
 
         PlayerCompetitive playerCompetitive = null;
 
