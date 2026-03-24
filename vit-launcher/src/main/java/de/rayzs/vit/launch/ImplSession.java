@@ -436,7 +436,11 @@ public class ImplSession implements Session {
             final String playerId = player.getString("Subject");
 
 
-            final JSONObject party = null; // Requests.Get.Player.fetchPlayerParty(client, playerId);
+            final JSONObject party = Settings.SCAN_PLAYER_PARTIES.read()
+                    ? Requests.Get.Player.fetchPlayerParty(client, playerId)
+                    : null;
+
+
             if (party != null) {
                 final String partyId = party.getString("CurrentPartyID");
 
@@ -502,7 +506,6 @@ public class ImplSession implements Session {
 
             final String playerId = player.getString("Subject");
             final String playerName = player.getString("GameName") + "#" + player.getString("TagLine");
-
 
             playerNamesMap.put(playerId, playerName);
         }
@@ -923,7 +926,7 @@ public class ImplSession implements Session {
                     player.inventory(),
                     player.competitive(),
                     player.stats(),
-                    null,
+                    player.party(),
                     player.playedMatches()
             );
         }
