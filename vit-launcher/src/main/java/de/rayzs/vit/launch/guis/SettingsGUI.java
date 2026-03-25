@@ -1,20 +1,41 @@
 package de.rayzs.vit.launch.guis;
 
 import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
+import de.rayzs.vit.api.settings.Settings;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class SettingsGUI extends GUI {
 
 
-    private final Map<Section, JButton> sectionButtons = new HashMap<>();
+    private static final Map<Section, JButton> SECTIONS = new HashMap<>();
+
+    private static JButton createButton(final String buttonText) {
+        final JButton button = new BeautifiedButton(
+                buttonText,
+                Colors.SETTINGS_SECTION_BACKGROUND,
+                Colors.SETTINGS_SECTION_FOREGROUND,
+                Colors.SETTINGS_SECTION_HOVER,
+                Colors.SETTINGS_SECTION_PRESSED,
+                Colors.SETTINGS_SECTION_BACKGROUND
+        );
+
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        return button;
+    }
+
 
     private final JPanel contentPanel;
+
+    private Section currentSection;
 
     public SettingsGUI() {
         super("Settings", 500, 400);
@@ -32,12 +53,76 @@ public class SettingsGUI extends GUI {
         contentPanel.setBackground(Colors.SETTINGS_SIDEBAR_BACKGROUND.get());
 
 
-        final Section scanSection = new Section("Scan Settings");
+        final JButton saveSettingsButton = new BeautifiedButton(
+                "Apply Changes",
+                Colors.SETTINGS_SAVE_BACKGROUND,
+                Colors.SETTINGS_SAVE_FOREGROUND,
+                Colors.SETTINGS_SAVE_HOVER,
+                Colors.SETTINGS_SAVE_PRESSED,
+                Colors.SETTINGS_SAVE_BACKGROUND
+        );
 
-        scanSection.addNumberSetting("Amount of Player Matches", 5);
-        scanSection.addCheckBoxSetting("Scan Player Parties", false);
+        saveSettingsButton.setFocusPainted(false);
+        saveSettingsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        sidebar.add(createSidebarButton(scanSection));
+        saveSettingsButton.addActionListener(e -> {
+            SECTIONS.keySet().forEach(Section::applyChanges);
+
+            PopupGUI.create(
+                    "Done!",
+                    "Alright!",
+                    "Setting changes saved!"
+            ).setLocation(
+                    this.getLocation().x + 100,
+                    this.getLocation().y + 70
+            );
+
+
+        });
+
+
+
+        final Section scanSection = new Section("Scan");
+
+        scanSection.addNumberSetting(
+                Settings.SCAN_PLAYER_MATCHES_AMOUNT,
+                "Amount of Player Matches",
+                Settings.SCAN_PLAYER_MATCHES_AMOUNT.read()
+        );
+
+        scanSection.addCheckBoxSetting(
+                Settings.SCAN_PLAYER_PARTIES,
+                "Scan Player Parties",
+                Settings.SCAN_PLAYER_PARTIES.read()
+        );
+
+
+
+        final Set<Section> sections = SECTIONS.keySet();
+        final Iterator<Section> sectionIter = sections.iterator();
+
+        for (int i = 0; i < 10; i++) {
+
+            if (!sectionIter.hasNext()) {
+
+                final JButton button = createButton("");
+                button.setEnabled(false);
+
+                sidebar.add(button);
+                continue;
+            }
+
+            final Section section = sectionIter.next();
+            final JButton button = section.getButton();
+
+            button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            button.addActionListener(e -> switchSection(section));
+
+            sidebar.add(button);
+
+        }
+
+        sidebar.add(saveSettingsButton);
 
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
@@ -46,31 +131,9 @@ public class SettingsGUI extends GUI {
         switchSection(scanSection);
     }
 
-    private JButton createSidebarButton(final Section section) {
-        final JButton button = new BeautifiedButton(
-                section.name,
-                Colors.SETTINGS_SECTION_BACKGROUND,
-                Colors.SETTINGS_SECTION_FOREGROUND,
-                Colors.SETTINGS_SECTION_HOVER,
-                Colors.SETTINGS_SECTION_PRESSED,
-                Colors.SETTINGS_SECTION_BACKGROUND
-        );
+    private void switchSection(final Section section) {
 
-        button.setFocusPainted(false);
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-
-        button.setBackground(Colors.SETTINGS_SECTION_BACKGROUND.get());
-        button.setForeground(Colors.SETTINGS_SECTION_FOREGROUND.get());
-
-        button.addActionListener(e -> switchSection(section));
-
-        sectionButtons.put(section, button);
-        return button;
-    }
-
-    private void switchSection(Section section) {
-
-        for (Map.Entry<Section, JButton> entry : sectionButtons.entrySet()) {
+        for (final Map.Entry<Section, JButton> entry : SECTIONS.entrySet()) {
             if (entry.getKey() != section) {
 
                 entry.getValue().setEnabled(true);
@@ -84,7 +147,9 @@ public class SettingsGUI extends GUI {
         }
 
 
+        currentSection = section;
         contentPanel.removeAll();
+
 
         contentPanel.add(section.getPanel(), BorderLayout.CENTER);
 
@@ -96,14 +161,17 @@ public class SettingsGUI extends GUI {
 
         private final String name;
         private final JPanel panel;
+        private final JButton button;
+
         private final JScrollPane scrollPane;
 
-        private final Map<String, JTextArea> textAreas = new HashMap<>();
-        private final Map<String, JCheckBox> checkBoxes = new HashMap<>();
-        private final Map<String, JSpinner> spinners = new HashMap<>();
+        private final Map<JComponent, Settings> components = new HashMap<>();
+
 
         public Section(String name) {
             this.name = name;
+
+            button = createButton(name);
 
             panel = new JPanel();
             panel.setLayout(new GridBagLayout());
@@ -144,10 +212,37 @@ public class SettingsGUI extends GUI {
                 }
             });
 
+
+            SECTIONS.put(this, button);
         }
+
+
+        public void applyChanges() {
+            for (Map.Entry<JComponent, Settings> entry : components.entrySet()) {
+                final JComponent component = entry.getKey();
+                final Settings settings = entry.getValue();
+
+                if (component instanceof JTextArea textArea) {
+                    settings.update(textArea.getText());
+                } else if (component instanceof JSpinner spinner) {
+
+                    if (spinner.getValue() instanceof Number number) {
+                        settings.update(number.intValue());
+                    }
+
+                } else if (component instanceof JCheckBox checkBox) {
+                    settings.update(checkBox.isSelected());
+                }
+            }
+        }
+
 
         public JScrollPane getPanel() {
             return scrollPane;
+        }
+
+        public JButton getButton() {
+            return button;
         }
 
         private GridBagConstraints createConstraints(final int y) {
@@ -163,6 +258,7 @@ public class SettingsGUI extends GUI {
         }
 
         public void addTextSetting(
+                final Settings setting,
                 final String name,
                 final String placeholder,
                 final String defaultText
@@ -182,7 +278,7 @@ public class SettingsGUI extends GUI {
             textArea.setWrapStyleWord(true);
             textArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-            textAreas.put(name, textArea);
+            components.put(textArea, setting);
 
             final GridBagConstraints left = createConstraints(row);
             panel.add(label, left);
@@ -197,6 +293,7 @@ public class SettingsGUI extends GUI {
         }
 
         public void addNumberSetting(
+                final Settings setting,
                 final String name,
                 final int defaultVal
         ) {
@@ -214,7 +311,7 @@ public class SettingsGUI extends GUI {
 
             spinner.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-            spinners.put(name, spinner);
+            components.put(spinner, setting);
 
             final GridBagConstraints left = createConstraints(row);
             panel.add(label, left);
@@ -229,6 +326,7 @@ public class SettingsGUI extends GUI {
         }
 
         public void addCheckBoxSetting(
+                final Settings setting,
                 final String name,
                 final boolean defaultValue
         ) {
@@ -242,7 +340,7 @@ public class SettingsGUI extends GUI {
             checkBox.setSelected(defaultValue);
 
 
-            checkBoxes.put(name, checkBox);
+            components.put(checkBox, setting);
 
             final GridBagConstraints left = createConstraints(row);
             panel.add(label, left);
