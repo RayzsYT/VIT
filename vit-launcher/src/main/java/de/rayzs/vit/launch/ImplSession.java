@@ -3,6 +3,7 @@ package de.rayzs.vit.launch;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.database.Database;
 import de.rayzs.vit.api.database.DatabaseHandler;
+import de.rayzs.vit.api.database.Databases;
 import de.rayzs.vit.api.event.events.game.GameInitializedEvent;
 import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
 import de.rayzs.vit.api.event.events.player.PreFetchPlayerNameEvent;
@@ -721,8 +722,42 @@ public class ImplSession implements Session {
 
         // Refresh database of seen players
         final DatabaseHandler seenPlayersDatabase = Database.SEEN_PLAYERS.get();
+        seenPlayersDatabase.prepare();
+
+
+        seenPlayersDatabase.write("""
+                    CREATE TABLE IF NOT EXISTS seen_players (
+                        player-id varchar(255) PRIMARY KEY NOT NULL,
+                        times INTEGER NOT NULL DEFAULT 1,
+                        last-match-id varchar(255) NOT NULL,
+                        last-played-time BIGINT SIGNED NOT NULL
+                    )
+                    """);
+
+
         for (final Player registeredPlayer : registeredPlayers) {
-            // Update database and read known info
+            final String playerId = registeredPlayer.id();
+
+            final boolean registered = 0 != seenPlayersDatabase.readAndGetInt("""
+                    SELECT COUNT(*) FROM seen_players WHERE player-id = %s
+                    """.formatted(playerId));
+
+
+            final int seen = !registered ? 0 : seenPlayersDatabase.readAndGetInt("""
+                SELECT times FROM seen_players WHERE uuid = '%s'
+            """.formatted(playerId));
+
+            if (registered) {
+                seenPlayersDatabase.write("""
+                        UPDATE seen_players SET times = %d, last-match-id = %s, last-played-time = %d WHERE uuid = '%s'
+                        """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
+            } else {
+                seenPlayersDatabase.write("""
+                        INSERT INTO seen_players SET
+                        (player-id, times, last-match-id, last-played-time)
+                        %s, %d %s %d'
+                        """.formatted(playerId, seen + 1, matchId, System.currentTimeMillis()));
+            }
         }
 
 
