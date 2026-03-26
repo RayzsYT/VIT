@@ -532,6 +532,9 @@ public class ImplSession implements Session {
 
 
         for (int i = 0; i < players.length(); i++) {
+            wait(PER_PLAYER_COOLDOWN);
+
+
             final JSONObject playerJson = players.getJSONObject(i);
 
             final String playerId = playerJson.getString("Subject");
@@ -753,9 +756,6 @@ public class ImplSession implements Session {
             ));
 
             playerLoadConsumer.accept(registeredPlayers.size());
-
-
-            wait(PER_PLAYER_COOLDOWN);
         }
 
 
