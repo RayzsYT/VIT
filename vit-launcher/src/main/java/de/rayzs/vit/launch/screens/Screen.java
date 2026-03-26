@@ -19,7 +19,7 @@ public abstract class Screen {
     protected final Map<String, PlayerWindow> playerWindows = new HashMap<>();
     protected final Map<String, PlayerBanner> playerBanners = new HashMap<>();
 
-    protected final String loadingPlayerBannersText = "Loaded %d out of %d player banners";
+    protected final String loadingPlayerBannersText = "Loaded %d/%d player banners";
 
 
     public void load(

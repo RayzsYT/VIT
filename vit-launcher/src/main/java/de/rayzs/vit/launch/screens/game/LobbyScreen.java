@@ -73,7 +73,7 @@ public class LobbyScreen extends Screen implements GameScreen {
         playersWaitingLabel.setForeground(GUI.Colors.TEXT_FOREGROUND.get());
         playersWaitingPanel.setBackground(GUI.Colors.BACKGROUND.get());
 
-        playersWaitingLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        playersWaitingLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 40));
         playersWaitingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         playersWaitingLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
