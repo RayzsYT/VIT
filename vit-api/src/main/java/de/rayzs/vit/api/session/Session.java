@@ -12,7 +12,7 @@ public interface Session {
 
     // Cooldowns
     int BEFORE_LOADING_DATA_ONCE = 2000;
-    int PER_PLAYER_COOLDOWN = 250;
+    int PER_PLAYER_COOLDOWN = 450;
     int PER_MATCH_COOLDOWN = 50;
 
 
