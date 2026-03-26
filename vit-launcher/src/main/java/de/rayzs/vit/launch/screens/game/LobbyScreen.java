@@ -173,7 +173,7 @@ public class LobbyScreen extends Screen implements GameScreen {
         controls.setOpaque(false);
 
         final String randomButtonName = "Wait %ds";
-        final AtomicInteger randomButtonCountdown = new AtomicInteger(5);
+        final AtomicInteger randomButtonCountdown = new AtomicInteger(3);
 
         final JButton dodgeButton = new BeautifiedButton(
                 "Dodge!",
