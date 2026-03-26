@@ -2,15 +2,10 @@
   "player-statistics": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
   "scan": {
     "scan-player-parties": false,
-    "player-matches-amount": 3
+    "player-matches-amount": 5
   },
   "match": {
     "always-save-matches": false
-  },
-  "load-player-matches-count": 5,
-  "last-location": {
-    "x": 2378,
-    "y": 58
   },
   "last-window-location": {
     "x": 583,
