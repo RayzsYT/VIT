@@ -82,19 +82,30 @@ public class SettingsGUI extends GUI {
 
 
 
+
+
         final Section scanSection = new Section("Scan");
 
         scanSection.addNumberSetting(
                 Settings.SCAN_PLAYER_MATCHES_AMOUNT,
-                "Amount of Player Matches",
-                Settings.SCAN_PLAYER_MATCHES_AMOUNT.read()
+                "Amount of Player Matches"
         );
 
         scanSection.addCheckBoxSetting(
                 Settings.SCAN_PLAYER_PARTIES,
-                "Scan Player Parties",
-                Settings.SCAN_PLAYER_PARTIES.read()
+                "Scan Player Parties"
         );
+
+
+
+        final Section matchSection = new Section("Match");
+
+        matchSection.addCheckBoxSetting(
+                Settings.MATCH_ALWAYS_SAVE_AFTER,
+                "Auto-Save matches after"
+        );
+
+
 
 
 
@@ -128,7 +139,7 @@ public class SettingsGUI extends GUI {
         add(contentPanel, BorderLayout.CENTER);
 
 
-        switchSection(scanSection);
+        switchSection(SECTIONS.keySet().iterator().next());
     }
 
     private void switchSection(final Section section) {
@@ -260,15 +271,14 @@ public class SettingsGUI extends GUI {
         public void addTextSetting(
                 final Settings setting,
                 final String name,
-                final String placeholder,
-                final String defaultText
+                final String placeholder
         ) {
             final int row = panel.getComponentCount() / 2;
 
             final JLabel label = new JLabel(name);
             label.setForeground(Colors.SETTINGS_FOREGROUND.get());
 
-            final JTextArea textArea = new JTextArea(defaultText);
+            final JTextArea textArea = new JTextArea((String) setting.read());
             textArea.setForeground(Colors.SETTINGS_FOREGROUND.get());
             textArea.setBackground(Colors.SETTINGS_BOX_BACKGROUND.get());
             textArea.setToolTipText(placeholder);
@@ -294,15 +304,14 @@ public class SettingsGUI extends GUI {
 
         public void addNumberSetting(
                 final Settings setting,
-                final String name,
-                final int defaultVal
+                final String name
         ) {
             final int row = panel.getComponentCount() / 2;
 
             final JLabel label = new JLabel(name);
             label.setForeground(Colors.SETTINGS_FOREGROUND.get());
 
-            final JSpinner spinner = new JSpinner(new SpinnerNumberModel(defaultVal, 0, 15, 1));
+            final JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) setting.read(), 0, 15, 1));
             final JFormattedTextField spinnerTextArea = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
             spinnerTextArea.setEditable(false);
 
@@ -327,8 +336,7 @@ public class SettingsGUI extends GUI {
 
         public void addCheckBoxSetting(
                 final Settings setting,
-                final String name,
-                final boolean defaultValue
+                final String name
         ) {
             final int row = panel.getComponentCount() / 2;
 
@@ -337,7 +345,7 @@ public class SettingsGUI extends GUI {
 
             final JCheckBox checkBox = new JCheckBox();
             checkBox.setBackground(Colors.SETTINGS_BOX_BACKGROUND.get());
-            checkBox.setSelected(defaultValue);
+            checkBox.setSelected(setting.read());
 
 
             components.put(checkBox, setting);

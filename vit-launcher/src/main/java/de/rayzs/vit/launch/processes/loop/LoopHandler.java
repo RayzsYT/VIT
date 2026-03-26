@@ -8,6 +8,7 @@ import de.rayzs.vit.api.event.events.game.match.GamePreMatchStartEvent;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
 import de.rayzs.vit.api.event.events.system.tick.TickEvent;
+import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
@@ -127,7 +128,11 @@ public class LoopHandler {
         } else if (priorState == SessionState.IN_GAME) {
             api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
 
-            Game.saveMatch(api.getGame()); // Save match into a file
+            // Save match as a file
+            if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
+                Game.saveMatch(api.getGame());
+            }
+
             api.setGame(null);
         }
 
