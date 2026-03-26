@@ -708,15 +708,19 @@ public class ImplSession implements Session {
                                 Agent.getAgentByName(lastPlayedAgent)
                         );
 
-                        seenPlayersDatabase.write("""
-                                    UPDATE seen_players SET times = %d, last_played_map_name = '%s', last_played_agent = '%s', last_played_time = %d WHERE player_id = '%s'
-                                """.formatted(seen + 1, map.mapName(), agent.name(), System.currentTimeMillis(), playerId));
-
+                        if (state == SessionState.IN_GAME) {
+                            seenPlayersDatabase.write("""
+                                        UPDATE seen_players SET times = %d, last_played_map_name = '%s', last_played_agent = '%s', last_played_time = %d WHERE player_id = '%s'
+                                    """.formatted(seen + 1, map.mapName(), agent.name(), System.currentTimeMillis(), playerId));
+                        }
                     } else {
-                        seenPlayersDatabase.write("""
-                                INSERT INTO seen_players (player_id, times, last_played_map_name, last_played_agent, last_played_time)
-                                VALUES ('%s', %d, '%s', '%s', %d)
-                                """.formatted(playerId, 1, map.mapName(), agent.name(), System.currentTimeMillis()));
+
+                        if (state == SessionState.IN_GAME) {
+                            seenPlayersDatabase.write("""
+                                    INSERT INTO seen_players (player_id, times, last_played_map_name, last_played_agent, last_played_time)
+                                    VALUES ('%s', %d, '%s', '%s', %d)
+                                    """.formatted(playerId, 1, map.mapName(), agent.name(), System.currentTimeMillis()));
+                        }
                     }
 
                     resultSet.close();
