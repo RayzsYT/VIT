@@ -3,7 +3,6 @@ package de.rayzs.vit.launch;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.database.Database;
 import de.rayzs.vit.api.database.DatabaseHandler;
-import de.rayzs.vit.api.database.Databases;
 import de.rayzs.vit.api.event.events.game.GameInitializedEvent;
 import de.rayzs.vit.api.event.events.game.PreGameInitializeEvent;
 import de.rayzs.vit.api.event.events.player.PreFetchPlayerNameEvent;
@@ -523,7 +522,7 @@ public class ImplSession implements Session {
                     CREATE TABLE IF NOT EXISTS seen_players (
                         player_id VARCHAR(255) PRIMARY KEY NOT NULL,
                         times INTEGER NOT NULL DEFAULT 1,
-                        last_played_match_id VARCHAR(255) NOT NULL,
+                        last_played_map_name VARCHAR(255) NOT NULL,
                         last_played_time BIGINT SIGNED NOT NULL
                     )
                     """);
@@ -640,7 +639,7 @@ public class ImplSession implements Session {
             // Only proceed if the player is not the self player.
             if (!selfPlayerId.equalsIgnoreCase(playerId)) {
                 final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
-                            SELECT times, last_played_time, last_played_match_id FROM seen_players WHERE player_id = '%s'
+                            SELECT times, last_played_time, last_played_map_name FROM seen_players WHERE player_id = '%s'
                         """.formatted(playerId));
 
                 try {
@@ -649,19 +648,19 @@ public class ImplSession implements Session {
                     if (registered) {
                         final int seen = resultSet.getInt(1);
                         final long lastSeenTime = resultSet.getLong(2);
-                        final String lastPlayedMatchId = resultSet.getString(3);
+                        final String lastPlayedMap = resultSet.getString(3);
 
-                        lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMatchId);
+                        lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMap);
 
                         seenPlayersDatabase.write("""
-                                    UPDATE seen_players SET times = %d, last_played_match_id = '%s', last_played_time = %d WHERE player_id = '%s'
-                                """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
+                                    UPDATE seen_players SET times = %d, last_played_map_name = '%s', last_played_time = %d WHERE player_id = '%s'
+                                """.formatted(seen + 1, map.mapName(), System.currentTimeMillis(), playerId));
 
                     } else {
                         seenPlayersDatabase.write("""
-                                INSERT INTO seen_players (player_id, times, last_played_match_id, last_played_time)
+                                INSERT INTO seen_players (player_id, times, last_played_map_name, last_played_time)
                                 VALUES (%s, %d, %s, %d)
-                                """.formatted(playerId, 1, matchId, System.currentTimeMillis()));
+                                """.formatted(playerId, 1, map.mapName(), System.currentTimeMillis()));
                     }
 
                     resultSet.close();
