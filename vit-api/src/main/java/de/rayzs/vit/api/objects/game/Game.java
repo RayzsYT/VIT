@@ -160,6 +160,7 @@ public record Game(
                                     compressedPlayer.headshotRate
                             ),
                             null,
+                            null,
                             matches
                     );
 

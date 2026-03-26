@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -512,6 +513,24 @@ public class ImplSession implements Session {
         }
 
 
+
+        // Refresh database of seen players
+        final DatabaseHandler seenPlayersDatabase = Database.SEEN_PLAYERS.get();
+        seenPlayersDatabase.prepare();
+
+
+        seenPlayersDatabase.write("""
+                    CREATE TABLE IF NOT EXISTS seen_players (
+                        player_id VARCHAR(255) PRIMARY KEY NOT NULL,
+                        times INTEGER NOT NULL DEFAULT 1,
+                        last_played_match_id VARCHAR(255) NOT NULL,
+                        last_played_time BIGINT SIGNED NOT NULL
+                    )
+                    """);
+
+
+
+
         for (int i = 0; i < players.length(); i++) {
             final JSONObject playerJson = players.getJSONObject(i);
 
@@ -614,6 +633,43 @@ public class ImplSession implements Session {
             }
 
 
+
+            final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
+                SELECT times, last_played_time, last_played_match_id FROM seen_players WHERE player_id = '%s'
+            """.formatted(playerId));
+
+
+            LastSeenDetails lastSeenDetails = null;
+
+            try {
+                final boolean registered = resultSet.next();
+
+                if (registered) {
+                    final int seen = resultSet.getInt(1);
+                    final long lastSeenTime = resultSet.getLong(2);
+                    final String lastPlayedMatchId = resultSet.getString(3);
+
+                    lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMatchId);
+
+                    seenPlayersDatabase.write("""
+                        UPDATE seen_players SET times = %d, last_played_match_id = '%s', last_played_time = %d WHERE player_id = '%s'
+                    """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
+
+                } else {
+                    seenPlayersDatabase.write("""
+                        INSERT INTO seen_players (player_id, times, last_played_match_id, last_played_time)
+                        VALUES (%s, %d, %s, %d)
+                        """.formatted(playerId, 1, matchId, System.currentTimeMillis()));
+                }
+
+                resultSet.close();
+
+            } catch (final Exception exception) {
+                exception.printStackTrace();
+            }
+
+
+
             final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
 
             final boolean incognito = incognitoPlayerIds.contains(playerId);
@@ -675,6 +731,7 @@ public class ImplSession implements Session {
                     playerCompetitive,
                     new PlayerStats(winRate, headshotRate),
                     parties.get(playerId),
+                    lastSeenDetails,
                     playedMatchesList.toArray(new Match[0])
             ));
 
@@ -699,7 +756,7 @@ public class ImplSession implements Session {
         }
 
 
-        // Well, since everything's complete and it's obvious it's working,
+        // Well, since everything's complete, and it's obvious it's working,
         // imma now gonna implement the actual party members to each party
         // object.
 
@@ -716,47 +773,6 @@ public class ImplSession implements Session {
                     members[i] = registeredPlayer;
                     break;
                 }
-            }
-        }
-
-
-        // Refresh database of seen players
-        final DatabaseHandler seenPlayersDatabase = Database.SEEN_PLAYERS.get();
-        seenPlayersDatabase.prepare();
-
-
-        seenPlayersDatabase.write("""
-                    CREATE TABLE IF NOT EXISTS seen_players (
-                        player-id varchar(255) PRIMARY KEY NOT NULL,
-                        times INTEGER NOT NULL DEFAULT 1,
-                        last-match-id varchar(255) NOT NULL,
-                        last-played-time BIGINT SIGNED NOT NULL
-                    )
-                    """);
-
-
-        for (final Player registeredPlayer : registeredPlayers) {
-            final String playerId = registeredPlayer.id();
-
-            final boolean registered = 0 != seenPlayersDatabase.readAndGetInt("""
-                    SELECT COUNT(*) FROM seen_players WHERE player-id = %s
-                    """.formatted(playerId));
-
-
-            final int seen = !registered ? 0 : seenPlayersDatabase.readAndGetInt("""
-                SELECT times FROM seen_players WHERE uuid = '%s'
-            """.formatted(playerId));
-
-            if (registered) {
-                seenPlayersDatabase.write("""
-                        UPDATE seen_players SET times = %d, last-match-id = %s, last-played-time = %d WHERE uuid = '%s'
-                        """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
-            } else {
-                seenPlayersDatabase.write("""
-                        INSERT INTO seen_players SET
-                        (player-id, times, last-match-id, last-played-time)
-                        %s, %d %s %d'
-                        """.formatted(playerId, seen + 1, matchId, System.currentTimeMillis()));
             }
         }
 
@@ -962,6 +978,7 @@ public class ImplSession implements Session {
                     player.competitive(),
                     player.stats(),
                     player.party(),
+                    player.lastSeenDetails(),
                     player.playedMatches()
             );
         }

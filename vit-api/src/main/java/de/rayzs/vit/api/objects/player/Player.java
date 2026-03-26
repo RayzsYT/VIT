@@ -18,5 +18,6 @@ public record Player(
         PlayerCompetitive competitive,      // Stored competitive information
         PlayerStats stats,                  // Player stats
         Party party,                        // Party the player belongs to
+        LastSeenDetails lastSeenDetails,    // Last seen match details
         Match[] playedMatches               // Played matches
 ) { }
