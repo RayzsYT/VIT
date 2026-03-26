@@ -150,6 +150,7 @@ public class TestDummy {
                         PartyColors.getPartyColor(i++),
                         new Player[] {}
                 ),
+                null,
                 matches.toArray(new Match[0])
         );
     }
