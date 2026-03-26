@@ -356,6 +356,10 @@ public class ImplSession implements Session {
 
 
         final JSONObject initialMatchJson = Requests.Get.Match.fetchMatchData(client, state, selfPlayerId);
+        if (checkForRateLimitation(initialMatchJson)) {
+            playerLoadConsumer.accept(-1);
+            return null;
+        }
 
         if (initialMatchJson == null) {
             throw new IllegalStateException("Failed to fetch match data!");
@@ -367,6 +371,11 @@ public class ImplSession implements Session {
 
         // Fetch match information
         final JSONObject match = Requests.Get.Match.fetchLiveMatchDetails(client, state, matchId);
+        if (checkForRateLimitation(match)) {
+            playerLoadConsumer.accept(-1);
+            return null;
+        }
+
 
         if (match == null) {
             throw new NullPointerException("Failed to construct game object! Failed to fetch match details.");
@@ -395,6 +404,7 @@ public class ImplSession implements Session {
         // Fetch the loadouts of all players.
 
         final JSONArray loadouts = Requests.Get.Player.fetchPlayerLayouts(client, state, matchId);
+
         if (loadouts == null) {
             throw new NullPointerException("Failed to construct game object! Failed to fetch match loadouts.");
         }
@@ -440,6 +450,11 @@ public class ImplSession implements Session {
             final JSONObject party = Settings.SCAN_PLAYER_PARTIES.read()
                     ? Requests.Get.Player.fetchPlayerParty(client, playerId)
                     : null;
+
+            if (checkForRateLimitation(party)) {
+                playerLoadConsumer.accept(-1);
+                return null;
+            }
 
 
             if (party != null) {
@@ -534,6 +549,10 @@ public class ImplSession implements Session {
         for (int i = 0; i < players.length(); i++) {
             wait(PER_PLAYER_COOLDOWN);
 
+            if (!VIT.get().getSessionState().isValorantStarted()) {
+                break;
+            }
+
 
             final JSONObject playerJson = players.getJSONObject(i);
 
@@ -543,6 +562,10 @@ public class ImplSession implements Session {
 
             // Competitive information about the player...
             final JSONObject rank = Requests.Get.Player.fetchPlayersMMR(client, playerId);
+            if (checkForRateLimitation(rank)) {
+                playerLoadConsumer.accept(-1);
+                return null;
+            }
 
             if (rank != null) {
                 final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
@@ -582,6 +605,12 @@ public class ImplSession implements Session {
 
             // Only fetches a certain amount of matches of the player. Should be enough. By default, it's set to 5 matches.
             final JSONObject matchHistory = Requests.Get.Match.fetchMatchHistory(client, playerId, 0, loadPlayerMatchesCount);
+            if (checkForRateLimitation(matchHistory)) {
+                playerLoadConsumer.accept(-1);
+                return null;
+            }
+
+
             final List<Match> playedMatchesList = new ArrayList<>(); // Match history
 
             if (matchHistory != null) {
@@ -591,6 +620,10 @@ public class ImplSession implements Session {
 
                     for (final Object playedMatchObj : playedMatches) {
                         wait(PER_MATCH_COOLDOWN);
+
+                        if (!VIT.get().getSessionState().isValorantStarted()) {
+                            break;
+                        }
 
 
 
@@ -611,6 +644,10 @@ public class ImplSession implements Session {
 
                         // Now trying to get the match information
                         final JSONObject playedMatchDetails = Requests.Get.Match.fetchPastMatchDetails(client, playedMatchId);
+                        if (checkForRateLimitation(playedMatchDetails)) {
+                            playerLoadConsumer.accept(-1);
+                            return null;
+                        }
 
 
                         // Simply cancel the process to fetch the  match history of that player.
@@ -1064,6 +1101,7 @@ public class ImplSession implements Session {
 
         final JSONObject content = Requests.Get.Content.getContent(client);
 
+
         if (content == null) {
             throw new RuntimeException("Failed to fetch seasons! (Actually failed to receive content)");
         }
@@ -1217,6 +1255,9 @@ public class ImplSession implements Session {
                 AvailableItem.AGENTS
         );
 
+        checkForRateLimitation(agents);
+
+
         final JSONArray entitlements = agents.getJSONArray("Entitlements");
         final List<Agent> agentList = new ArrayList<>(
                 // Default agents everyone has
@@ -1262,5 +1303,17 @@ public class ImplSession implements Session {
 
         try { Thread.sleep(milliseconds);
         } catch (InterruptedException ignored) {}
+    }
+
+    /**
+     * Check if the result of the send request
+     * was denied due to rate-limitation or not.
+     *
+     * @param result Request result
+     */
+    private boolean checkForRateLimitation(final JSONObject result) {
+        return result != null
+                && result.has("error")
+                && result.getString("error").equalsIgnoreCase("rate-limited-1015");
     }
 }
