@@ -634,38 +634,41 @@ public class ImplSession implements Session {
 
 
 
-            final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
-                SELECT times, last_played_time, last_played_match_id FROM seen_players WHERE player_id = '%s'
-            """.formatted(playerId));
-
-
+            // Update and fetch last seen player data!
             LastSeenDetails lastSeenDetails = null;
 
-            try {
-                final boolean registered = resultSet.next();
+            // Only proceed if the player is not the self player.
+            if (!selfPlayerId.equalsIgnoreCase(playerId)) {
+                final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
+                            SELECT times, last_played_time, last_played_match_id FROM seen_players WHERE player_id = '%s'
+                        """.formatted(playerId));
 
-                if (registered) {
-                    final int seen = resultSet.getInt(1);
-                    final long lastSeenTime = resultSet.getLong(2);
-                    final String lastPlayedMatchId = resultSet.getString(3);
+                try {
+                    final boolean registered = resultSet.next();
 
-                    lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMatchId);
+                    if (registered) {
+                        final int seen = resultSet.getInt(1);
+                        final long lastSeenTime = resultSet.getLong(2);
+                        final String lastPlayedMatchId = resultSet.getString(3);
 
-                    seenPlayersDatabase.write("""
-                        UPDATE seen_players SET times = %d, last_played_match_id = '%s', last_played_time = %d WHERE player_id = '%s'
-                    """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
+                        lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMatchId);
 
-                } else {
-                    seenPlayersDatabase.write("""
-                        INSERT INTO seen_players (player_id, times, last_played_match_id, last_played_time)
-                        VALUES (%s, %d, %s, %d)
-                        """.formatted(playerId, 1, matchId, System.currentTimeMillis()));
+                        seenPlayersDatabase.write("""
+                                    UPDATE seen_players SET times = %d, last_played_match_id = '%s', last_played_time = %d WHERE player_id = '%s'
+                                """.formatted(seen + 1, matchId, System.currentTimeMillis(), playerId));
+
+                    } else {
+                        seenPlayersDatabase.write("""
+                                INSERT INTO seen_players (player_id, times, last_played_match_id, last_played_time)
+                                VALUES (%s, %d, %s, %d)
+                                """.formatted(playerId, 1, matchId, System.currentTimeMillis()));
+                    }
+
+                    resultSet.close();
+
+                } catch (final Exception exception) {
+                    exception.printStackTrace();
                 }
-
-                resultSet.close();
-
-            } catch (final Exception exception) {
-                exception.printStackTrace();
             }
 
 
