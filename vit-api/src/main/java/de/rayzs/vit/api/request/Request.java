@@ -301,13 +301,14 @@ public class Request {
             statusCode = contentResponse.statusCode();
 
 
-            if (statusCode == 1015) {
+            if (statusCode == 1015 || contentResponse.body().equalsIgnoreCase("error code: 1015")) {
                 return Optional.of("{\"error\": \"rate-limited-1015\"}");
             }
 
 
             if (statusCode != 200) {
                 System.err.println("Request denied! (" + request.uri() + ")");
+                System.out.println("Status: " + contentResponse.statusCode());
                 System.err.println("Response: " + contentResponse.body());
 
                 return Optional.empty();
