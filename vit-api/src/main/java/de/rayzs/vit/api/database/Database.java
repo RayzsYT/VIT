@@ -26,4 +26,13 @@ public enum Database {
     public DatabaseHandler get() {
         return this.handler;
     }
+
+
+    static {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 }
