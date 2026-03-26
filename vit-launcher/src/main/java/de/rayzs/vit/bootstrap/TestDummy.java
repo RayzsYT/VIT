@@ -119,11 +119,13 @@ public class TestDummy {
         final PlayerStats playerStats = new PlayerStats(winRate, headshotRate);
         final MatchMap map = getRandomMap();
 
+        final Agent agent = Agent.values()[random.nextInt(Agent.values().length)];
+
         return new Player(
                 String.valueOf(Math.abs(random.nextLong())),
                 team,
                 generateRandomPlayerName(),
-                Agent.values()[random.nextInt(Agent.values().length)],
+                agent,
                 random.nextInt(500),
                 "PlayerCard-" + random.nextInt(100),
                 "PlayerTitle-" + random.nextInt(100),
@@ -150,7 +152,12 @@ public class TestDummy {
                         PartyColors.getPartyColor(i++),
                         new Player[] {}
                 ),
-                null,
+                new LastSeenDetails(
+                        1,
+                        System.currentTimeMillis() - (10000 * random.nextInt(60) * random.nextInt(10)),
+                        map,
+                        agent
+                ),
                 matches.toArray(new Match[0])
         );
     }

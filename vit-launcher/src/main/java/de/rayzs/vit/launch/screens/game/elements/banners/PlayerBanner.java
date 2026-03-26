@@ -5,6 +5,7 @@ import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Team;
+import de.rayzs.vit.api.objects.player.LastSeenDetails;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
@@ -22,15 +23,17 @@ public abstract class PlayerBanner {
     private final PlayerBannerType bannerType;
 
     protected final String livePlayerNameDisplay = String.join("", new String[]{
-            "<html><div style='color: rgba(%d, %d, %d, 1); ",
-            "font-size: 13px;",
-            "'><b>%s</b></div></html>"
+            "<html>",
+            "<span style='color: rgba(%d, %d, %d, 1); font-size: 13px;'><b>%s</b></span>",
+            "<span style='color: rgba(%d, %d, %d, 1); font-size: 8px;'> %s</span>",
+            "</html>"
     });
 
     protected final String lobbyPlayerNameDisplay = String.join("", new String[]{
-            "<html><div style='color: rgba(%d, %d, %d, 1); ",
-            "font-size: 15px;",
-            "'><b>%s</b></div></html>"
+            "<html>",
+            "<span style='color: rgba(%d, %d, %d, 1); font-size: 15px;'><b>%s</b></span>",
+            "<span style='color: rgba(%d, %d, %d, 1); font-size: 8px;'> %s</span>",
+            "</html>"
     });
 
     protected MouseAdapter playerMouseAction;
@@ -244,21 +247,77 @@ public abstract class PlayerBanner {
      */
     protected String formatPlayerName(final Player player) {
         final Team team = player.team();
-        final String playerName = player.name();
         final String playerNameDisplay = bannerType == PlayerBannerType.LIVE
                 ? livePlayerNameDisplay : lobbyPlayerNameDisplay;
+
+
+        final LastSeenDetails lastSeenDetails = player.lastSeenDetails();
+        final String playerName = player.name();
+
+
+        // Build 'last seen' text if possible.
+        final String lastSeenText;
+        if (lastSeenDetails != null) {
+            final long lastSeenTime = System.currentTimeMillis() - lastSeenDetails.lastSeenTime();
+
+            int seconds = (int) (lastSeenTime / 1000);
+            int minutes = (int) (lastSeenTime / seconds);
+            int hours = minutes / 60;
+
+            minutes -= hours * 60;
+            seconds -= (hours * 60 * 60) + (minutes * 60);
+
+            final StringBuilder timeTextBuilder = new StringBuilder();
+
+            if (hours >= 1) {
+                timeTextBuilder.append(hours).append("h ");
+            }
+
+            if (hours == 0 && minutes >= 1) {
+                timeTextBuilder.append(minutes).append("m");
+            }
+
+            if (hours == 0 && minutes == 0) {
+                timeTextBuilder
+                        .append(" ")
+                        .append(seconds)
+                        .append("s");
+            }
+
+            final String lastSeenTimeText = timeTextBuilder.toString();
+
+            lastSeenText = " " + lastSeenTimeText + " ago | " + lastSeenDetails.map().mapName() + ", " + lastSeenDetails.agent().getAgentName();
+        } else lastSeenText = "";
+
+
 
         // In case the player being formatted is the
         // user of the program.
         if (playerName.equalsIgnoreCase(game.self().name())) {
-            return playerNameDisplay.formatted(250, 255, 181, "You");
+            return playerNameDisplay.formatted(
+                    250, 255, 181, "You",
+                    0, 0, 0, "" // Self player will be ignored anyway
+            );
         }
+
+
+        // Color for 'last seen' display
+        final int lastSeenR = 169;
+        final int lastSeenG = 169;
+        final int lastSeenB = 169;
+
 
         // Formating to the corresponding color, depending
         // on what team the player is on.
         return switch (team) {
-            case ATTACK -> playerNameDisplay.formatted(255, 99, 71, playerName);
-            case DEFEND -> playerNameDisplay.formatted(0, 255, 255, playerName);
+            case ATTACK -> playerNameDisplay.formatted(
+                    255, 99, 71, playerName,
+                    lastSeenR, lastSeenG, lastSeenB, lastSeenText
+            );
+            case DEFEND -> playerNameDisplay.formatted(
+                    0, 255, 255, playerName,
+                    lastSeenR, lastSeenG, lastSeenB, lastSeenText
+            );
         };
     }
 

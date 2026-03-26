@@ -523,6 +523,7 @@ public class ImplSession implements Session {
                         player_id VARCHAR(255) PRIMARY KEY NOT NULL,
                         times INTEGER NOT NULL DEFAULT 1,
                         last_played_map_name VARCHAR(255) NOT NULL,
+                        last_played_agent VARCHAR(255) NOT NULL,
                         last_played_time BIGINT SIGNED NOT NULL
                     )
                     """);
@@ -633,44 +634,6 @@ public class ImplSession implements Session {
 
 
 
-            // Update and fetch last seen player data!
-            LastSeenDetails lastSeenDetails = null;
-
-            // Only proceed if the player is not the self player.
-            if (!selfPlayerId.equalsIgnoreCase(playerId)) {
-                final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
-                            SELECT times, last_played_time, last_played_map_name FROM seen_players WHERE player_id = '%s'
-                        """.formatted(playerId));
-
-                try {
-                    final boolean registered = resultSet.next();
-
-                    if (registered) {
-                        final int seen = resultSet.getInt(1);
-                        final long lastSeenTime = resultSet.getLong(2);
-                        final String lastPlayedMap = resultSet.getString(3);
-
-                        lastSeenDetails = new LastSeenDetails(seen, lastSeenTime, lastPlayedMap);
-
-                        seenPlayersDatabase.write("""
-                                    UPDATE seen_players SET times = %d, last_played_map_name = '%s', last_played_time = %d WHERE player_id = '%s'
-                                """.formatted(seen + 1, map.mapName(), System.currentTimeMillis(), playerId));
-
-                    } else {
-                        seenPlayersDatabase.write("""
-                                INSERT INTO seen_players (player_id, times, last_played_map_name, last_played_time)
-                                VALUES (%s, %d, %s, %d)
-                                """.formatted(playerId, 1, map.mapName(), System.currentTimeMillis()));
-                    }
-
-                    resultSet.close();
-
-                } catch (final Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
-
-
 
             final JSONObject identity = playerJson.getJSONObject("PlayerIdentity");
 
@@ -716,6 +679,54 @@ public class ImplSession implements Session {
 
             final float headshotRate = (float) headshotHits / (float) shotHits;
             final float winRate = (float) wins / (float) games;
+
+
+
+
+            // Update and fetch last seen player data!
+            LastSeenDetails lastSeenDetails = null;
+
+            // Only proceed if the player is not the self player.
+            if (!selfPlayerId.equalsIgnoreCase(playerId)) {
+                final ResultSet resultSet = seenPlayersDatabase.readAndGet("""
+                            SELECT times, last_played_time, last_played_map_name, last_played_agent FROM seen_players WHERE player_id = '%s'
+                        """.formatted(playerId));
+
+                try {
+                    final boolean registered = resultSet.next();
+
+                    if (registered) {
+                        final int seen = resultSet.getInt(1);
+                        final long lastSeenTime = resultSet.getLong(2);
+                        final String lastPlayedMap = resultSet.getString(3);
+                        final String lastPlayedAgent = resultSet.getString(4);
+
+                        lastSeenDetails = new LastSeenDetails(
+                                seen,
+                                lastSeenTime,
+                                MatchMap.getMapByName(lastPlayedMap),
+                                Agent.getAgentByName(lastPlayedAgent)
+                        );
+
+                        seenPlayersDatabase.write("""
+                                    UPDATE seen_players SET times = %d, last_played_map_name = '%s', last_played_agent = '%s', last_played_time = %d WHERE player_id = '%s'
+                                """.formatted(seen + 1, map.mapName(), agent.name(), System.currentTimeMillis(), playerId));
+
+                    } else {
+                        seenPlayersDatabase.write("""
+                                INSERT INTO seen_players (player_id, times, last_played_map_name, last_played_agent, last_played_time)
+                                VALUES ('%s', %d, '%s', '%s', %d)
+                                """.formatted(playerId, 1, map.mapName(), agent.name(), System.currentTimeMillis()));
+                    }
+
+                    resultSet.close();
+
+                } catch (final Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+
+
 
 
             registeredPlayers.add(new Player(
