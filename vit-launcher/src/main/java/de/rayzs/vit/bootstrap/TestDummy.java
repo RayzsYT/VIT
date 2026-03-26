@@ -147,12 +147,8 @@ public class TestDummy {
                         )
                 ),
                 playerStats,
-                new Party(
-                        "...",
-                        PartyColors.getPartyColor(i++),
-                        new Player[] {}
-                ),
-                new LastSeenDetails(
+                null,
+                random.nextInt(10) < 7 ? null : new LastSeenDetails(
                         1,
                         System.currentTimeMillis() - (10000 * random.nextInt(60) * random.nextInt(10)),
                         map,
