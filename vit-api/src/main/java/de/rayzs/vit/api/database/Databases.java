@@ -75,8 +75,8 @@ public class Databases {
         private Connection connection;
         private final String url, user, pass;
 
-        private DefaultDatabaseHandler(String path) {
-            this.url = "jdbc:sqlite:" + path;
+        private DefaultDatabaseHandler(final String path) {
+            this.url = "jdbc:sqlite:" + path.replace("\\", "/");
 
             this.user = null;
             this.pass = null;
@@ -98,7 +98,7 @@ public class Databases {
         public void prepare() {
             try {
 
-                if (user == null || pass == null) {
+                if (user != null && pass != null) {
                     connection = DriverManager.getConnection(url, user, pass);
                 } else {
                     connection = DriverManager.getConnection(url);
