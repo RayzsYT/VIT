@@ -261,7 +261,7 @@ public abstract class PlayerBanner {
             final long lastSeenTime = System.currentTimeMillis() - lastSeenDetails.lastSeenTime();
 
             int seconds = (int) (lastSeenTime / 1000);
-            int minutes = (int) (lastSeenTime / seconds);
+            int minutes = seconds / 60;
             int hours = minutes / 60;
 
             minutes -= hours * 60;
