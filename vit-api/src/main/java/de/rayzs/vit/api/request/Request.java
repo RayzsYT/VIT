@@ -1,10 +1,12 @@
 package de.rayzs.vit.api.request;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -227,6 +229,8 @@ public class Request {
     private final HttpRequest request;
     private final RequestDest dest;
 
+    private int statusCode;
+
     private Request(
             final RequestMethod method,
             final RequestDest dest,
@@ -288,12 +292,21 @@ public class Request {
     public Optional<String> sendAndGet(final HttpClient client) {
 
         try {
-            final HttpResponse<String> contentResponse = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
 
-            if (contentResponse.statusCode() != 200) {
+            final HttpResponse<String> contentResponse = client.send(
+                        request,
+                        HttpResponse.BodyHandlers.ofString()
+                );
+
+            statusCode = contentResponse.statusCode();
+
+
+            if (statusCode == 1015) {
+                return Optional.of("{\"error\": \"rate-limited-1015\"}");
+            }
+
+
+            if (statusCode != 200) {
                 System.err.println("Request denied! (" + request.uri() + ")");
                 System.err.println("Response: " + contentResponse.body());
 
