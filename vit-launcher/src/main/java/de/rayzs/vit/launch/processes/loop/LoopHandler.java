@@ -14,6 +14,9 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class LoopHandler {
 
     private final VITAPI api;
@@ -145,6 +148,10 @@ public class LoopHandler {
             final SessionState state
     ) {
 
+
+        final AtomicBoolean rateLimited = new AtomicBoolean(false);
+
+
         final Game game = api.getSession().constructGame(state, event -> {
             final String server = event.getServer();
             final String map = event.getMap().mapName();
@@ -154,6 +161,13 @@ public class LoopHandler {
             });
 
         }, loadedPlayersCount -> {
+
+            if (loadedPlayersCount == -1) {
+                rateLimited.set(true);
+                return;
+            }
+
+
             final String updateText = "Loaded " + loadedPlayersCount + " players...";
 
 
@@ -164,7 +178,25 @@ public class LoopHandler {
             });
         });
 
+
         if (game == null) {
+
+            if (rateLimited.get()) {
+                final AtomicInteger time = new AtomicInteger(0);
+                final int waitingTime = 10;
+
+                while (time.getAndIncrement() < waitingTime) {
+
+                    guiUpdater.updateLoadingScreen(loadingScreen -> {
+                        loadingScreen.updateText("Rate limited! (" + (waitingTime - time.get()) + "s)");
+                    });
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception ignored) { }
+                }
+            }
+
             return;
         }
 
