@@ -447,9 +447,14 @@ public class ImplSession implements Session {
             final String playerId = player.getString("Subject");
 
 
-            final JSONObject party = Settings.SCAN_PLAYER_PARTIES.read()
-                    ? Requests.Get.Player.fetchPlayerParty(client, playerId)
-                    : null;
+            final JSONObject party;
+            if (Settings.SCAN_PLAYER_PARTIES.read()) {
+                wait(Settings.COOLDOWN_PLAYER_PARTY.read());
+
+                party = Requests.Get.Player.fetchPlayerParty(client, playerId);
+            } else {
+                party = null;
+            }
 
             if (checkForRateLimitation(party)) {
                 playerLoadConsumer.accept(-1);
@@ -547,7 +552,7 @@ public class ImplSession implements Session {
 
 
         for (int i = 0; i < players.length(); i++) {
-            wait(PER_PLAYER_COOLDOWN);
+            wait(Settings.COOLDOWN_PLAYER_START.read());
 
             if (!VIT.get().getSessionState().isValorantStarted()) {
                 break;
@@ -619,7 +624,7 @@ public class ImplSession implements Session {
                     final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
 
                     for (final Object playedMatchObj : playedMatches) {
-                        wait(PER_MATCH_COOLDOWN);
+                        wait(Settings.COOLDOWN_PLAYER_MATCH.read());
 
                         if (!VIT.get().getSessionState().isValorantStarted()) {
                             break;
@@ -1096,7 +1101,7 @@ public class ImplSession implements Session {
         }
 
 
-        wait(BEFORE_LOADING_DATA_ONCE);
+        wait(Settings.COOLDOWN_ONCE_ACTIVE_SEASON.read());
 
 
         final JSONObject content = Requests.Get.Content.getContent(client);
@@ -1246,7 +1251,7 @@ public class ImplSession implements Session {
         }
 
 
-        wait(BEFORE_LOADING_DATA_ONCE);
+        wait(Settings.COOLDOWN_ONCE_OWN_AGENTS.read());
 
 
         final JSONObject agents = Requests.Get.Player.fetchPlayerAvailableItem(

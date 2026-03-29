@@ -107,6 +107,34 @@ public class SettingsGUI extends GUI {
 
 
 
+        final Section cooldownSection = new Section("Cooldowns");
+
+        cooldownSection.addNumberSetting(
+                Settings.COOLDOWN_ONCE_ACTIVE_SEASON,
+                "Active seasons (in ms)"
+        );
+
+        cooldownSection.addNumberSetting(
+                Settings.COOLDOWN_ONCE_OWN_AGENTS,
+                "Own agents (in ms)"
+        );
+
+        cooldownSection.addNumberSetting(
+                Settings.COOLDOWN_PLAYER_START,
+                "Player Start (in ms)"
+        );
+
+        cooldownSection.addNumberSetting(
+                Settings.COOLDOWN_PLAYER_MATCH,
+                "Player Matches (in ms)"
+        );
+
+        cooldownSection.addNumberSetting(
+                Settings.COOLDOWN_PLAYER_PARTY,
+                "Player Party (in ms)"
+        );
+
+
 
 
         final Set<Section> sections = SECTIONS.keySet();
@@ -311,7 +339,7 @@ public class SettingsGUI extends GUI {
             final JLabel label = new JLabel(name);
             label.setForeground(Colors.SETTINGS_FOREGROUND.get());
 
-            final JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) setting.read(), 0, 15, 1));
+            final JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) setting.read(), 0, Integer.MAX_VALUE, 1));
             final JFormattedTextField spinnerTextArea = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
             spinnerTextArea.setEditable(false);
 

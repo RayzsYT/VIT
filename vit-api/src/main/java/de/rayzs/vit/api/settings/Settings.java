@@ -2,8 +2,6 @@ package de.rayzs.vit.api.settings;
 
 import de.rayzs.vit.api.VIT;
 
-import java.util.Locale;
-
 /**
  * Serves the only purpose to store, load, and retrieve
  * all settings that should exist globally.
@@ -12,17 +10,27 @@ public enum Settings {
 
 
     // Last window location (Main GUI)
-    LAST_WINDOW_LOC_X             ("last-window-location.x",        0),
-    LAST_WINDOW_LOC_Y             ("last-window-location.y",        0),
+    LAST_WINDOW_LOC_X             ("last-window-location.x",            0),
+    LAST_WINDOW_LOC_Y             ("last-window-location.y",            0),
 
 
     // Scan
-    SCAN_PLAYER_MATCHES_AMOUNT      ("scan.player-matches-amount",  5),
-    SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",    false),
+    SCAN_PLAYER_MATCHES_AMOUNT      ("scan.player-matches-amount",      5),
+    SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",        false),
 
 
     // Match
-    MATCH_ALWAYS_SAVE_AFTER         ("match.always-save-matches",  false);
+    MATCH_ALWAYS_SAVE_AFTER         ("match.always-save-matches",       false),
+
+
+    // Cooldown (Once during runtime)
+    COOLDOWN_ONCE_ACTIVE_SEASON     ("cooldown.once.active-season",            2000),
+    COOLDOWN_ONCE_OWN_AGENTS        ("cooldown.once.season",            2000),
+
+    // Cooldown (Player related)
+    COOLDOWN_PLAYER_START           ("cooldown.player.start",           250),
+    COOLDOWN_PLAYER_PARTY           ("cooldown.player.party",           150),
+    COOLDOWN_PLAYER_MATCH           ("cooldown.player.match",           100);
 
 
 

@@ -10,12 +10,6 @@ import java.util.function.Consumer;
 public interface Session {
 
 
-    // Cooldowns
-    int BEFORE_LOADING_DATA_ONCE = 2000;
-    int PER_PLAYER_COOLDOWN = 250;
-    int PER_MATCH_COOLDOWN = 300;
-
-
     /**
      * Initializes all required information
      * to send requests. Should not be called
