@@ -447,9 +447,16 @@ public class AssetPreparer {
                 );
             }
 
+
+
+            final String fullName = !name.contains("//") && parentSeason != null
+                    ? parentSeason.name() + " // " + name
+                    : name;
+
+
             final Season season = new Season(
                     id,
-                    name,
+                    fullName,
                     type,
                     parentSeason
             );
