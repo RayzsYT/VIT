@@ -18,6 +18,8 @@ import de.rayzs.vit.launch.screens.other.InactiveScreen;
 import de.rayzs.vit.launch.screens.other.LoadingScreen;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -188,6 +190,23 @@ public class Bootstrap {
 
                     if (tolerance >= 2) {
                         System.err.println("Something fatal happened way too often! Program will terminate.");
+
+
+                        OutputLogger.shutdown();
+
+
+                        final File logFile = OutputLogger.getLogFile();
+
+                        try {
+                            Files.copy(
+                                    logFile.toPath(),
+                                    FileDir.CRASH_LOGS.getFile(logFile.getName()).toPath()
+                            );
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+
+
                         System.exit(0);
                     }
 

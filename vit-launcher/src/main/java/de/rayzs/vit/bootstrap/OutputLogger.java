@@ -13,6 +13,7 @@ public class OutputLogger extends PrintStream {
     }
 
     private static final String LOG_MESSAGE = "[%s | %s] %s";
+    private static File logFile;
 
 
     private static boolean initialized = false;
@@ -35,6 +36,15 @@ public class OutputLogger extends PrintStream {
 
 
     /**
+     * Get current written log file.
+     *
+     * @return Current log file.
+     */
+    public static File getLogFile() {
+        return logFile;
+    }
+
+    /**
      * Initializes the logger. Should
      * only be called once during runtime.
      *
@@ -43,13 +53,13 @@ public class OutputLogger extends PrintStream {
     public static void initialize() throws Exception {
 
         if (initialized) {
-            throw new IllegalStateException("Output logger is already initialized");
+            throw new IllegalStateException("Output logger is already initialized!");
         }
 
 
         initialized = true;
 
-        final File logFile = FileDir.LOGS.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".txt");
+        logFile = FileDir.LOGS.getFile(VITAPI.DATE_FORMAT.format(System.currentTimeMillis()) + ".txt");
         logFile.createNewFile();
 
         // Zipping all non-used files.
