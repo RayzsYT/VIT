@@ -97,6 +97,11 @@ public class ImplVITAPI implements VITAPI {
     }
 
     @Override
+    public boolean hasGame() {
+        return this.game != null;
+    }
+
+    @Override
     public Game getGame() {
         if (this.game == null) {
             throw new NullPointerException("There's no running game!");

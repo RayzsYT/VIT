@@ -94,6 +94,13 @@ public interface VITAPI {
     ImageProvider getImageProvider();
 
     /**
+     * If a {@link Game} instance exists.
+     *
+     * @return True if it exists. False otherwise.
+     */
+    boolean hasGame();
+
+    /**
      * Get the current game
      * which is being played.
      *
