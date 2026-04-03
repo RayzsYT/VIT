@@ -409,8 +409,7 @@ public class AssetPreparer {
         for (final Object seasonObj : seasons) {
             final JSONObject season = (JSONObject) seasonObj;
 
-            final String title = season.optString("title");
-            final String name = season.optString("displayName");
+            final String seasonName = season.optString("displayName");
             final String seasonTypeName = season.optString("type");
 
             final SeasonType seasonType = seasonTypeName.contains("Act")
@@ -418,7 +417,6 @@ public class AssetPreparer {
 
 
             final String seasonId = season.getString("uuid");
-            final String seasonName = title.isEmpty() ? name : title;
             final String parentId = season.optString("parentUuid");
 
             seasonNames.put(seasonId, seasonName);
@@ -449,7 +447,7 @@ public class AssetPreparer {
 
 
 
-            final String fullName = !name.contains("//") && parentSeason != null
+            final String fullName = parentSeason != null
                     ? parentSeason.name() + " // " + name
                     : name;
 
