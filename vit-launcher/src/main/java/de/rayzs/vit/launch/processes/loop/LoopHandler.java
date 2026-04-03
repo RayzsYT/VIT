@@ -115,29 +115,31 @@ public class LoopHandler {
         }
 
 
-        // Event calls:
-        if (priorState == SessionState.IN_MENU && state == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
+        if (api.hasGame()) {
+
+            // Event calls:
+            if (priorState == SessionState.IN_MENU && state == SessionState.IN_LOBBY) {
+                api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
 
 
-        } else if (priorState == SessionState.IN_LOBBY && state == SessionState.IN_LOBBY) {
-            api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
+            } else if (priorState == SessionState.IN_LOBBY && state == SessionState.IN_LOBBY) {
+                api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
 
 
-        } else if (state == SessionState.IN_GAME) {
+            } else if (state == SessionState.IN_GAME) {
+                api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
 
-            api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
 
+            } else if (priorState == SessionState.IN_GAME) {
+                api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
 
-        } else if (priorState == SessionState.IN_GAME) {
-            api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
+                // Save match as a file
+                if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
+                    Game.saveMatch(api.getGame());
+                }
 
-            // Save match as a file
-            if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
-                Game.saveMatch(api.getGame());
+                api.setGame(null);
             }
-
-            api.setGame(null);
         }
 
 
