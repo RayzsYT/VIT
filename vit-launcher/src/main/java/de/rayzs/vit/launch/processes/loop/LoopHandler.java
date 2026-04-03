@@ -125,6 +125,7 @@ public class LoopHandler {
 
 
         } else if (state == SessionState.IN_GAME) {
+
             api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
 
 
