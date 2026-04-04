@@ -3,6 +3,8 @@ package de.rayzs.vit.api;
 import de.rayzs.vit.api.addon.AddonManager;
 import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventManager;
+import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.gui.Screen;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Agent;
@@ -26,6 +28,20 @@ public interface VITAPI {
      * @return VIT version.
      */
     static String getVersion() { return "1.0.11"; }
+
+    /**
+     * Get main gui.
+     *
+     * @return Main GUI.
+     */
+    Screen getMainGui();
+
+    /**
+     * Set main gui. Will once be called once during bootup.
+     *
+     * @param gui Main gui.
+     */
+    void setMainGui(final Screen gui);
 
     /**
      * Default VIT settings.

@@ -12,7 +12,7 @@ import de.rayzs.vit.launch.screens.game.elements.window.PlayerWindow;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Screen {
+public abstract class ScreenAbstr implements de.rayzs.vit.api.gui.Screen {
 
 
     // Player Id, Value
@@ -40,6 +40,7 @@ public abstract class Screen {
      *
      * @param player New player object.
      */
+    @Override
     public void updatePlayerBanner(final Player player) {
         if (playerBanners.containsKey(player.id())) {
             playerBanners.get(player.id()).updatePlayer(player);

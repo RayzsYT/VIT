@@ -12,7 +12,7 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 import de.rayzs.vit.launch.screens.game.elements.banners.LobbyPlayerBanner;
 import de.rayzs.vit.launch.screens.game.elements.window.LobbyPlayerWindow;
 
@@ -24,7 +24,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class LobbyScreen extends Screen implements GameScreen {
+public class LobbyScreen extends ScreenAbstr implements GameScreen {
 
     private final String roleDisplay = String.join("", new String[] {
             "<html><div style='",

@@ -10,10 +10,8 @@ import de.rayzs.vit.api.objects.player.match.LastCompMatch;
 import de.rayzs.vit.api.objects.player.match.Match;
 import de.rayzs.vit.api.objects.player.match.data.CompMatchResult;
 import de.rayzs.vit.api.objects.player.match.data.MatchInfo;
-import de.rayzs.vit.api.objects.player.party.Party;
-import de.rayzs.vit.api.objects.player.party.PartyColors;
 import de.rayzs.vit.api.session.SessionState;
-import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 
 import java.util.*;
 import java.util.Map;
@@ -25,7 +23,7 @@ public class TestDummy {
 
     public static void apply(
             final MainGUI gui,
-            final Screen screen,
+            final ScreenAbstr screen,
             final int playerNum,
             final boolean saveMatch
     ) {

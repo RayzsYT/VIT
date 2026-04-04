@@ -12,7 +12,7 @@ import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
 import de.rayzs.vit.launch.screens.game.elements.banners.LivePlayerBanner;
 import de.rayzs.vit.launch.screens.game.elements.banners.PlayerBanner;
-import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 import de.rayzs.vit.launch.screens.game.elements.window.LivePlayerWindow;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class LiveScreen extends Screen implements GameScreen {
+public class LiveScreen extends ScreenAbstr implements GameScreen {
 
 
     @Override

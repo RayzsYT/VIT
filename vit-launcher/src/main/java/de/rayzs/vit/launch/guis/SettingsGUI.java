@@ -1,17 +1,19 @@
 package de.rayzs.vit.launch.guis;
 
+import de.rayzs.vit.api.VIT;
+import de.rayzs.vit.api.event.events.settings.UpdatedSettingEvent;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.PopupGUI;
+import de.rayzs.vit.api.gui.Screen;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
+import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.settings.Settings;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SettingsGUI extends GUI {
 
@@ -66,7 +68,32 @@ public class SettingsGUI extends GUI {
         saveSettingsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         saveSettingsButton.addActionListener(e -> {
-            SECTIONS.keySet().forEach(Section::applyChanges);
+            final Set<Settings> updatedSettings = new HashSet<>();
+
+            SECTIONS.keySet().forEach(setting ->
+                    updatedSettings.addAll(setting.applyChanges())
+            );
+
+            for (Settings setting : updatedSettings) {
+                VIT.get().getEventManager().call(new UpdatedSettingEvent(setting));
+
+
+                final Screen screen = VIT.get().getMainGui();
+
+                switch (setting) {
+
+                    case SCAN_PLAYER_PARTIES -> {
+                        if (setting.read()) {
+                            for (final Player player : VIT.get().getGame().players()) {
+                                screen.updatePlayerBanner(player);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
 
             PopupGUI.create(
                     "Done!",
@@ -256,23 +283,36 @@ public class SettingsGUI extends GUI {
         }
 
 
-        public void applyChanges() {
+        public Set<Settings> applyChanges() {
+            final Set<Settings> updatedSettings = new HashSet<>();
+
             for (Map.Entry<JComponent, Settings> entry : components.entrySet()) {
                 final JComponent component = entry.getKey();
                 final Settings settings = entry.getValue();
+                boolean isNew = false;
 
                 if (component instanceof JTextArea textArea) {
+                    isNew = !textArea.getText().equalsIgnoreCase(settings.read());
+
                     settings.update(textArea.getText());
                 } else if (component instanceof JSpinner spinner) {
 
                     if (spinner.getValue() instanceof Number number) {
+                        isNew = number.intValue() != (int) settings.read();
                         settings.update(number.intValue());
                     }
 
                 } else if (component instanceof JCheckBox checkBox) {
+                    isNew = checkBox.isSelected() != (boolean) settings.read();
                     settings.update(checkBox.isSelected());
                 }
+
+                if (isNew) {
+                    updatedSettings.add(settings);
+                }
             }
+
+            return updatedSettings;
         }
 
 

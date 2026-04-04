@@ -3,6 +3,7 @@ package de.rayzs.vit.bootstrap;
 import de.rayzs.vit.api.VIT;
 import de.rayzs.vit.api.event.events.gui.InitializeMainGuiEvent;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.gui.Screen;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
@@ -12,11 +13,12 @@ import de.rayzs.vit.launch.processes.loop.LoopHandler;
 import de.rayzs.vit.launch.processes.prepare.AssetPreparer;
 import de.rayzs.vit.launch.screens.game.LiveScreen;
 import de.rayzs.vit.launch.screens.game.LobbyScreen;
-import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 import de.rayzs.vit.launch.processes.prepare.UpdateChecker;
 import de.rayzs.vit.launch.screens.other.InactiveScreen;
 import de.rayzs.vit.launch.screens.other.LoadingScreen;
 
+import java.awt.image.RasterOp;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -97,6 +99,10 @@ public class Bootstrap {
                 ? null
                 : (MainGUI) initializeMainGuiEvent.getGui();
 
+        if (gui instanceof Screen screen) {
+            api.setMainGui(screen);
+        }
+
 
         // Test screen
         if (args.length >= 1) {
@@ -138,7 +144,7 @@ public class Bootstrap {
                 }
 
                 final String name = args[0].substring(testIndex).toLowerCase(Locale.ROOT);
-                final Screen screen;
+                final ScreenAbstr screen;
 
                 switch (name) {
                     case "live" -> {

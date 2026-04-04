@@ -4,12 +4,12 @@ import de.rayzs.vit.api.VITAPI;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.image.SystemImages;
-import de.rayzs.vit.launch.screens.Screen;
+import de.rayzs.vit.launch.screens.ScreenAbstr;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class LoadingScreen extends Screen {
+public class LoadingScreen extends ScreenAbstr {
 
     private final String defaultText = "Waiting";
     private final JLabel textLabel = new JLabel(defaultText);

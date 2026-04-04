@@ -5,6 +5,8 @@ import de.rayzs.vit.api.addon.AddonManager;
 import de.rayzs.vit.api.configuration.Configuration;
 import de.rayzs.vit.api.event.EventManager;
 import de.rayzs.vit.api.file.FileDir;
+import de.rayzs.vit.api.gui.GUI;
+import de.rayzs.vit.api.gui.Screen;
 import de.rayzs.vit.api.image.ImageProvider;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.Agent;
@@ -24,13 +26,15 @@ public class ImplVITAPI implements VITAPI {
     private final Configuration settings;
     private final Session session;
 
+
     private SessionState state = SessionState.VALORANT_NOT_OPEN;
     private Weapon selectedWeapon = Weapon.VANDAL;
     private Agent[] owningAgents;
+
+    private Screen mainGui;
     private Game game;
 
     public ImplVITAPI() {
-
 
         // Load default settings
         this.settings = loadConfig(
@@ -45,6 +49,20 @@ public class ImplVITAPI implements VITAPI {
 
         this.eventManager = new ImplEventManager();
         this.addonManager = new ImplAddonManager(this);
+    }
+
+    @Override
+    public Screen getMainGui() {
+        return this.mainGui;
+    }
+
+    @Override
+    public void setMainGui(final Screen mainGui) {
+        if (this.mainGui != null) {
+            throw new IllegalStateException("Main GUI is already set!");
+        }
+
+        this.mainGui = mainGui;
     }
 
     @Override
