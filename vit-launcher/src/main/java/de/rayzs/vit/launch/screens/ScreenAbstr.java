@@ -26,7 +26,7 @@ public abstract class ScreenAbstr implements de.rayzs.vit.api.gui.Screen {
             final VITAPI api,
             final MainGUI gui
     ) {
-        api.setMainGui(this);
+        api.setCurrentScreen(this);
 
         // clears up player windows.
         playerWindows.values().forEach(PlayerWindow::dispose);

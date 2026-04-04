@@ -77,7 +77,7 @@ public class SettingsGUI extends GUI {
                 VIT.get().getEventManager().call(new UpdatedSettingEvent(setting));
 
 
-                final Screen screen = VIT.get().getMainGui();
+                final Screen screen = VIT.get().getCurrentScreen();
 
                 switch (setting) {
 
