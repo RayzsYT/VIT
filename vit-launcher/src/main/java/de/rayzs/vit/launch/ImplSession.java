@@ -438,7 +438,8 @@ public class ImplSession implements Session {
         // to ask for. We also use the opportunity to check
         // for each and every user's party id.
 
-        final Map<String, Set<String>> playerParties = new HashMap<>(); // Party id, Set of player ids
+        final Map<String, Set<String>> partyMembers = new HashMap<>(); // Party id, Set of player ids.
+        final Map<String, Party> playerParties = new HashMap<>();
         final JSONArray playersArray = new JSONArray();
 
         for (Object playerObj : players) {
@@ -465,7 +466,7 @@ public class ImplSession implements Session {
             if (party != null) {
                 final String partyId = party.getString("CurrentPartyID");
 
-                playerParties.computeIfAbsent(
+                partyMembers.computeIfAbsent(
                         partyId,
                         k -> new HashSet<>()
                 ).add(playerId);
@@ -492,13 +493,13 @@ public class ImplSession implements Session {
 
 
         // Now filtering for any parties that have less than 2 members.
-        playerParties.entrySet().removeIf(entry -> entry.getValue().size() <= 1);
+        partyMembers.entrySet().removeIf(entry -> entry.getValue().size() <= 1);
 
         final Map<String, Party> parties = new HashMap<>(); // Party id, Party
 
         { // Never done that before, but I want to do this in a separate scope. :]
             int partyIndex = 0;
-            for (Map.Entry<String, Set<String>> entry : playerParties.entrySet()) {
+            for (Map.Entry<String, Set<String>> entry : partyMembers.entrySet()) {
                 final String partyId = entry.getKey();
 
                 final Party party = new Party(
@@ -508,6 +509,11 @@ public class ImplSession implements Session {
                 );
 
                 parties.put(partyId, party);
+
+
+                for (final String partyMemberId : entry.getValue()) {
+                    playerParties.put(partyMemberId, party);
+                }
             }
         }
 
@@ -792,7 +798,7 @@ public class ImplSession implements Session {
                     inventory,
                     playerCompetitive,
                     new PlayerStats(winRate, headshotRate),
-                    parties.get(playerId),
+                    playerParties.get(playerId),
                     lastSeenDetails,
                     playedMatchesList.toArray(new Match[0])
             ));
@@ -1037,6 +1043,101 @@ public class ImplSession implements Session {
                     player.competitive(),
                     player.stats(),
                     player.party(),
+                    player.lastSeenDetails(),
+                    player.playedMatches()
+            );
+        }
+
+        return players;
+    }
+
+
+
+    /**
+     * Takes an array of players and fetches each of their parties if they're not in incognito.
+     * Returns a modified version of the array with all the player parties.
+     *
+     * @param players Array of players to fetch their party ids from.
+     *
+     * @return New array of all players with their fetched parties.
+     */
+    @Override
+    public Player[] updatePlayerParties(final Player... players) {
+
+        final Map<String, Set<Player>> partyMembers = new HashMap<>();  // Party ID, Players
+        final Map<String, Party> parties = new HashMap<>();             // Party ID, Party
+        final Map<Player, Party> playerParties = new HashMap<>();       // Player, Party
+
+        // Fetch player parties.
+        for (final Player player : players) {
+
+            // Ignore in case they are in incognito.
+            if (player.settings().incognito()) {
+                continue;
+            }
+
+
+            // Wait to prevent rate limit.
+            wait(Settings.COOLDOWN_PLAYER_PARTY.read());
+
+
+            final JSONObject party = Requests.Get.Player.fetchPlayerParty(client, player.id());
+
+            if (party != null) {
+                final String partyId = party.getString("CurrentPartyID");
+
+                partyMembers.computeIfAbsent(
+                        partyId,
+                        k -> new HashSet<>()
+                ).add(player);
+            }
+        }
+
+
+        // Remove all party that have <= 1 members.
+        partyMembers.entrySet().removeIf(entry -> entry.getValue().size() <= 1);
+
+
+        { // Create party objects and set its members.
+            int partyIndex = 0;
+            for (final Map.Entry<String, Set<Player>> entry : partyMembers.entrySet()) {
+                final String partyId = entry.getKey();
+
+                final Party party = new Party(
+                        partyId,
+                        PartyColors.getPartyColor(partyIndex++),
+                        new Player[20]
+                );
+
+                parties.put(partyId, party);
+
+
+                int memberIndex = 0;
+                for (final Player member : entry.getValue()) {
+                    party.members()[memberIndex] = member;
+                    memberIndex++;
+                }
+            }
+        }
+
+
+        // Reconstruct player array and apply their fetched parties.
+        for (int i = 0; i < players.length; i++) {
+            final Player player = players[i];
+
+            players[i] = new Player(
+                    player.id(),
+                    player.team(),
+                    player.name(),
+                    player.agent(),
+                    player.level(),
+                    player.playerCardId(),
+                    player.playerTitleId(),
+                    player.settings(),
+                    player.inventory(),
+                    player.competitive(),
+                    player.stats(),
+                    playerParties.get(player),
                     player.lastSeenDetails(),
                     player.playedMatches()
             );
