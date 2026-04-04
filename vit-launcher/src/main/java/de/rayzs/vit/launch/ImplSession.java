@@ -26,6 +26,7 @@ import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.api.utils.StringUtils;
+import de.rayzs.vit.launch.guis.SettingsGUI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -1063,6 +1064,10 @@ public class ImplSession implements Session {
      */
     @Override
     public Player[] updatePlayerParties(final Player... players) {
+
+        // Ignore in case it's disabled.
+        if (! (boolean) Settings.SCAN_PLAYER_PARTIES.read()) return players;
+
 
         final Map<String, Set<Player>> partyMembers = new HashMap<>();  // Party ID, Players
         final Map<String, Party> parties = new HashMap<>();             // Party ID, Party
