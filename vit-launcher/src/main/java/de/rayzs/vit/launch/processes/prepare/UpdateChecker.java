@@ -104,8 +104,8 @@ public class UpdateChecker {
 
             uninteractableGUI.dispose();
 
-            final PopupGUI popupGUI = PopupGUI.create("Completed!",
-                    "Okay!",
+            final PopupGUI popupGUI = PopupGUI.create(gui -> System.exit(0),
+                    "Completed!", "Okay!",
                     "Update has been installed. Please restart VIT."
             );
 
