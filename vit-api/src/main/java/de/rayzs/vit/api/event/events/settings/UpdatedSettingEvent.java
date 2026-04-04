@@ -6,11 +6,11 @@ import de.rayzs.vit.api.settings.Settings;
 /**
  * Called once a setting inside the settings menu has been changed.
  */
-public class UpdatedSettingsEvent extends Event {
+public class UpdatedSettingEvent extends Event {
 
     private final Settings updatedSetting;
 
-    public UpdatedSettingsEvent(final Settings updatedSetting) {
+    public UpdatedSettingEvent(final Settings updatedSetting) {
         this.updatedSetting = updatedSetting;
     }
 
