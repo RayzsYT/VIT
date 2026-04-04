@@ -8,7 +8,6 @@ import de.rayzs.vit.api.gui.Screen;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.settings.Settings;
-import de.rayzs.vit.launch.screens.ScreenAbstr;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
