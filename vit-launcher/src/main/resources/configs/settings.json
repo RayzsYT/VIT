@@ -4,11 +4,21 @@
     "scan-player-parties": false,
     "player-matches-amount": 5
   },
-  "match": {
-    "always-save-matches": false
+  "match": {"always-save-matches": false},
+  "cooldown": {
+    "once": {
+      "active-season": 2000,
+      "season": 2000
+    },
+    "player": {
+      "start": 250,
+      "match": 100,
+      "party": 150
+    }
   },
+  "load-player-matches-count": 5,
   "last-window-location": {
-    "x": 583,
-    "y": 78
+    "x": 0,
+    "y": 0
   }
 }
