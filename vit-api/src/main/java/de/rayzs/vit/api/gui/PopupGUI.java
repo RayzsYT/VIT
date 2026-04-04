@@ -5,9 +5,28 @@ import de.rayzs.vit.api.image.SystemImages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class PopupGUI extends GUI {
 
+
+    /**
+     * Create an option gui.
+     *
+     * @param action Action when closing popup.
+     * @param title Title of the gui.
+     * @param text Text of the gui.
+     *
+     * @return Created gui.
+     */
+    public static PopupGUI create(
+            final Consumer<PopupGUI> action,
+            final String title,
+            final String ok,
+            final String... text
+    ) {
+        return new PopupGUI(action, title, ok, text);
+    }
 
     /**
      * Create an option gui.
@@ -22,11 +41,12 @@ public class PopupGUI extends GUI {
             final String ok,
             final String... text
     ) {
-        return new PopupGUI(title, ok, text);
+        return new PopupGUI(gui -> {}, title, ok, text);
     }
 
 
     private PopupGUI(
+            final Consumer<PopupGUI> action,
             final String title,
             final String ok,
             final String... text
@@ -74,6 +94,7 @@ public class PopupGUI extends GUI {
 
 
         okButton.addActionListener(event -> {
+            action.accept(this);
             dispose();
         });
 
