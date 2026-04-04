@@ -1077,7 +1077,7 @@ public class ImplSession implements Session {
         for (final Player player : players) {
 
             // Ignore in case they are in incognito.
-            if (player.settings().incognito()) {
+            if (player.settings().incognito() || player.party() != null) {
                 continue;
             }
 
@@ -1142,7 +1142,7 @@ public class ImplSession implements Session {
                     player.inventory(),
                     player.competitive(),
                     player.stats(),
-                    playerParties.get(player),
+                    playerParties.getOrDefault(player, player.party()),
                     player.lastSeenDetails(),
                     player.playedMatches()
             );
