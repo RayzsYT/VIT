@@ -69,4 +69,16 @@ public interface Session {
     Player[] updatePlayerNames(
             final Player... players
     );
+
+    /**
+     * Takes an array of players and fetches each of their parties if they're not in incognito.
+     * Returns a modified version of the array with all the player parties.
+     *
+     * @param players Array of players to fetch their party ids from.
+     *
+     * @return New array of all players with their fetched parties.
+     */
+    Player[] updatePlayerParties(
+            final Player... players
+    );
 }
