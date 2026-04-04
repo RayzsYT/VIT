@@ -999,6 +999,10 @@ public class ImplSession implements Session {
     public Player[] updatePlayerNames(final Player... players) {
         final JSONArray array = new JSONArray();
         for (final Player player : players) {
+
+            if (player.name() != null) continue;
+
+
             final PreFetchPlayerNameEvent preFetchPlayerNameEvent = new PreFetchPlayerNameEvent(
                     player.id(), player.settings().incognito()
             );
@@ -1029,7 +1033,7 @@ public class ImplSession implements Session {
 
         for (int i = 0; i < response.length(); i++) {
             final Player player = players[i];
-            final String name = playerNamesMap.get(player.id());
+            final String name = playerNamesMap.getOrDefault(player.id(), player.name());
 
             players[i] = new Player(
                     player.id(),
