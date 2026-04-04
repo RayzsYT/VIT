@@ -84,7 +84,7 @@ public class SettingsGUI extends GUI {
 
                     case SCAN_PLAYER_PARTIES -> {
                         if (setting.read()) {
-                            for (final Player player : VIT.get().getGame().players()) {
+                            for (final Player player : VIT.get().getSession().updatePlayerParties(VIT.get().getGame().players())) {
                                 screen.updatePlayerBanner(player);
                             }
                         }
