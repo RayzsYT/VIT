@@ -110,36 +110,33 @@ public class LoopHandler {
         guiUpdater.handle(state);
 
 
-        if (state.isInsideMatch()) {
-            loadGame(state);
-        }
+        final Game game = state.isInsideMatch()
+                ? loadGame(state) : api.hasGame()   // Return constructed game object.
+                ? api.getGame() : null;             // Return current game available game object.
 
 
-        if (api.hasGame()) {
-
-            // Event calls:
-            if (priorState == SessionState.IN_MENU && state == SessionState.IN_LOBBY) {
-                api.getEventManager().call(new GamePreMatchStartEvent(api.getGame()));   // Agent selection
+        // Event calls:
+        if (priorState == SessionState.IN_MENU && state == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchStartEvent(game));   // Agent selection
 
 
-            } else if (priorState == SessionState.IN_LOBBY && state == SessionState.IN_LOBBY) {
-                api.getEventManager().call(new GamePreMatchDodgedEvent(api.getGame()));  // Dodge
+        } else if (priorState == SessionState.IN_LOBBY && state == SessionState.IN_LOBBY) {
+            api.getEventManager().call(new GamePreMatchDodgedEvent(game));  // Dodge
 
 
-            } else if (state == SessionState.IN_GAME) {
-                api.getEventManager().call(new GameMatchStartEvent(api.getGame()));      // Match started
+        } else if (state == SessionState.IN_GAME) {
+            api.getEventManager().call(new GameMatchStartEvent(game));      // Match started
 
 
-            } else if (priorState == SessionState.IN_GAME) {
-                api.getEventManager().call(new GameMatchEndEvent(api.getGame()));        // Match ended
+        } else if (priorState == SessionState.IN_GAME) {
+            api.getEventManager().call(new GameMatchEndEvent(game));        // Match ended
 
-                // Save match as a file
-                if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
-                    Game.saveMatch(api.getGame());
-                }
-
-                api.setGame(null);
+            // Save match as a file
+            if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
+                Game.saveMatch(game);
             }
+
+            api.setGame(null);
         }
 
 
@@ -147,7 +144,7 @@ public class LoopHandler {
     }
 
 
-    private void loadGame(
+    private Game loadGame(
             final SessionState state
     ) {
 
@@ -200,10 +197,12 @@ public class LoopHandler {
                 }
             }
 
-            return;
+            return null;
         }
 
         api.setGame(game);
         guiUpdater.loadGameScreen(state);
+
+        return game;
     }
 }
