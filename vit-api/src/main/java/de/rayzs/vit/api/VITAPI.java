@@ -30,18 +30,19 @@ public interface VITAPI {
     static String getVersion() { return "1.0.11"; }
 
     /**
-     * Get main gui.
+     * Get current screen.
      *
-     * @return Main GUI.
+     * @return Current screen.
      */
-    Screen getMainGui();
+    Screen getCurrentScreen();
 
     /**
-     * Set main gui. Will once be called once during bootup.
+     * Set current screen. Not intended to be used
+     * by any other third-party software!
      *
-     * @param gui Main gui.
+     * @param screen New current screen.
      */
-    void setMainGui(final Screen gui);
+    void setCurrentScreen(final Screen screen);
 
     /**
      * Default VIT settings.

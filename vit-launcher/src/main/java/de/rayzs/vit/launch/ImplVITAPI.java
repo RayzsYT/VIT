@@ -31,7 +31,7 @@ public class ImplVITAPI implements VITAPI {
     private Weapon selectedWeapon = Weapon.VANDAL;
     private Agent[] owningAgents;
 
-    private Screen mainGui;
+    private Screen currentScreen;
     private Game game;
 
     public ImplVITAPI() {
@@ -52,17 +52,13 @@ public class ImplVITAPI implements VITAPI {
     }
 
     @Override
-    public Screen getMainGui() {
-        return this.mainGui;
+    public Screen getCurrentScreen() {
+        return this.currentScreen;
     }
 
     @Override
-    public void setMainGui(final Screen mainGui) {
-        if (this.mainGui != null) {
-            throw new IllegalStateException("Main GUI is already set!");
-        }
-
-        this.mainGui = mainGui;
+    public void setCurrentScreen(final Screen screen) {
+        this.currentScreen = screen;
     }
 
     @Override
