@@ -25,7 +25,7 @@ public interface VITAPI {
      *
      * @return VIT version.
      */
-    static String getVersion() { return "1.0.10"; }
+    static String getVersion() { return "1.0.11"; }
 
     /**
      * Default VIT settings.
