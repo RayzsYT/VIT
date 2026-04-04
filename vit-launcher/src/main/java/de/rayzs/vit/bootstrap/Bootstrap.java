@@ -99,10 +99,6 @@ public class Bootstrap {
                 ? null
                 : (MainGUI) initializeMainGuiEvent.getGui();
 
-        if (gui instanceof Screen screen) {
-            api.setMainGui(screen);
-        }
-
 
         // Test screen
         if (args.length >= 1) {
