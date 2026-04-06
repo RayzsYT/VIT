@@ -28,8 +28,8 @@
 
     <build>
 
-        <finalName>just-ignore-me</finalName>
 
+        <finalName>just-ignore-me</finalName>
 
 
         <plugins>
@@ -65,12 +65,24 @@
                                     <mainClass>de.rayzs.vit.bootstrap.Bootstrap</mainClass>
                                 </transformer>
                             </transformers>
+
                         </configuration>
                     </execution>
                 </executions>
+
             </plugin>
 
         </plugins>
+
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>assets/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
     </build>
 
