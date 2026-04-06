@@ -99,7 +99,7 @@ public class ImageIdMap {
      * @return Name.
      */
     public String getName(final String id) {
-        return this.names.get(id);
+        return this.names.getOrDefault(id, "UNKNOWN_ID");
     }
 
     /**
@@ -109,17 +109,21 @@ public class ImageIdMap {
      * @return Id.
      */
     public String getIdByName(final String name) {
-        return this.idNames.get(name);
+        return this.idNames.getOrDefault(name, "UNKNOWN_NAME");
     }
 
     /**
-     * Get the DisplayImage of the associated id.
+     * Get the DisplayImage of the associated id. If nothing found, to
+     * prevent any crashes, the first loaded image will be used instead.
      *
      * @param id Id.
      * @return DisplayImage.
      */
     public DisplayImage getImage(final String id) {
-        return this.images.get(id);
+        return this.images.getOrDefault(
+                id,
+                images.entrySet().iterator().next().getValue()
+        );
     }
 
     /**
