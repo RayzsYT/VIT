@@ -189,9 +189,8 @@ public class Bootstrap {
                 } catch (Exception exception) {
 
                     if (System.currentTimeMillis() - lastError > 10000) {
-                        tolerance = 0;
-
                         lastError = System.currentTimeMillis();
+                        tolerance = 0;
                     }
 
                     tolerance++;
