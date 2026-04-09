@@ -179,6 +179,7 @@ public class Bootstrap {
         final TimerTask task = new TimerTask() {
 
             int tolerance = 0;
+            long lastError = System.currentTimeMillis();
 
             public void run() {
                 try {
@@ -186,6 +187,12 @@ public class Bootstrap {
                     loop.handle();
 
                 } catch (Exception exception) {
+
+                    if (System.currentTimeMillis() - lastError > 10000) {
+                        tolerance = 0;
+
+                        lastError = System.currentTimeMillis();
+                    }
 
                     tolerance++;
                     exception.printStackTrace();
