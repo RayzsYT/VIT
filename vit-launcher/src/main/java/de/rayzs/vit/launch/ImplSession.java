@@ -26,7 +26,6 @@ import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.api.utils.StringUtils;
-import de.rayzs.vit.launch.guis.SettingsGUI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
