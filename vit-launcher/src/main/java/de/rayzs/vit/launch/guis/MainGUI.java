@@ -63,11 +63,11 @@ public class MainGUI extends GUI {
                     item.setText("Save Match");
 
                     item.addActionListener(action -> {
-                        if (VIT.get().getGame() == null) {
+                        if (!VIT.get().hasGame()) {
                             PopupGUI.create(
                                     "Error!",
                                     "Oh mb sry",
-                                    "There's no game running!"
+                                    "No running game found!"
                             );
 
                             return;
