@@ -80,8 +80,13 @@ public class GUI extends JFrame {
         final int x = getLocationOnScreen().x;
         final int y = getLocationOnScreen().y;
 
+        /*
+        Temporarily disabled due to some issues in
+        case the stored location is out of bounds!
+
         Settings.LAST_WINDOW_LOC_X.update(x);
         Settings.LAST_WINDOW_LOC_Y.update(y);
+         */
     }
 
     public enum Colors {
