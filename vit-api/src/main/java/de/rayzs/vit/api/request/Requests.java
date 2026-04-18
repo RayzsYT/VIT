@@ -168,21 +168,12 @@ public class Requests {
 
             /**
              * Fetch the party id the player belongs to.
-             * {
-             *   "IsCrossPlayEnabled": false,
-             *   "Version": ** no matter **,
-             *   "Invites": null,
-             *   "CurrentPartyID": "***************",
-             *   "Requests": [],
-             *   "PlatformInfo": { ** no matter ** },
-             *   "Subject": "** censored **"
-             * }
              */
             public static JSONObject fetchPlayerParty(final HttpClient client, final String playerId) {
                 return getAsJsonObject(
                         client,
                         RequestDest.GLZ,
-                        "/parties/v1/players/" + playerId
+                        "parties/v1/players/" + playerId
                 );
             }
 
@@ -195,7 +186,7 @@ public class Requests {
                 return getAsJsonObject(
                         client,
                         RequestDest.PD,
-                        "/store/v1/entitlements/" + playerId + "/" + availableItem.getId()
+                        "store/v1/entitlements/" + playerId + "/" + availableItem.getId()
                 );
             }
         }
