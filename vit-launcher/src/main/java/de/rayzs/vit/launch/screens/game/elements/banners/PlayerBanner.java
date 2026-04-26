@@ -285,8 +285,13 @@ public abstract class PlayerBanner {
             }
 
             final String lastSeenTimeText = timeTextBuilder.toString();
+            final String agentName = lastSeenDetails.agent() != null ? lastSeenDetails.agent().getAgentName() : "?";
 
-            lastSeenText = " " + lastSeenTimeText + " ago | " + lastSeenDetails.map().mapName() + ", " + lastSeenDetails.agent().getAgentName();
+            lastSeenText = " "
+                    + lastSeenTimeText + " ago | "
+                    + lastSeenDetails.map().mapName() + ", "
+                    + agentName;
+
         } else lastSeenText = "";
 
 
