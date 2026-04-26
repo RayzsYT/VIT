@@ -122,6 +122,7 @@ public enum Agent {
             }
         }
 
+        System.err.println("Agent named \"" + agentName + "\" not found!");
         return null;
     }
 
