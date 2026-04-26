@@ -448,7 +448,10 @@ public class ImplSession implements Session {
             final String playerId = player.getString("Subject");
 
 
-            final JSONObject party;
+            final JSONObject party = null;
+            /*
+            Temporarily disabled due to API changes denying the access.
+
             if (Settings.SCAN_PLAYER_PARTIES.read()) {
                 wait(Settings.COOLDOWN_PLAYER_PARTY.read());
 
@@ -461,6 +464,7 @@ public class ImplSession implements Session {
                 playerLoadConsumer.accept(-1);
                 return null;
             }
+             */
 
 
             if (party != null) {

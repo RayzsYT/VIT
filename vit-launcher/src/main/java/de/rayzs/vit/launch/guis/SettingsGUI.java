@@ -117,10 +117,13 @@ public class SettingsGUI extends GUI {
                 "Amount of Player Matches"
         );
 
+        /*
+        Temporarily disabled due to API changes denying the access.
         scanSection.addCheckBoxSetting(
                 Settings.SCAN_PLAYER_PARTIES,
                 "Scan Player Parties"
         );
+         */
 
 
 
