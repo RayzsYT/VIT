@@ -39,6 +39,8 @@ public class AssetPreparer {
     private final String IMAGE_SIZE_BIG     = "splash";
     private final String IMAGE_SIZE_SMALL   = "displayicon";
 
+    private final String SKIRMISH_IMAGE_SIZE_BIG     = "listviewicontall";
+    private final String SKIRMISH_IMAGE_SIZE_SMALL   = "listviewicon";
 
     // These map images do not have a mini version of the image.
     // Aka no mini map.
@@ -388,7 +390,9 @@ public class AssetPreparer {
 
             api.getImageProvider().getAgents().putImage(
                     id,
-                    IMAGE_URL.formatted(IMAGE_TARGET_AGENTS, id, IMAGE_SIZE_SMALL)
+                    IMAGE_URL.formatted(
+                            IMAGE_TARGET_AGENTS, id, IMAGE_SIZE_SMALL
+                    )
             );
         }
     }
@@ -484,7 +488,11 @@ public class AssetPreparer {
             api.getImageProvider().getMaps().putName(id, url);
 
             api.getImageProvider().getMaps().putImage(id,
-                    IMAGE_URL.formatted(IMAGE_TARGET_MAPS, id, IMAGE_SIZE_BIG)
+                    IMAGE_URL.formatted(
+                            IMAGE_TARGET_MAPS,
+                            id,
+                            name.startsWith("Skirmish") ? SKIRMISH_IMAGE_SIZE_BIG : IMAGE_SIZE_BIG
+                    )
             );
 
 
@@ -501,7 +509,11 @@ public class AssetPreparer {
             if (ignore) continue;
 
             api.getImageProvider().getMaps().putMiniImage(id,
-                    IMAGE_URL.formatted(IMAGE_TARGET_MAPS, id, IMAGE_SIZE_SMALL)
+                    IMAGE_URL.formatted(
+                            IMAGE_TARGET_MAPS,
+                            id,
+                            name.startsWith("Skirmish") ? SKIRMISH_IMAGE_SIZE_SMALL : IMAGE_SIZE_SMALL
+                    )
             );
         }
     }
