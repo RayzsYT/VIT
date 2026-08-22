@@ -28,10 +28,7 @@ However, the installation script will do the job for you know! ^^
 
 # Addons / Developer API
 
-If you press ``WIN + R`` and enter `%appdata%/../local/VIT`,
-you'll find an empty folder named ``addons``. You can upload
-your very own addons for VIT directly to use them as you wish.
-
+VIT offers you an API to work with to create your very own addons.
 <br>
 
 On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
