@@ -5,9 +5,9 @@ It's entirely written in Java and **completely automated**. Well, except some ac
 <br>
 
 # How to install?
-Simply go to the latest release of VIT and download the `installation-script.bat` file. This script will both install VIT and all necessary libraries, so there's not much to do.
+Simply go to the latest release of VIT and download the `vit-installation-script.bat` file. This script will both install VIT and all necessary libraries, so there's not much to do.
 <br>
-[**Download the latest version right here!**](https://github.com/RayzsYT/VIT/releases/tag/latest)
+[**Download the latest version right here!**](https://github.com/RayzsYT/VIT/releases/download/1.0.15/vit-installation-script.bat)
 
 <br>
 
