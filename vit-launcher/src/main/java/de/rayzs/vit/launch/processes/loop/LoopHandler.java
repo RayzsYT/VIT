@@ -110,9 +110,9 @@ public class LoopHandler {
         guiUpdater.handle(state);
 
 
-        final Game game = state.isInsideMatch()
-                ? loadGame(state) : api.hasGame()   // Return constructed game object.
-                ? api.getGame() : null;             // Return current game available game object.
+        final Game game = state.isInsideMatch() ? loadGame(state)   // Return constructed game object.
+                : api.hasGame() ? api.getGame()                     // Return current game available game object.
+                : null;
 
 
         // Event calls:
@@ -137,6 +137,12 @@ public class LoopHandler {
             }
 
             api.setGame(null);
+        }
+
+
+        // Load screen after all events have been called.
+        if (state.isInsideMatch()) {
+            guiUpdater.loadGameScreen(state);
         }
 
 
@@ -201,8 +207,6 @@ public class LoopHandler {
         }
 
         api.setGame(game);
-        guiUpdater.loadGameScreen(state);
-
         return game;
     }
 }
