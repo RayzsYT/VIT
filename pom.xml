@@ -6,13 +6,14 @@
 
     <groupId>de.rayzs.vit</groupId>
     <artifactId>VIT</artifactId>
-    <version>1.0.14</version>
+    <version>1.0.15</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>vit-api</module>
         <module>vit-launcher</module>
         <module>vit-addon-example-addon</module>
+        <module>vit-always-show-levels</module>
     </modules>
 
     <properties>
