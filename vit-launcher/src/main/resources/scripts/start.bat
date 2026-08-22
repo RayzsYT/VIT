@@ -28,6 +28,7 @@ if not exist "%JAVA_SANITY_CHECK%" (
     pause
 
     color 7
+    cls
 
     echo Alright, here we go! Let's prepare Java first.
     title Preparing Java...

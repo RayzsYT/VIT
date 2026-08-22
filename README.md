@@ -2,7 +2,14 @@
 **VIT** is a tool showing the **weapon skins**, **stats**, **rr**, and **latest matches** of the players inside your **VALORANT** lobby.
 It's entirely written in Java and **completely automated**. Well, except some actions of course.
 
-<br><br>
+<br>
+
+# How to install?
+Simply go to the latest release of VIT and download the `installation-script.bat` file. This script will both install VIT and all necessary libraries, so there's not much to do.
+<br>
+[**Download the latest version right here!**](https://github.com/RayzsYT/VIT/releases/tag/latest)
+
+<br>
 
 # Requirements
 
@@ -13,6 +20,9 @@ VIT can only be used on and is designed to work for **Windows** computers only.
 Requires at least [**Java 17 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).
 <br>
 Simply download and install the **x64 Installer** variant.
+<br>
+
+However, the installation script will do the job for you know! ^^
 
 <br><br>
 
@@ -51,7 +61,7 @@ On how to create an addon, simply check out the [WIKI](https://github.com/RayzsY
 > use VIT, then feel free to use those command lines as well, to test
 > VIT first, instead of trying it inside a live match directly.
 > <br> <br>
-> Fake **Live Match** with **10 players**:<br>
+> Fake **Live Match** with **12 players**:<br>
 > ``java -jar VIT.jar --test=live --num=12``
 > <br><br>
 > Fake **Lobby** with **5 players**:<br>
