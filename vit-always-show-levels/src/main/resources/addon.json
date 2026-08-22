@@ -1,0 +1,8 @@
+{
+  "id": "always_show_levels",
+  "author": "Rayzs_YT",
+  "purpose": "Always shows the levels of the scanned players and bypasses the option which would hide it.",
+  "version": "1.0.0",
+  "main": "de.rayzs.vit.asl.AlwaysShowLevelsAddon",
+  "website": "https://github.com/RayzsYT/VIT"
+}
