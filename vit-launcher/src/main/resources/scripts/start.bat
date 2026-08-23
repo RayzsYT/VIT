@@ -11,7 +11,6 @@ set "TMP_JAVA_ZIP_FILE=%TEMP%\liberica-jdk21.0.3-windows-x64.zip"
 
 
 @echo off
-setlocal
 cls
 
 
@@ -72,8 +71,6 @@ if not exist "%VIT_JAR_FILE%" (
 
     echo Done!
 )
-
-endlocal
 
 
 :: Starting VIT
