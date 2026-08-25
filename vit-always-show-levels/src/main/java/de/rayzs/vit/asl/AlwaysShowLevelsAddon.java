@@ -44,7 +44,7 @@ public class AlwaysShowLevelsAddon extends Addon {
     private Player createModifiedPlayer(final Player player) {
         final PlayerSettings settings = player.settings();
 
-        return new Player(
+        return !player.settings().levelHidden() ? player : new Player(
                 player.id(),
                 player.team(),
                 player.name(),
