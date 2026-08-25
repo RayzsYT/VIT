@@ -19,16 +19,6 @@ cls
 :: Preparing java (Not actual installer though. Just a smaller copy of it inside the VIT folder.)
 if not exist "%JAVA_SANITY_CHECK%" (
 
-    title "Would you like to install VIT?"
-    color e
-
-    echo You are about to install VIT. Would you like to proceed?
-    echo You'll be asked again later on. Just press ANY button to proceed.
-    pause
-
-    color 7
-    cls
-
     echo Alright, here we go! Let's prepare Java first.
     title Preparing Java...
 
