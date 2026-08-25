@@ -125,17 +125,21 @@ public class LoopHandler {
 
 
         } else if (state == SessionState.IN_GAME) {
-            api.getEventManager().call(new GameMatchStartEvent(game));      // Match started
+
+            // Match started
+            final GameMatchStartEvent matchStartEvent = api.getEventManager().call(new GameMatchStartEvent(
+                    game, Settings.MATCH_ALWAYS_SAVE_AFTER.read()
+            ));
+
+
+            // Save match as a file, if enabled.
+            if (matchStartEvent.doesSaveGame()) {
+                Game.saveMatch(game);
+            }
 
 
         } else if (priorState == SessionState.IN_GAME) {
             api.getEventManager().call(new GameMatchEndEvent(game));        // Match ended
-
-            // Save match as a file
-            if (Settings.MATCH_ALWAYS_SAVE_AFTER.read()) {
-                Game.saveMatch(game);
-            }
-
             api.setGame(null);
         }
 
