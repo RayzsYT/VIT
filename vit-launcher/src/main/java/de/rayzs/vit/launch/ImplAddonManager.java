@@ -115,12 +115,12 @@ public class ImplAddonManager implements AddonManager {
     }
 
     @Override
-    public boolean isEnabled(Addon addon) {
+    public boolean isEnabled(final Addon addon) {
         return addon.isEnabled();
     }
 
     @Override
-    public boolean isDisabled(Addon addon) {
+    public boolean isDisabled(final Addon addon) {
         return !addon.isEnabled();
     }
 
