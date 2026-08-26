@@ -65,8 +65,6 @@ public class TestDummy {
         }
     }
 
-    static int i = 0;
-
 
     private static Player createRandomPlayer(final Team team) {
 
