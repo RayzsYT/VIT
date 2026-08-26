@@ -13,7 +13,7 @@ import de.rayzs.vit.api.objects.player.PlayerSettings;
 
 public class AlwaysShowLevelsAddon extends Addon {
 
-    public AlwaysShowLevelsAddon(VITAPI api, AddonDescription description) {
+    public AlwaysShowLevelsAddon(final VITAPI api, final AddonDescription description) {
         super(api, description);
     }
 
@@ -62,7 +62,7 @@ public class AlwaysShowLevelsAddon extends Addon {
     private Player createModifiedPlayer(final Player player) {
         final PlayerSettings settings = player.settings();
 
-        return !player.settings().levelHidden() ? player : new Player(
+        return !settings.levelHidden() ? player : new Player(
                 player.id(),
                 player.team(),
                 player.name(),

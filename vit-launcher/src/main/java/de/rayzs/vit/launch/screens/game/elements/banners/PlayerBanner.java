@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch.screens.game.elements.banners;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.event.events.player.PreCreatePlayerBannerEvent;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedToolTip;
 import de.rayzs.vit.api.objects.game.Game;
@@ -164,11 +165,11 @@ public abstract class PlayerBanner {
      * Update certain parts of the player banner.
      * The name, agent image, statistics, and levels.
      *
-     * @param player New player object.
+     * @param newPlayerObj New player object.
      */
-    public void updatePlayer(final Player player) {
-        this.player = player;
-
+    public void updatePlayer(final Player newPlayerObj) {
+        final PreCreatePlayerBannerEvent playerBannerEvent = api.getEventManager().call(new PreCreatePlayerBannerEvent(newPlayerObj));
+        this.player = playerBannerEvent.getPlayer();
 
         // Set player name
         playerName.setText(formatPlayerName(player));
@@ -178,7 +179,7 @@ public abstract class PlayerBanner {
         final int winRate = (int) (player.stats().winRate() * 100);
         final int headshotRate = (int) (player.stats().headShotRate() * 100);
 
-        final String levelText = player.settings().incognito() || player.settings().levelHidden()
+        final String levelText = player.settings().levelHidden()
                 ? "Hidden"
                 : String.valueOf(player.level());
 
