@@ -1,12 +1,13 @@
 package de.rayzs.vit.api.event.events.player;
 
+import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.objects.player.Player;
 
 /**
  * This event is called before the player banner
  * of a player is generated.
  */
-public class PreCreatePlayerBannerEvent {
+public class PreCreatePlayerBannerEvent extends Event {
 
     private Player player;
 

@@ -1,12 +1,13 @@
 package de.rayzs.vit.api.event.events.player;
 
+import de.rayzs.vit.api.event.Event;
 import de.rayzs.vit.api.objects.player.Player;
 
 /**
  * This event is called before the player window
  * of a player is generated.
  */
-public class PreCreatePlayerWindowEvent {
+public class PreCreatePlayerWindowEvent extends Event {
 
     private Player player;
 
