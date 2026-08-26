@@ -1,6 +1,8 @@
 package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.event.events.player.PreCreatePlayerBannerEvent;
+import de.rayzs.vit.api.event.events.player.PreCreatePlayerWindowEvent;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.gui.elements.BeautifiedButton;
@@ -97,11 +99,17 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
 
                 if (i < team1Players.size()) {
                     final Player player = team1Players.get(i);
+
+
+                    final PreCreatePlayerBannerEvent playerBannerEvent = api.getEventManager().call(new PreCreatePlayerBannerEvent(player));
+                    final PreCreatePlayerWindowEvent playerWindowEvent = api.getEventManager().call(new PreCreatePlayerWindowEvent(player));
+
+
                     final PlayerBanner playerBanner = new LivePlayerBanner(
-                            api, game, player, this
+                            api, game, playerBannerEvent.getPlayer(), this
                     );
 
-                    playerWindows.put(player.id(), new LivePlayerWindow(player));
+                    playerWindows.put(player.id(), new LivePlayerWindow(playerWindowEvent.getPlayer()));
                     playerBanners.put(player.id(), playerBanner);
 
                     playerBanner.getBanner().setVisible(false);
@@ -114,11 +122,16 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
 
                 if (i < team2Players.size()) {
                     final Player player = team2Players.get(i);
+
+
+                    final PreCreatePlayerBannerEvent playerBannerEvent = api.getEventManager().call(new PreCreatePlayerBannerEvent(player));
+                    final PreCreatePlayerWindowEvent playerWindowEvent = api.getEventManager().call(new PreCreatePlayerWindowEvent(player));
+
                     final PlayerBanner playerBanner = new LivePlayerBanner(
-                            api, game, player, this
+                            api, game, playerBannerEvent.getPlayer(), this
                     );
 
-                    playerWindows.put(player.id(), new LivePlayerWindow(player));
+                    playerWindows.put(player.id(), new LivePlayerWindow(playerWindowEvent.getPlayer()));
                     playerBanners.put(player.id(), playerBanner);
 
                     playerBanner.getBanner().setVisible(false);
