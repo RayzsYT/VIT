@@ -1,5 +1,7 @@
 <p align="center">
-    <img src="images/logo-title.png" />
+    <a href="https://github.com/RayzsYT/VIT">
+        <img src="images/logo-title.png" />
+    </a>
     <br>
     <b>VIT</b> is a tool showing the <b>weapon skins</b>, <b>stats</b>, <b>rr</b>, and <b>latest matches</b> of the players inside your <b>VALORANT</b> lobby.
 </p>
@@ -7,14 +9,18 @@
 <hr>
 
 <p align="center">
-    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.16/vit-installation-script.bat"><img src="images/try-now.png" /></a>
+    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.16/vit-installation-script.bat">
+        <img src="images/try-now.png" />
+    </a>
 </p>
 
 
 <h1 align="center">How it looks like in action</h1>
 
 <p align="center">
-    <img src="images/in-action.png" />
+    <a href="https://github.com/RayzsYT/VIT/tree/master/images">
+        <img src="images/in-action.png" />
+    </a>
 </p>
 
 <hr>
