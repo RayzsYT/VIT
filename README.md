@@ -1,30 +1,26 @@
-# VIT
-**VIT** is a tool showing the **weapon skins**, **stats**, **rr**, and **latest matches** of the players inside your **VALORANT** lobby.
-It's entirely written in Java and **completely automated**. Well, except some actions of course.
+<p align="center">
+    <img src="images/logo-title.png" />
+    <br>
+    <b>VIT</b> is a tool showing the <b>weapon skins</b>, <b>stats</b>, <b>rr</b>, and <b>latest matches</b> of the players inside your <b>VALORANT</b> lobby.
+</p>
+
+<hr>
+
+<p align="center">
+    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.16/vit-installation-script.bat"><img src="images/try-now.png" /></a>
+</p>
+
+<hr>
+
+<h1 align="center">In Action</h1>
+
+<p align="center">
+    <img src="images/in-action.png" />
+</p>
+
+<hr>
 
 <br>
-
-# How to install?
-Simply go to the latest release of VIT and download the `vit-installation-script.bat` file. This script will both install VIT and all necessary libraries, so there's not much to do.
-<br>
-[**Download the latest version right here!**](https://github.com/RayzsYT/VIT/releases/download/1.0.16/vit-installation-script.bat)
-
-<br>
-
-# Requirements
-
-Since VALORANT can only be played on Windows computers, 
-VIT can only be used on and is designed to work for **Windows** computers only.
-<br>
-
-Requires at least [**Java 21 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).
-<br>
-~~Simply download and install the **x64 Installer** variant~~
-<br>
-
-However, the installation script will do the job for you now! ^^
-
-<br><br>
 
 # Addons / Developer API
 
@@ -33,55 +29,11 @@ VIT offers you an API to work with to create your very own addons.
 
 On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
 
-<br><br>
-
-# Images
-
-### Live GUI
-![LIVE GUI](images/live-gui.png)
-
-### Lobby GUI
-![LOBBY GUI](images/lobby-gui.png)
-
-### Player Window
-
-![Player Window: Skins](images/player-window-skins.png)
-
-![Player Window: Matches](images/player-window-matches.png)
-
 <br>
 
-**(!) About these images:**
-> These images were created with fake matches and player data.
-> <br><br>
-> If you wish to check for yourself how it would feel to
-> use VIT, then feel free to use those command lines as well, to test
-> VIT first, instead of trying it inside a live match directly.
-> <br> <br>
-> Fake **Live Match** with **12 players**:<br>
-> ``java -jar VIT.jar --test=live --num=12``
-> <br><br>
-> Fake **Lobby** with **5 players**:<br>
-> ``java -jar VIT.jar --test=lobby --num=5``
+# Requirements
+- A Windows computer (Since VALORANT only runs on Windows)
+- VALORANT installed
+- ~~At least [**Java 21 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).~~
 
-<br><br>
-
-# Commands
-
-``java -jar VIT.jar --test=<mode> --num=<size>``
-> Creates a VIT instance with fake data.
-> <br><br>
-> **Mode**: live / lobby
-> <br>
-> **Size**: Amount of fake players to generate
-> <br><br>
-> **Example**: ``java -jar VIT.jar --test=live --num=10``
-
-<br>
-
-``java -jar VIT.jar --load=<file>``
-> When you press ``WIN + R`` and enter `%appdata%/../local/VIT/storage/games`, 
-> you'll find a folder with files ending with ``.o``. Those files are save-files of the matches you played.
-> You can load them using the command above to see them inside VIT once more.
-> <br><br>
-> **Example**: ``java -jar VIT.jar --load=03-13-2026-04-43.o``
+**(!) The installation script will install both Java and all necessary libraries automatically. No need to install anything manually.**
