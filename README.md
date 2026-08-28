@@ -15,7 +15,7 @@
 </p>
 
 
-<h1 align="center">How it looks like in action</h1>
+<h1 align="center">How it looks in action</h1>
 
 <p align="center">
     <a href="https://github.com/RayzsYT/VIT/tree/master/images">
