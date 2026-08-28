@@ -10,9 +10,8 @@
     <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.16/vit-installation-script.bat"><img src="images/try-now.png" /></a>
 </p>
 
-<hr>
 
-<h1 align="center">In Action</h1>
+<h1 align="center">How it looks like in action</h1>
 
 <p align="center">
     <img src="images/in-action.png" />
@@ -20,7 +19,7 @@
 
 <hr>
 
-<br>
+<br><br>
 
 # Addons / Developer API
 
