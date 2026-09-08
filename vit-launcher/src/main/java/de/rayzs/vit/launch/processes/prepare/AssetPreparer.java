@@ -58,6 +58,13 @@ public class AssetPreparer {
             "/Game/Maps/Duel/Duel_3/Skirmish_C",
     };
 
+    // Weapon skins whose displayIcon is not valid and needs to be read via its
+    // first chroma instead.
+    private final HashSet<String> WEAPON_SKIN_EXCEPTIONS = new HashSet<String>(Arrays.asList(
+            "5211efa8-4efd-09bb-6cee-72b86a8a5972", // Sovereign Marshal
+            "7122d78b-4e60-eb4d-5f65-738d7c1ce9ae" // Sovereign Guardian
+    ));
+
 
 
     private final VITAPI api;
@@ -158,7 +165,7 @@ public class AssetPreparer {
                 final OptionGUI optionGUI = OptionGUI.create(
                         "Confirmation required!",
                         "Yes", "No",
-                        "You are about to install VIT. Would you like to proceed?"
+                        "Would you like to continue installing VIT?"
                 );
 
                 // When denied, ignore action and close program.
@@ -624,9 +631,10 @@ public class AssetPreparer {
                     }
                 }
 
+
                 api.getImageProvider().getWeaponSkins().putName(skinId, skinName);
 
-                if (! (displaySkinIconObj instanceof String displaySkinIcon)) {
+                if (WEAPON_SKIN_EXCEPTIONS.contains(skinId) || ! (displaySkinIconObj instanceof String displaySkinIcon)) {
                     final JSONArray chromas = skin.getJSONArray("chromas");
                     final JSONObject firstChroma = (JSONObject) chromas.get(0);
                     final Object displayChromaIconObj = firstChroma.get("displayIcon");
