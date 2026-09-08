@@ -244,7 +244,7 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
                 PopupGUI.create(
                         "Warning!",
                         "Oh okay...",
-                        "For some reason, no agents you own could be found!"
+                        "For some reason, no agent could be found! Do you even own agents?"
                 );
 
                 return;
@@ -258,6 +258,9 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
                     randomAgent.getAgentId()
             );
 
+            /** Removed to prevents bans.
+             * Even though its delayed and therefore is not considered as instant-locking,
+             * better to be save than late.
             try {
                 Thread.sleep(1000);
 
@@ -270,6 +273,7 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
             } catch (final InterruptedException exception) {
                 exception.printStackTrace();
             }
+             **/
         });
 
 
