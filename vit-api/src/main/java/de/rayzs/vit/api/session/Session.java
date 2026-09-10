@@ -5,6 +5,8 @@ import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.player.Player;
 
 import java.net.http.HttpClient;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.Consumer;
 
 public interface Session {
@@ -47,6 +49,7 @@ public interface Session {
      * all players and the map being played on.
      *
      * @param state Current session state.
+     * @param preloadedPlayers Preloaded players from previously.
      * @param preGameConsumer Consumer before game object is actually built.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
@@ -54,6 +57,7 @@ public interface Session {
      */
     Game constructGame(
             final SessionState state,
+            final HashMap<String, Player> preloadedPlayers,
             final Consumer<PreGameInitializeEvent> preGameConsumer,
             final Consumer<Integer> playerLoadConsumer
     );

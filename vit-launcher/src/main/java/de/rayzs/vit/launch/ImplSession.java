@@ -328,6 +328,7 @@ public class ImplSession implements Session {
      * all players and the map being played on.
      *
      * @param state Current session state.
+     * @param preloadedPlayers Preloaded players from previously.
      * @param preGameConsumer Consumer before game object is actually built.
      * @param playerLoadConsumer A consumer with the amount of currently loaded players.
      *
@@ -336,6 +337,7 @@ public class ImplSession implements Session {
     @Override
     public Game constructGame(
             final SessionState state,
+            final HashMap<String, Player> preloadedPlayers,
             final Consumer<PreGameInitializeEvent> preGameConsumer,
             final Consumer<Integer> playerLoadConsumer
     ) {
@@ -347,8 +349,8 @@ public class ImplSession implements Session {
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
         final int loadPlayerMatchesCount = Settings.SCAN_PLAYER_MATCHES_AMOUNT.read();
-
         PlayerCompetitive playerCompetitive = null;
+
 
         if (!state.isInsideMatch()) {
             throw new IllegalStateException("Session state makes no sense if you want to fetch your lobby data... (" + state.name() + ")");
@@ -574,115 +576,127 @@ public class ImplSession implements Session {
             final String playerId = playerJson.getString("Subject");
             final String playerName = playerNamesMap.get(playerId);
 
+            final Player previousPlayer = preloadedPlayers.get(playerId);
+
 
             // Competitive information about the player...
-            final JSONObject rank = Requests.Get.Player.fetchPlayersMMR(client, playerId);
-            if (checkForRateLimitation(rank)) {
-                playerLoadConsumer.accept(-1);
-                return null;
-            }
 
-            if (rank != null) {
-                final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
+            if (previousPlayer == null || previousPlayer.competitive() == null) {
 
-                final JSONObject competitive = rank.getJSONObject("QueueSkills").getJSONObject("competitive");
-                final int requiredRankGames = competitive.getInt("TotalGamesNeededForRating");
-                final boolean rankedIn = requiredRankGames == 0;
-
-                LastCompMatch lastMatch = null;
-                if (latestCompGameObj instanceof JSONObject latestCompGame) {
-                    final String lastPlayedMapUrl = latestCompGame.getString("MapID");
-                    final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
-
-                    lastMatch = new LastCompMatch(
-                            MatchMap.getMapByUrl(lastPlayedMapUrl),
-                            new CompMatchResult(lastReceivedRR)
-                    );
+                final JSONObject rank = Requests.Get.Player.fetchPlayersMMR(client, playerId);
+                if (checkForRateLimitation(rank)) {
+                    playerLoadConsumer.accept(-1);
+                    return null;
                 }
 
+                if (rank != null) {
+                    final Object latestCompGameObj = rank.get("LatestCompetitiveUpdate");
 
-                final CompRequirements compRequirements = new CompRequirements(
-                        requiredRankGames,
-                        rankedIn
-                );
+                    final JSONObject competitive = rank.getJSONObject("QueueSkills").getJSONObject("competitive");
+                    final int requiredRankGames = competitive.getInt("TotalGamesNeededForRating");
+                    final boolean rankedIn = requiredRankGames == 0;
 
-                playerCompetitive = constructPlayerCompetitive(
-                        lastMatch,
-                        compRequirements,
-                        competitive
-                );
+                    LastCompMatch lastMatch = null;
+                    if (latestCompGameObj instanceof JSONObject latestCompGame) {
+                        final String lastPlayedMapUrl = latestCompGame.getString("MapID");
+                        final int lastReceivedRR = latestCompGame.getInt("RankedRatingEarned");
 
-            } else {
-                System.err.println("Failed to fetch competitive information of player: " + playerName + ". ( " + playerId + " )");
-            }
+                        lastMatch = new LastCompMatch(
+                                MatchMap.getMapByUrl(lastPlayedMapUrl),
+                                new CompMatchResult(lastReceivedRR)
+                        );
+                    }
+
+
+                    final CompRequirements compRequirements = new CompRequirements(
+                            requiredRankGames,
+                            rankedIn
+                    );
+
+                    playerCompetitive = constructPlayerCompetitive(
+                            lastMatch,
+                            compRequirements,
+                            competitive
+                    );
+
+                } else {
+                    System.err.println("Failed to fetch competitive information of player: " + playerName + ". ( " + playerId + " )");
+                }
+            } else playerCompetitive = previousPlayer.competitive();
 
 
 
             // Only fetches a certain amount of matches of the player. Should be enough. By default, it's set to 5 matches.
-            final JSONObject matchHistory = Requests.Get.Match.fetchMatchHistory(client, playerId, 0, loadPlayerMatchesCount);
-            if (checkForRateLimitation(matchHistory)) {
-                playerLoadConsumer.accept(-1);
-                return null;
-            }
+
+            // Match history
+            final List<Match> playedMatchesList = previousPlayer != null && previousPlayer.playedMatches() != null
+                    ? new ArrayList<>(Arrays.asList(previousPlayer.playedMatches()))
+                    : new ArrayList<>();
+
+            if (playedMatchesList.isEmpty()) {
+
+                final JSONObject matchHistory = Requests.Get.Match.fetchMatchHistory(client, playerId, 0, loadPlayerMatchesCount);
+                if (checkForRateLimitation(matchHistory)) {
+                    playerLoadConsumer.accept(-1);
+                    return null;
+                }
 
 
-            final List<Match> playedMatchesList = new ArrayList<>(); // Match history
+                if (matchHistory != null) {
 
-            if (matchHistory != null) {
+                    if (matchHistory.has("Matches")) {
+                        final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
 
-                if (matchHistory.has("Matches")) {
-                    final JSONArray playedMatches = matchHistory.getJSONArray("Matches");
+                        for (final Object playedMatchObj : playedMatches) {
+                            wait(Settings.COOLDOWN_PLAYER_MATCH.read());
 
-                    for (final Object playedMatchObj : playedMatches) {
-                        wait(Settings.COOLDOWN_PLAYER_MATCH.read());
+                            if (!VIT.get().getSessionState().isValorantStarted()) {
+                                break;
+                            }
 
-                        if (!VIT.get().getSessionState().isValorantStarted()) {
-                            break;
+
+                            final JSONObject playedMatch = (JSONObject) playedMatchObj;
+
+
+                            final String seasonId = playedMatch.getString("SeasonID");
+                            if (!Season.isActive(Season.getSeasonById(seasonId))) {
+                                continue;
+                            }
+
+
+                            final String playedMatchId = playedMatch.getString("MatchID");
+                            final int gainedRR = playedMatch.has("RankedRatingEarned")
+                                    ? playedMatch.getInt("RankedRatingEarned")
+                                    : 0;
+
+
+                            // Now trying to get the match information
+                            final JSONObject playedMatchDetails = Requests.Get.Match.fetchPastMatchDetails(client, playedMatchId);
+                            if (checkForRateLimitation(playedMatchDetails)) {
+                                playerLoadConsumer.accept(-1);
+                                return null;
+                            }
+
+
+                            // Simply cancel the process to fetch the  match history of that player.
+                            // Most of the time, when the first match-id failed, then the others fail as well.
+                            // So better not asking for the others.
+                            if (playedMatchDetails == null) {
+                                System.err.println("Failed to fetch match details for " + playerName + "! Ignoring match history of that player entirely to prevent spamming the VALORANT API any further.");
+                                break;
+                            }
+
+
+                            // Construct match stats to add in the list of match history.
+                            final Match historyMatch = constructMatch(
+                                    playerId,
+                                    gainedRR,
+                                    playedMatchId,
+                                    playedMatchDetails
+                            );
+
+                            playedMatchesList.add(historyMatch);
                         }
-
-
-
-                        final JSONObject playedMatch = (JSONObject) playedMatchObj;
-
-
-                        final String seasonId = playedMatch.getString("SeasonID");
-                        if (!Season.isActive(Season.getSeasonById(seasonId))) {
-                            continue;
-                        }
-
-
-                        final String playedMatchId = playedMatch.getString("MatchID");
-                        final int gainedRR = playedMatch.has("RankedRatingEarned")
-                                ? playedMatch.getInt("RankedRatingEarned")
-                                : 0;
-
-
-                        // Now trying to get the match information
-                        final JSONObject playedMatchDetails = Requests.Get.Match.fetchPastMatchDetails(client, playedMatchId);
-                        if (checkForRateLimitation(playedMatchDetails)) {
-                            playerLoadConsumer.accept(-1);
-                            return null;
-                        }
-
-
-                        // Simply cancel the process to fetch the  match history of that player.
-                        // Most of the time, when the first match-id failed, then the others fail as well.
-                        // So better not asking for the others.
-                        if (playedMatchDetails == null) {
-                            System.err.println("Failed to fetch match details for " + playerName + "! Ignoring match history of that player entirely to prevent spamming the VALORANT API any further.");
-                            break;
-                        }
-
-
-                        // Construct match stats to add in the list of match history.
-                        final Match historyMatch = constructMatch(
-                                playerId,
-                                gainedRR,
-                                playedMatchId,
-                                playedMatchDetails
-                        );
-
-                        playedMatchesList.add(historyMatch);
                     }
                 }
             }

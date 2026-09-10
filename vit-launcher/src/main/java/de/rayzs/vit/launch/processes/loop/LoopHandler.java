@@ -8,12 +8,15 @@ import de.rayzs.vit.api.event.events.game.match.GamePreMatchStartEvent;
 import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
 import de.rayzs.vit.api.event.events.system.tick.TickEvent;
+import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
+import de.rayzs.vit.launch.screens.game.LobbyScreen;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -101,18 +104,38 @@ public class LoopHandler {
         }
 
 
-        final StateChangeEvent stateChangeEvent = api.getEventManager().call(
-                new StateChangeEvent(priorState, state)
-        );
+        api.getEventManager().call(new StateChangeEvent(priorState, state));
 
 
         api.updateSessionState(state);
         guiUpdater.handle(state);
 
 
-        final Game game = state.isInsideMatch() ? loadGame(state)   // Return constructed game object.
-                : api.hasGame() ? api.getGame()                     // Return current game available game object.
-                : null;
+        final Game game;
+        if (state.isInsideMatch()) {
+            if (priorState == SessionState.IN_LOBBY) {
+
+                final Game lobbyGame = api.getGame();
+                final HashMap<String, Player> previousPlayers = new HashMap<>();
+
+                if (lobbyGame != null) {
+                    for (final Player prevPlayer : lobbyGame.players()) {
+                        previousPlayers.put(prevPlayer.id(), prevPlayer);
+                    }
+                }
+
+                game = loadGame(state, previousPlayers);
+
+            } else {
+                game = loadGame(state, new HashMap<>());
+            }
+
+        } else if (api.hasGame()) {
+            game = api.getGame();
+
+        } else {
+            game = null;
+        }
 
 
         // Event calls:
@@ -155,14 +178,15 @@ public class LoopHandler {
 
 
     private Game loadGame(
-            final SessionState state
+            final SessionState state,
+            final HashMap<String, Player> preloadedPlayers
     ) {
 
 
         final AtomicBoolean rateLimited = new AtomicBoolean(false);
 
 
-        final Game game = api.getSession().constructGame(state, event -> {
+        final Game game = api.getSession().constructGame(state, preloadedPlayers, event -> {
             final String server = event.getServer();
             final String map = event.getMap().mapName();
 
