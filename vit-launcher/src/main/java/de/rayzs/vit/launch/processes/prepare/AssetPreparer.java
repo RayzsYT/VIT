@@ -722,7 +722,7 @@ public class AssetPreparer {
         final int seperatorIndex = StringUtils.searchIndex(System.lineSeparator(), text);
 
         if (seperatorIndex != -1) {
-            text = text.substring(0, seperatorIndex);
+            text = text.substring(0, seperatorIndex) + " (Lvl. 1)";
         }
 
         final String levelStr = "Level";
