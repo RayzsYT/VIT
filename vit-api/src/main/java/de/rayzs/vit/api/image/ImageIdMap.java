@@ -2,9 +2,7 @@ package de.rayzs.vit.api.image;
 
 import de.rayzs.vit.api.file.FileDir;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class maps ids with names and images.
@@ -34,9 +32,9 @@ public class ImageIdMap {
     /**
      * Get a collection of all ids.
      *
-     * @return Collection of all ids.
+     * @return HashSet of all ids.
      */
-    public Collection<String> getIds() {
+    public Set<String> getIds() {
         return images.keySet();
     }
 
