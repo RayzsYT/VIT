@@ -1192,6 +1192,8 @@ public class ImplSession implements Session {
             final JSONObject items = loadout.getJSONObject("Items");
             final String playerId = loadout.getString("Subject");
 
+            System.out.println(loadout);
+
             // Weapon, Skin id
             final Map<Weapon, String> skins = new HashMap<>();
 
@@ -1203,13 +1205,26 @@ public class ImplSession implements Session {
                     continue;
                 }
 
-                String skinId = items.getJSONObject(gunId)
-                        .getJSONObject("Sockets")
-                        .getJSONObject("bcef87d6-209b-46c6-8b19-fbe40bd95abc")
-                        .getJSONObject("Item")
-                        .getString("ID");
+                final JSONObject socketsJsonObj = items.getJSONObject(gunId).getJSONObject("Sockets");
+                final String[] ids = new String[] {
+                        "3ad1b2b2-acdb-4524-852f-954a76ddae0a", // Skin Chroma
+                        "e7c63390-eda7-46e0-bb7a-a6abdacd2433", // Skin Level
+                        "bcef87d6-209b-46c6-8b19-fbe40bd95abc"  // Skin
+                };
 
-                skins.put(weapon, skinId);
+                for (String id : ids) {
+                    if (!socketsJsonObj.has(id)) continue;
+
+                    final JSONObject socketJsonObj = socketsJsonObj.getJSONObject(id);
+                    final String skinId = socketJsonObj
+                            .getJSONObject("Item")
+                            .getString("ID");
+
+                    if (VIT.get().getImageProvider().getWeaponSkins().getIds().contains(skinId)) {
+                        skins.put(weapon, skinId);
+                        break;
+                    }
+                }
             }
 
             playerInventories.put(playerId, new PlayerInventory(skins));
