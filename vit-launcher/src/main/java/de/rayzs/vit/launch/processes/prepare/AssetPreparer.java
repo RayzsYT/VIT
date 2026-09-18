@@ -615,6 +615,7 @@ public class AssetPreparer {
                 final String skinId = skin.getString("uuid");
                 final String skinName = skin.getString("displayName");
                 final Object displaySkinIconObj = skin.get("displayIcon");
+                final String displaySkinIcon = displaySkinIconObj instanceof String displaySkinIconStr ? displaySkinIconStr : null;
 
                 if (skinName.equals(name)) {
                     continue;
@@ -628,33 +629,121 @@ public class AssetPreparer {
 
                     if (Weapon.getWeaponByName(tmpName) != null) {
                         api.getImageProvider().getWeaponSkins().putImage(skinId, displayIcon);
+                        api.getImageProvider().getWeaponSkins().putName(skinId, skinName);
+                        continue;
                     }
                 }
 
 
                 api.getImageProvider().getWeaponSkins().putName(skinId, skinName);
 
-                if (WEAPON_SKIN_EXCEPTIONS.contains(skinId) || ! (displaySkinIconObj instanceof String displaySkinIcon)) {
-                    final JSONArray chromas = skin.getJSONArray("chromas");
-                    final JSONObject firstChroma = (JSONObject) chromas.get(0);
-                    final Object displayChromaIconObj = firstChroma.get("displayIcon");
 
-                    if (! (displayChromaIconObj instanceof String displayChromaIcon)) {
-                        final JSONArray levels = skin.getJSONArray("levels");
-                        final JSONObject firstLevel = (JSONObject) levels.get(0);
-                        final String displayLevelIcon = firstLevel.getString("displayIcon");
+                final boolean weaponException = WEAPON_SKIN_EXCEPTIONS.contains(skinId);
+                final JSONArray chromas = skin.getJSONArray("chromas");
+                final JSONArray levels = skin.getJSONArray("levels");
 
-                        api.getImageProvider().getWeaponSkins().putImage(skinId, displayLevelIcon);
+                String availableSkinDisplayIcon = null;
+
+                for (final Object chromaObj : chromas) {
+                    final JSONObject chroma = (JSONObject) chromaObj;
+
+                    final String chromaId = chroma.getString("uuid");
+                    final String chromaName = formatWeaponName(chroma.getString("displayName"));
+                    final Object displayChromaIconObj = chroma.get("displayIcon");
+
+                    api.getImageProvider().getWeaponSkins().putName(chromaId, chromaName);
+
+                    if (displayChromaIconObj instanceof String displayChromaIcon) {
+
+                        if (availableSkinDisplayIcon == null) {
+                            availableSkinDisplayIcon = displayChromaIcon;
+                        }
+
+                        api.getImageProvider().getWeaponSkins().putImage(chromaId, displayChromaIcon);
                     } else {
-                        api.getImageProvider().getWeaponSkins().putImage(skinId, displayChromaIcon);
+                        api.getImageProvider().getWeaponSkins().putImage(chromaId, displayIcon);
+                    }
+                }
+
+                { // In a new scope since I don't want the String "displaySkinIcon" to be able to be interacted with anything else.
+                    if (!weaponException && availableSkinDisplayIcon == null && displaySkinIcon != null) {
+                        availableSkinDisplayIcon = displaySkinIcon;
+                    }
+                }
+
+                for (final Object levelObj : levels) {
+                    final JSONObject level = (JSONObject) levelObj;
+
+                    final String levelId = level.getString("uuid");
+                    final String levelName = formatWeaponName(level.getString("displayName"));
+                    final Object displayLevelIconObj = level.get("displayIcon");
+
+                    if (availableSkinDisplayIcon == null && displayLevelIconObj instanceof String displayLevelIcon) {
+                        availableSkinDisplayIcon = displayLevelIcon;
                     }
 
-                } else {
+                    api.getImageProvider().getWeaponSkins().putName(levelId, levelName);
+                    api.getImageProvider().getWeaponSkins().putImage(
+                            levelId,
+                            availableSkinDisplayIcon != null ? availableSkinDisplayIcon : displayIcon
+                    );
+                }
+
+
+                if (displaySkinIcon != null && !weaponException) {
+
                     api.getImageProvider().getWeaponSkins().putImage(skinId, displaySkinIcon);
+
+                } else {
+
+                    final JSONObject firstLevel = (JSONObject) levels.get(0);
+                    final Object displayLevelIconObj = firstLevel.get("displayIcon");
+
+                    if (displayLevelIconObj instanceof String displayLevelIcon) {
+                        api.getImageProvider().getWeaponSkins().putImage(skinId, displayLevelIcon);
+                    } else if (chromas.length() > 1 && availableSkinDisplayIcon != null) {
+                        api.getImageProvider().getWeaponSkins().putImage(skinId, availableSkinDisplayIcon);
+                    } else {
+                        api.getImageProvider().getWeaponSkins().putImage(skinId, displayIcon);
+                    }
                 }
 
             }
         }
+    }
+
+    /**
+     * Formats the weapon skin name.
+     *
+     * @param text Text.
+     * @return Modified text.
+     */
+    private static String formatWeaponName(String text) {
+        final int seperatorIndex = StringUtils.searchIndex(System.lineSeparator(), text);
+
+        if (seperatorIndex != -1) {
+            text = text.substring(0, seperatorIndex);
+        }
+
+        final String levelStr = "Level";
+        final int levelIndex = StringUtils.searchIndex(levelStr, text);
+
+        if (levelIndex == -1) {
+            return text;
+        }
+
+        final String variantStr = "Variant";
+        final int variantIndex = StringUtils.searchIndex(variantStr, text);
+
+        final String weaponSkinName = text.substring(0, levelIndex - (levelStr.length() + 1));
+        final String level = text.substring(levelIndex - 1, levelIndex);
+
+        if (variantIndex == -1) {
+            return weaponSkinName + " (Lvl. " + level + ")";
+        }
+
+        final String variantName = text.substring(variantIndex + 1, text.length() - 1);
+        return weaponSkinName + " (Lvl. " + level + " / " + variantName + ")";
     }
 
     /**
