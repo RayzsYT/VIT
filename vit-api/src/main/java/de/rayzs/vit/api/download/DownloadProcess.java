@@ -78,7 +78,7 @@ public class DownloadProcess {
             throw new IllegalStateException("Download process is already running!");
         }
 
-        downloadRecursively(a -> {});
+        startDownload(a -> {});
     }
 
     /**
@@ -92,7 +92,7 @@ public class DownloadProcess {
         }
 
         consumer.accept(this);
-        downloadRecursively(consumer);
+        startDownload(consumer);
     }
 
     /**
@@ -101,30 +101,28 @@ public class DownloadProcess {
      *
      * @param consumer Consumer after each downloaded file.
      */
-    private void downloadRecursively(final Consumer<DownloadProcess> consumer) {
-        if (isCompleted()) {
-            this.percent = 100;
-            return;
+    private void startDownload(final Consumer<DownloadProcess> consumer) {
+        while (!isCompleted()) {
+            // Fetch current DownloadElement.
+            final DownloadElement element = this.elements[this.current];
+            final File file = dir.getFile(element.fileName());
+
+            // Download file. Still counts it as completed even if the process failed.
+            // Otherwise, the function will never end if something does not work out as
+            // intended. I mean, I would rather have that instead of a never ending loop
+            // because of some failed internet connection.
+            try (InputStream in = new URL(element.url()).openStream()) {
+                Files.copy(in, Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
+            current++;
+            percent = (100.0f / this.max) * this.current;
+
+            consumer.accept(this);
         }
 
-        // Fetch current DownloadElement.
-        final DownloadElement element = this.elements[this.current];
-        final File file = dir.getFile(element.fileName());
-
-        // Download file. Still counts it as completed even if the process failed.
-        // Otherwise, the function will never end if something does not work out as
-        // intended. I mean, I would rather have that instead of a never ending loop
-        // because of some failed internet connection.
-        try (InputStream in = new URL(element.url()).openStream()) {
-            Files.copy(in, Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        current++;
-        percent = (100.0f / this.max) * this.current;
-
-        consumer.accept(this);
-        downloadRecursively(consumer);  // Loop
+        this.percent = 100;
     }
 }
