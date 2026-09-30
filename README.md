@@ -9,7 +9,7 @@
 <hr>
 
 <p align="center">
-    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.17/vit-installation-script.bat">
+    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.18/vit-installation-script.bat">
         <img src="images/try-now.png" />
     </a>
 </p>
