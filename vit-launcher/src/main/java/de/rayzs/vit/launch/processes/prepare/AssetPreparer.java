@@ -377,7 +377,7 @@ public class AssetPreparer {
      * @param client HttpClient.
      */
     private void loadAgents(final HttpClient client) {
-        final JSONObject jsonObj = fetch(client, "agents");
+        final JSONObject jsonObj = fetch(client, "agents?isPlayableCharacter=true");
         final JSONArray agents = jsonObj.getJSONArray("data");
 
         for (final Object agentObj : agents) {
