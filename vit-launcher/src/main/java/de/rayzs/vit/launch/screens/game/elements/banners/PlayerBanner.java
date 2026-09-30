@@ -10,6 +10,7 @@ import de.rayzs.vit.api.objects.player.LastSeenDetails;
 import de.rayzs.vit.api.objects.player.Player;
 import de.rayzs.vit.api.utils.ImageUtils;
 import de.rayzs.vit.api.utils.StringUtils;
+import de.rayzs.vit.api.utils.TimeConverter;
 import de.rayzs.vit.launch.screens.game.GameScreen;
 
 import javax.swing.*;
@@ -259,33 +260,7 @@ public abstract class PlayerBanner {
         // Build 'last seen' text if possible.
         final String lastSeenText;
         if (lastSeenDetails != null) {
-            final long lastSeenTime = System.currentTimeMillis() - lastSeenDetails.lastSeenTime();
-
-            int seconds = (int) (lastSeenTime / 1000);
-            int minutes = seconds / 60;
-            int hours = minutes / 60;
-
-            minutes -= hours * 60;
-            seconds -= (hours * 60 * 60) + (minutes * 60);
-
-            final StringBuilder timeTextBuilder = new StringBuilder();
-
-            if (hours >= 1) {
-                timeTextBuilder.append(hours).append("h ");
-            }
-
-            if (hours == 0 && minutes >= 1) {
-                timeTextBuilder.append(minutes).append("m");
-            }
-
-            if (hours == 0 && minutes == 0) {
-                timeTextBuilder
-                        .append(" ")
-                        .append(seconds)
-                        .append("s");
-            }
-
-            final String lastSeenTimeText = timeTextBuilder.toString();
+            final String lastSeenTimeText = TimeConverter.timeToStrConverter(lastSeenDetails.lastSeenTime());
             final String agentName = lastSeenDetails.agent() != null ? lastSeenDetails.agent().getAgentName() : "?";
 
             lastSeenText = " "
