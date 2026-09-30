@@ -6,6 +6,6 @@ import de.rayzs.vit.api.objects.items.MatchMap;
 public record LastSeenDetails(
         int times,                  // How often seen this player.
         long lastSeenTime,          // Last time when seen this player.
-        MatchMap map,               // Map name.
-        Agent agent                 //
+        MatchMap map,               // Last played map name.
+        Agent agent                 // Last played agent.
 ) { }
