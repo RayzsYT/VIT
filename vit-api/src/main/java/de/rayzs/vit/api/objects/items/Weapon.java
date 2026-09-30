@@ -16,9 +16,10 @@ public enum Weapon {
     SHERIFF     ("Sheriff"),
     SHORTY      ("Shorty"),
 
-    // Typical
+    // Mid/long-range weapons
     VANDAL      ("Vandal"),
     PHANTOM     ("Phantom"),
+    WARDEN      ("Warden"),
     BULLDOG     ("Bulldog"),
 
     // Spray and pray
