@@ -1192,8 +1192,6 @@ public class ImplSession implements Session {
             final JSONObject items = loadout.getJSONObject("Items");
             final String playerId = loadout.getString("Subject");
 
-            System.out.println(loadout);
-
             // Weapon, Skin id
             final Map<Weapon, String> skins = new HashMap<>();
 
