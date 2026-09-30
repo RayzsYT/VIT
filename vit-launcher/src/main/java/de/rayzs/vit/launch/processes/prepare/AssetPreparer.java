@@ -498,7 +498,8 @@ public class AssetPreparer {
                     IMAGE_URL.formatted(
                             IMAGE_TARGET_MAPS,
                             id,
-                            name.startsWith("Skirmish") ? SKIRMISH_IMAGE_SIZE_BIG : IMAGE_SIZE_BIG
+                            name.startsWith("Skirmish") || name.startsWith("Gauntlet")
+                                    ? SKIRMISH_IMAGE_SIZE_BIG : IMAGE_SIZE_BIG
                     )
             );
 
@@ -519,7 +520,8 @@ public class AssetPreparer {
                     IMAGE_URL.formatted(
                             IMAGE_TARGET_MAPS,
                             id,
-                            name.startsWith("Skirmish") ? SKIRMISH_IMAGE_SIZE_SMALL : IMAGE_SIZE_SMALL
+                            name.startsWith("Skirmish") || name.startsWith("Gauntlet")
+                                    ? SKIRMISH_IMAGE_SIZE_SMALL : IMAGE_SIZE_SMALL
                     )
             );
         }
