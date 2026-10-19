@@ -59,7 +59,7 @@ public class TimeConverter {
         final StringBuilder text = new StringBuilder();
 
         if (months > 0) {
-            text.append(weeks).append("m");
+            text.append(months).append("m");
         }
 
         if (weeks > 0) {
