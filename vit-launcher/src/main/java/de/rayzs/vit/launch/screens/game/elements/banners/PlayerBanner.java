@@ -194,7 +194,7 @@ public abstract class PlayerBanner {
 
 
         final String statsDisplay = api.getSettings().getOrSet(
-                "player-statistics",
+                "player-statistics.stats-format",
                 "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
         );
 
@@ -263,10 +263,17 @@ public abstract class PlayerBanner {
             final String lastSeenTimeText = TimeConverter.timeToStrConverter(lastSeenDetails.lastSeenTime());
             final String agentName = lastSeenDetails.agent() != null ? lastSeenDetails.agent().getAgentName() : "?";
 
-            lastSeenText = " "
-                    + lastSeenTimeText + " ago | "
-                    + lastSeenDetails.map().mapName() + ", "
-                    + agentName;
+            final String lastSeenDisplay = api.getSettings().getOrSet(
+                    "player-statistics.last-seen-format",
+                    " %time% agp | %map%, %agent%"
+            );
+
+
+            lastSeenText = StringUtils.replace(lastSeenDisplay,
+                    "%time%", lastSeenTimeText,
+                    "%map%", lastSeenDetails.map().mapName(),
+                    "%agent%", agentName
+            );
 
         } else lastSeenText = "";
 

@@ -19,7 +19,8 @@
         "reload-button-text": "Reload"
       },
       "player-statistics": {
-        "format": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
+        "stats-format": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
+        "last-seen-format": " %time% agp | %map%, %agent%",
         "level": {
           "shown": "%level%",
           "hidden": "?"
