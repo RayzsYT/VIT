@@ -29,7 +29,6 @@ public enum Settings {
 
     // Cooldown (Player related)
     COOLDOWN_PLAYER_START           ("cooldown.player.start",           250),
-    COOLDOWN_PLAYER_PARTY           ("cooldown.player.party",           150),
     COOLDOWN_PLAYER_MATCH           ("cooldown.player.match",           100);
 
 

@@ -12,8 +12,7 @@
     },
     "player": {
       "start": 250,
-      "match": 100,
-      "party": 150
+      "match": 100
     }
   },
   "load-player-matches-count": 5,
