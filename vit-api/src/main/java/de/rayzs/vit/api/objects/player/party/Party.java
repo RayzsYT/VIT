@@ -5,7 +5,7 @@ import de.rayzs.vit.api.objects.player.Player;
 import java.awt.*;
 
 public record Party(
-    String partyId,
+    int partyId,
     Color partyColor,
     Player[] members
 ) { }
