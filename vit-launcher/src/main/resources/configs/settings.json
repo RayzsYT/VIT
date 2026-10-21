@@ -1,10 +1,12 @@
 {
   "player-statistics": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
   "scan": {
-    "scan-player-parties": false,
+    "scan-player-parties": true,
     "player-matches-amount": 5
   },
-  "match": {"always-save-matches": false},
+  "match": {
+    "always-save-matches": false
+  },
   "cooldown": {
     "once": {
       "active-season": 2000,

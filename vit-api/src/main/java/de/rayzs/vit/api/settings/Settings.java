@@ -16,7 +16,7 @@ public enum Settings {
 
     // Scan
     SCAN_PLAYER_MATCHES_AMOUNT      ("scan.player-matches-amount",      5),
-    SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",        false),
+    SCAN_PLAYER_PARTIES             ("scan.scan-player-parties",        true),
 
 
     // Match
