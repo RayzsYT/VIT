@@ -167,18 +167,6 @@ public class Requests {
 
 
             /**
-             * Fetch the party id the player belongs to.
-             */
-            public static JSONObject fetchPlayerParty(final HttpClient client, final String playerId) {
-                return getAsJsonObject(
-                        client,
-                        RequestDest.GLZ,
-                        "parties/v1/players/" + playerId
-                );
-            }
-
-
-            /**
              * Get available items from a player.
              * For example to find out what agents a player has unlocked.
              */
