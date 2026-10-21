@@ -175,7 +175,8 @@ public class TestDummy {
                 ),
                 new CompMatchResult(
                         random.nextInt(33)
-                )
+                ),
+                null
         );
     }
 

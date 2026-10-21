@@ -119,7 +119,8 @@ public record Game(
                                 ),
                                 new CompMatchResult(
                                         match.earnedRR
-                                )
+                                ),
+                                null
                         );
                     }
 
