@@ -81,7 +81,7 @@ public class SettingsGUI extends GUI {
 
                 switch (setting) {
 
-                    case SCAN_PLAYER_PARTIES -> {
+                    case ESTIMATE_PLAYER_PARTIES -> {
                         if (setting.read()) {
                             for (final Player player : VIT.get().getSession().updatePlayerParties(VIT.get().getGame().players())) {
                                 screen.updatePlayerBanner(player);
@@ -118,8 +118,8 @@ public class SettingsGUI extends GUI {
         );
 
         scanSection.addCheckBoxSetting(
-                Settings.SCAN_PLAYER_PARTIES,
-                "Scan Player Parties"
+                Settings.ESTIMATE_PLAYER_PARTIES,
+                "Estimate Player Parties"
         );
 
 
