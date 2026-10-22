@@ -23,7 +23,7 @@ public class ImplVITAPI implements VITAPI {
     private final EventManager eventManager;
     private final AddonManager addonManager;
 
-    private final Configuration settings;
+    private final Configuration settings, guiSettings;
     private final Session session;
 
 
@@ -39,6 +39,13 @@ public class ImplVITAPI implements VITAPI {
         // Load default settings
         this.settings = loadConfig(
                 "configs/settings.json",
+                FileDir.CONFIGS
+        );
+
+
+        // Load default settings
+        this.guiSettings = loadConfig(
+                "configs/guis.json",
                 FileDir.CONFIGS
         );
 
@@ -64,6 +71,11 @@ public class ImplVITAPI implements VITAPI {
     @Override
     public Configuration getSettings() {
         return this.settings;
+    }
+
+    @Override
+    public Configuration getGuiSettings() {
+        return this.guiSettings;
     }
 
     @Override

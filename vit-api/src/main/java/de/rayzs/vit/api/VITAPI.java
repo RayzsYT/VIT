@@ -51,6 +51,13 @@ public interface VITAPI {
     Configuration getSettings();
 
     /**
+     * Default VIT gui settings.
+     *
+     * @return Default VIT gui settings.
+     */
+    Configuration getGuiSettings();
+
+    /**
      * Get the session to reload or fetch
      * VALORANT related information and create
      * a {@link Game} object.
