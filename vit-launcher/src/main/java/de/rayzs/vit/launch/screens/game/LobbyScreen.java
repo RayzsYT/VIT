@@ -41,8 +41,12 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
         super.load(api, gui);
 
         final Game game = api.getGame();
+        final String title = api.getGuiSettings().getOrSet(
+                "menus.in-game.lobby-title",
+                "Map: %map%, Server: %server%"
+        );
 
-        gui.setTitle(StringUtils.replace(TITLE,
+        gui.setTitle(StringUtils.replace(title,
                 "%map%", game.map().mapName(),
                 "%server%", game.server()
         ));
@@ -172,11 +176,11 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
         final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         controls.setOpaque(false);
 
-        final String randomButtonName = "Wait %ds";
-        final AtomicInteger randomButtonCountdown = new AtomicInteger(3);
+        final String randomButtonName = api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.cooldown-text", "Wait %ds");
+        final AtomicInteger randomButtonCountdown = new AtomicInteger(api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.cooldown", 3));
 
         final JButton dodgeButton = new BeautifiedButton(
-                "Dodge!",
+                api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.dodge.text", "Dodge!"),
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND,
                 GUI.Colors.TEXT_FOREGROUND,
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
@@ -216,7 +220,7 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
                 }
 
                 if (randomButtonCountdown.get() == 1) {
-                    randomButton.setText("Play Random Agent!");
+                    randomButton.setText(api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.text", "Play Random Agent!"));
                     randomButton.setEnabled(true);
 
                     cancel();

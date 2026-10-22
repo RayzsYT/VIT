@@ -30,8 +30,12 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
         super.load(api, gui);
 
         final Game game = api.getGame();
+        final String title = api.getGuiSettings().getOrSet(
+                "menus.in-game.match-title",
+                "Map: %map%, Server: %server%"
+        );
 
-        gui.setTitle(StringUtils.replace(TITLE,
+        gui.setTitle(StringUtils.replace(title,
                 "%map%", game.map().mapName(),
                 "%server%", game.server()
         ));
@@ -220,7 +224,7 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
         controls.setOpaque(false);
 
         final JButton refreshButton = new BeautifiedButton(
-                "Refresh",
+                api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.reload.text", "Refresh"),
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND,
                 GUI.Colors.TEXT_FOREGROUND,
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,

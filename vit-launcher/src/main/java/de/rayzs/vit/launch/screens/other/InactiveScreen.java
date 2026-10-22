@@ -16,7 +16,7 @@ public class InactiveScreen extends ScreenAbstr {
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
         gui.reset();
-        gui.setTitle("Waiting for VALORANT to start...");
+        gui.setTitle(api.getGuiSettings().getOrSet("menus.valorant-not-found.title", "VALORANT not found!"));
 
 
         final JPanel contentPane = gui.getContentPane();
@@ -35,7 +35,7 @@ public class InactiveScreen extends ScreenAbstr {
 
 
 
-        this.textLabel = new JLabel("VALORANT NOT FOUND!");
+        this.textLabel = new JLabel(api.getGuiSettings().getOrSet("menus.valorant-not-found.text", "VALORANT not found!"));
         this.textLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         this.textLabel.setForeground(Color.WHITE);
         this.textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

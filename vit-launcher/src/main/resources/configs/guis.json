@@ -1,19 +1,20 @@
 {
   "menus": {
     "valorant-not-found": {
-      "title": "VIT | VALORANT not found!",
+      "title": "VALORANT not found!",
       "text": "VALORANT not found!"
     },
     "waiting": {
-      "title": "VIT | Waiting for match...",
+      "title": "Waiting for match...",
       "text": "Waiting..."
     },
     "loading": {
-      "title": "VIT | Map: %map%, Server: %server% (Fetching player data)",
+      "title": "Map: %map%, Server: %server% (Fetching player data)",
       "text": "Loaded %players% players..."
     },
     "in-game": {
-      "title": "VIT | Map: %map%, Server: %server%",
+      "match-title": "Map: %map%, Server: %server%",
+      "lobby-title": "Map: %map%, Server: %server%",
       "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
         "reload-button-text": "Reload"
@@ -86,10 +87,22 @@
       }
     },
     "in-agent-selection": {
-      "title": "VIT | Map: %map%, Server: %server%",
+      "title": "Map: %map%, Server: %server%",
       "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
-        "reload-button-text": "Reload"
+        "reload": {
+          "text": "Reload",
+          "cooldown": 3,
+          "cooldown-text": "Wait %ds"
+        },
+        "dodge": {
+          "text": "Dodge!"
+        },
+        "random-agent": {
+          "text": "Play Random Agent!",
+          "cooldown": 3,
+          "cooldown-text": "Wait %ds"
+        }
       },
       "team-role-display": {
         "attacker": {

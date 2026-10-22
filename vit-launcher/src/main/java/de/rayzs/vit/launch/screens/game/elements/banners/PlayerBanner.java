@@ -193,8 +193,8 @@ public abstract class PlayerBanner {
                 : "";
 
 
-        final String statsDisplay = api.getSettings().getOrSet(
-                "player-statistics.stats-format",
+        final String statsDisplay = api.getGuiSettings().getOrSet(
+                "menus.in-game.player-statistics.stats-format",
                 "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%"
         );
 
@@ -263,8 +263,8 @@ public abstract class PlayerBanner {
             final String lastSeenTimeText = TimeConverter.timeToStrConverter(lastSeenDetails.lastSeenTime());
             final String agentName = lastSeenDetails.agent() != null ? lastSeenDetails.agent().getAgentName() : "?";
 
-            final String lastSeenDisplay = api.getSettings().getOrSet(
-                    "player-statistics.last-seen-format",
+            final String lastSeenDisplay = api.getGuiSettings().getOrSet(
+                    "menus.in-game.player-statistics.last-seen-format",
                     " %time% agp | %map%, %agent%"
             );
 

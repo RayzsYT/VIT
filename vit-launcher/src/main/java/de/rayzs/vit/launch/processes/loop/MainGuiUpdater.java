@@ -53,7 +53,7 @@ public class MainGuiUpdater {
             return;
         }
 
-        loadingScreen.resetText();
+        loadingScreen.resetText(api);
 
 
 

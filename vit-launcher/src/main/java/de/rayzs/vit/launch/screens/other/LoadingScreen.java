@@ -11,13 +11,14 @@ import java.awt.*;
 
 public class LoadingScreen extends ScreenAbstr {
 
-    private final String defaultText = "Waiting";
-    private final JLabel textLabel = new JLabel(defaultText);
+    private final JLabel textLabel = new JLabel("");
 
     @Override
     public void load(final VITAPI api, final MainGUI gui) {
+        resetText(api);
+
         gui.reset();
-        gui.setTitle(this.defaultText);
+        gui.setTitle(api.getGuiSettings().getOrSet("menus.waiting.title", "Waiting for match..."));
 
 
         final JPanel contentPane = gui.getContentPane();
@@ -64,8 +65,8 @@ public class LoadingScreen extends ScreenAbstr {
         contentPane.add(gui.getDisclaimerPanel(), BorderLayout.SOUTH);
     }
 
-    public void resetText() {
-        this.textLabel.setText(this.defaultText);
+    public void resetText(final VITAPI api) {
+        this.textLabel.setText(api.getGuiSettings().getOrSet("menus.waiting.text", "Waiting..."));
     }
 
     public void updateText(final String text) {
