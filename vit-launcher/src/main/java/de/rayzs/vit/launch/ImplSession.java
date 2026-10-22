@@ -1075,53 +1075,68 @@ public class ImplSession implements Session {
     public Player[] updatePlayerParties(final Player... players) {
 
         // Ignore in case it's disabled.
-        if (! (boolean) Settings.SCAN_PLAYER_PARTIES.read()) return players;
+        if (! (boolean) Settings.ESTIMATE_PLAYER_PARTIES.read()) return players;
 
 
-        final Map<String, Player> playerIdsMap = new HashMap<>();
-
-        final Map<Integer, Party> parties = new HashMap<>();             // Party ID, Party
+        final Map<String, Player> playerIdsMap = new HashMap<>();        // Player id, Player
         final Map<Player, Party> playerParties = new HashMap<>();        // Player, Party
-        final Map<Player, Set<String>> playerMembers = new HashMap<>();  // Player, Members in player-ids
 
 
-        // Fetch player parties.
+        // Load all players intro the playerIdsMap.
         for (final Player player : players) {
-
             playerIdsMap.put(player.id(), player);
-
-
-            // Ignore in case its already been fetched.
-            if (player.party() != null) {
-                continue;
-            }
-
-
-            final Set<String> estimatedPartyMembers = estimatePartyMembers(player, player.playedMatches());
-
-            if (!estimatedPartyMembers.isEmpty()) {
-                playerMembers.putIfAbsent(player, estimatedPartyMembers);
-            }
         }
 
 
-        { // Create party objects and set its members.
-            int partyIndex = 0;
-            for (final Map.Entry<Player, Set<String>> entry : playerMembers.entrySet()) {
-                final Party party = new Party(
-                        partyIndex,
-                        PartyColors.getPartyColor(partyIndex++),
-                        new Player[20]
-                );
+        {
+            int currentPartyIndex = 0;
 
-                parties.put(partyIndex, party);
+            // Put each player into their party.
+            for (final Player player : players) {
 
-                {
-                    int memberIndex = 0;
-                    for (final String memberId : entry.getValue()) {
-                        party.members()[memberIndex] = playerIdsMap.get(memberId);
-                        memberIndex++;
+                // Ignore in case its already been done.
+                if (player.party() != null || playerParties.containsKey(player)) {
+                    continue;
+                }
+
+
+                final Set<String> estimatedPartyMembers = estimatePartyMembers(player, player.playedMatches());
+
+                // Remove player ids that are not inside the provided players array.
+                estimatedPartyMembers.removeIf(otherPlayerId -> {
+                    if (selfPlayerId.equalsIgnoreCase(otherPlayerId)) {
+                        return false;
                     }
+
+                    final Player other = playerIdsMap.get(otherPlayerId);
+                    return other == null || other.team() != player.team();
+                });
+
+                // After filtering out all unnecessary players, we can check
+                // whether the set still contains enough data, except the selfPlayerId.
+                // If so, we can guarantee that the player has played with people in previous
+                // matches that are in the current match even on the same team.
+                if (estimatedPartyMembers.size() > 1) {
+                    final Party party = new Party(
+                            currentPartyIndex,
+                            PartyColors.getPartyColor(currentPartyIndex),
+                            new Player[20]
+                    );
+
+                    { // Set party members.
+                        int partyMemberIndex = 0;
+                        for (String partyMemberId : estimatedPartyMembers) {
+                            final Player partyMember = playerIdsMap.get(partyMemberId);
+                            party.members()[partyMemberIndex++] = partyMember;
+                        }
+                    }
+
+                    estimatedPartyMembers.forEach(partyMemberId -> {
+                        final Player partyMember = playerIdsMap.get(partyMemberId);
+                        playerParties.put(partyMember, party);
+                    });
+
+                    currentPartyIndex++;
                 }
             }
         }
@@ -1165,6 +1180,7 @@ public class ImplSession implements Session {
     private Set<String> estimatePartyMembers(final Player selfPlayer, Match[] history) {
         final HashMap<String, Integer> countMap = new HashMap<>();
 
+
         for (Match match : history) {
 
             Team selfTeam = null;
@@ -1176,7 +1192,7 @@ public class ImplSession implements Session {
             }
 
             for (Player other : match.players()) {
-                if (other.team() != selfTeam) continue;
+                if (other.team() != selfTeam || selfPlayerId.equalsIgnoreCase(other.id())) continue;
 
                 countMap.put(other.id(), countMap.getOrDefault(other.id(), 0) + 1);
             }
@@ -1184,9 +1200,14 @@ public class ImplSession implements Session {
 
         // Only collect player ids whose count is higher than 1.
         // Basically as soon someone played with the same person at least 2 times on the same team.
-        return countMap.keySet().stream()
+        final Set<String> playerSet = countMap.keySet().stream()
                 .filter(id -> countMap.get(id) > 1)
                 .collect(Collectors.toSet());
+
+        // Add id of selfPlayer since he's also part of the party.
+        playerSet.add(selfPlayerId);
+
+        return playerSet;
     }
 
 
