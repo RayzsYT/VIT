@@ -82,10 +82,12 @@ public class TimeConverter {
             text.append(minutes).append("m");
         }
 
+        /*
         if (seconds > 0) {
             if (minutes > 0) text.append(SEPERATOR_STR);
             text.append(seconds).append("s");
         }
+        */
 
         return text.toString();
     }
