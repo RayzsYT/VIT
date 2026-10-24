@@ -8,12 +8,15 @@
 
 <hr>
 
+<br> <br> <br>
+
 <p align="center">
     <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.18/vit-installation-script.bat">
         <img src="images/try-now.png" />
     </a>
 </p>
 
+<br>
 
 <h1 align="center">How it looks in action</h1>
 
