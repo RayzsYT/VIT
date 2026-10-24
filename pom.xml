@@ -12,7 +12,6 @@
     <modules>
         <module>vit-api</module>
         <module>vit-launcher</module>
-        <module>vit-addon-example-addon</module>
     </modules>
 
     <properties>
