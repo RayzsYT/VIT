@@ -11,7 +11,7 @@
 <br> <br> <br>
 
 <p align="center">
-    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.18/vit-installation-script.bat">
+    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.19/vit-installation-script.bat">
         <img src="images/try-now.png" />
     </a>
 </p>
@@ -36,7 +36,7 @@ VIT offers you an API to work with to create your very own addons.
 <br>
 
 - [API javadocs](https://rayzsyt.github.io/VIT/jd/)
-- [How to create an addon](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
+- [How to create an addon](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)
 
 <br>
 
