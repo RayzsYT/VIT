@@ -32,7 +32,8 @@
 VIT offers you an API to work with to create your very own addons.
 <br>
 
-On how to create an addon, simply check out the [WIKI](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
+- [API javadocs](https://rayzsyt.github.io/VIT/jd/)
+- [How to create an addon](https://github.com/RayzsYT/VIT/wiki/Create-a-VIT-Addon)!
 
 <br>
 
