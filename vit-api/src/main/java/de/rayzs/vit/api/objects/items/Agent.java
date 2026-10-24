@@ -25,6 +25,7 @@ public enum Agent {
     REYNA       ("Reyna",       AgentRole.DUELIST),
     YORU        ("Yoru",        AgentRole.DUELIST),
     WAYLAY      ("Waylay",      AgentRole.DUELIST),
+    HUSH        ("Hush",        AgentRole.DUELIST),
 
     // Initiators
     BREACH      ("Breach",      AgentRole.INITIATOR),
