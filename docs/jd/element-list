@@ -28,13 +28,3 @@ de.rayzs.vit.api.request.exceptions
 de.rayzs.vit.api.session
 de.rayzs.vit.api.settings
 de.rayzs.vit.api.utils
-de.rayzs.vit.bootstrap
-de.rayzs.vit.launch
-de.rayzs.vit.launch.guis
-de.rayzs.vit.launch.processes.loop
-de.rayzs.vit.launch.processes.prepare
-de.rayzs.vit.launch.screens
-de.rayzs.vit.launch.screens.game
-de.rayzs.vit.launch.screens.game.elements.banners
-de.rayzs.vit.launch.screens.game.elements.window
-de.rayzs.vit.launch.screens.other
