@@ -14,6 +14,7 @@ public enum Settings {
     LAST_WINDOW_LOC_Y             ("last-window-location.y",            0),
 
 
+
     // Scan
     ESTIMATE_PLAYER_PARTIES                     ("scan.estimate-player-parties",        true),
     SCAN_PLAYER_COMPETITIVE_MATCHES_AMOUNT      ("scan.player-competitive-matches-amount",      5),
