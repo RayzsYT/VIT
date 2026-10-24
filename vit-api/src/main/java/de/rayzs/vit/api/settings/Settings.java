@@ -15,8 +15,11 @@ public enum Settings {
 
 
     // Scan
-    SCAN_PLAYER_MATCHES_AMOUNT      ("scan.player-matches-amount",      5),
     ESTIMATE_PLAYER_PARTIES             ("scan.estimate-player-parties",        true),
+    SCAN_PLAYER_COMPETITIVE_MATCHES_AMOUNT      ("scan.player-competitive-matches-amount",      5),
+    SCAN_PLAYER_UNRATED_MATCHES_AMOUNT      ("scan.player-unrated-matches-amount",      0),
+    SCAN_PLAYER_SPIKERUSH_MATCHES_AMOUNT      ("scan.player-spikerush-matches-amount",      0),
+    SCAN_PLAYER_SWIFTPLAY_MATCHES_AMOUNT      ("scan.player-swiftplay-matches-amount",      0),
 
 
     // Match

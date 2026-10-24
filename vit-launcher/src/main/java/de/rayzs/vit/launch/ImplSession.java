@@ -363,7 +363,7 @@ public class ImplSession implements Session {
         final List<String> incognitoPlayerIds = new ArrayList<>();    // Players in incognito
         final List<Player> registeredPlayers = new ArrayList<>();     // Registered Players
 
-        final int loadPlayerMatchesCount = Settings.SCAN_PLAYER_MATCHES_AMOUNT.read();
+        final int loadPlayerMatchesCount = Settings.SCAN_PLAYER_COMPETITIVE_MATCHES_AMOUNT.read();
         PlayerCompetitive playerCompetitive = null;
 
 

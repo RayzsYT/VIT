@@ -89,6 +89,17 @@ public class SettingsGUI extends GUI {
                         }
                     }
 
+                    case SCAN_PLAYER_SWIFTPLAY_MATCHES_AMOUNT, SCAN_PLAYER_SPIKERUSH_MATCHES_AMOUNT, SCAN_PLAYER_UNRATED_MATCHES_AMOUNT -> {
+                        PopupGUI.create(
+                                "Heads up!",
+                                "Oh okay...",
+                                "Sorry mate but all the other scan options except for comp. matches are actually not implemented yet."
+                        ).setLocation(
+                                this.getLocation().x + 100,
+                                this.getLocation().y + 70
+                        );
+                    }
+
                 }
 
             }
@@ -112,14 +123,29 @@ public class SettingsGUI extends GUI {
 
         final Section scanSection = new Section("Scan");
 
-        scanSection.addNumberSetting(
-                Settings.SCAN_PLAYER_MATCHES_AMOUNT,
-                "Amount of Player Matches"
-        );
-
         scanSection.addCheckBoxSetting(
                 Settings.ESTIMATE_PLAYER_PARTIES,
-                "Estimate Player Parties"
+                "Estimate player parties"
+        );
+
+        scanSection.addNumberSetting(
+                Settings.SCAN_PLAYER_COMPETITIVE_MATCHES_AMOUNT,
+                "Fetched Comp. matches"
+        );
+
+        scanSection.addNumberSetting(
+                Settings.SCAN_PLAYER_UNRATED_MATCHES_AMOUNT,
+                "Fetched Unr. matches"
+        );
+
+        scanSection.addNumberSetting(
+                Settings.SCAN_PLAYER_SPIKERUSH_MATCHES_AMOUNT,
+                "Fetched SpikeR. matches"
+        );
+
+        scanSection.addNumberSetting(
+                Settings.SCAN_PLAYER_SWIFTPLAY_MATCHES_AMOUNT,
+                "Fetched SwiftPl. matches"
         );
 
 
