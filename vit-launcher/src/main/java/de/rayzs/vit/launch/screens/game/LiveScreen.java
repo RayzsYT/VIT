@@ -91,11 +91,21 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
 
         contentPane.add(playersWaitingPanel, BorderLayout.CENTER);
 
+
+        final String loadingPlayerBannersText = api.getGuiSettings().getOrSet(
+                "menus.in-game.loading-player-banners-text",
+                "Loaded %current% out of %max% player banners..."
+        );
+
         new Thread(() -> {
             final int maxPlayers = game.players().length;
             int loaded = 0;
 
-            playersWaitingLabel.setText(loadingPlayerBannersText.formatted(loaded, maxPlayers));
+            playersWaitingLabel.setText(loadingPlayerBannersText
+                    .replace("%current%", String.valueOf(loaded))
+                    .replace("%max%", String.valueOf(maxPlayers))
+            );
+
 
             for (int i = 0; i < max; i++) {
                 final boolean shouldCreateEmptyBanner = game.players().length == 1
@@ -119,7 +129,10 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
                     playerBanner.getBanner().setVisible(false);
                     playersPanel.add(playerBanner.getBanner());
 
-                    playersWaitingLabel.setText(loadingPlayerBannersText.formatted(++loaded, maxPlayers));
+                    playersWaitingLabel.setText(loadingPlayerBannersText
+                            .replace("%current%", String.valueOf(++loaded))
+                            .replace("%max%", String.valueOf(maxPlayers))
+                    );
                 } else if (shouldCreateEmptyBanner) {
                     playersPanel.add(createEmptyPlayerBanner());
                 }
@@ -141,7 +154,11 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
                     playerBanner.getBanner().setVisible(false);
                     playersPanel.add(playerBanner.getBanner());
 
-                    playersWaitingLabel.setText(loadingPlayerBannersText.formatted(++loaded, maxPlayers));
+                    playersWaitingLabel.setText(loadingPlayerBannersText
+                            .replace("%current%", String.valueOf(++loaded))
+                            .replace("%max%", String.valueOf(maxPlayers))
+                    );
+
                 } else if (shouldCreateEmptyBanner) {
                     playersPanel.add(createEmptyPlayerBanner());
                 }

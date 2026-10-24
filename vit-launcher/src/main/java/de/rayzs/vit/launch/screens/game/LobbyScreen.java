@@ -86,12 +86,21 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
         contentPane.add(playersWaitingPanel, BorderLayout.CENTER);
 
 
+        final String loadingPlayerBannersText = api.getGuiSettings().getOrSet(
+                "menus.in-game.loading-player-banners-text",
+                "Loaded %current% out of %max% player banners..."
+        );
+
+
         new Thread(() -> {
 
             final Player[] players = game.players();
             final int max = players.length;
 
-            playersWaitingLabel.setText(loadingPlayerBannersText.formatted(0, max));
+            playersWaitingLabel.setText(loadingPlayerBannersText
+                    .replace("%current%", String.valueOf(0))
+                    .replace("%max%", String.valueOf(max))
+            );
 
             for (int i = 0; i < max; i++) {
                 final Player player = players[i];
@@ -103,7 +112,10 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
                 playerBanner.getBanner().setVisible(false);
                 playersPanel.add(playerBanner.getBanner());
 
-                playersWaitingLabel.setText(loadingPlayerBannersText.formatted(i, max));
+                playersWaitingLabel.setText(loadingPlayerBannersText
+                        .replace("%current%", String.valueOf(i))
+                        .replace("%max%", String.valueOf(max))
+                );
             }
 
             contentPane.remove(playersWaitingPanel);
@@ -176,7 +188,7 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
         final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         controls.setOpaque(false);
 
-        final String randomButtonName = api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.cooldown-text", "Wait %ds");
+        final String randomButtonName = api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.cooldown-text", "Wait %time%s");
         final AtomicInteger randomButtonCountdown = new AtomicInteger(api.getGuiSettings().getOrSet("menus.in-agent-selection.buttons.random-agent.cooldown", 3));
 
         final JButton dodgeButton = new BeautifiedButton(
@@ -198,7 +210,7 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
         });
 
         final JButton randomButton = new BeautifiedButton(
-                randomButtonName.formatted(randomButtonCountdown.get()),
+                randomButtonName.replace("%time%", String.valueOf(randomButtonCountdown.get())),
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND,
                 GUI.Colors.TEXT_FOREGROUND,
                 GUI.Colors.CONTROL_BUTTON_BACKGROUND_HOVER,
@@ -227,11 +239,10 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
                     return;
                 }
 
-                randomButton.setText(
-                        randomButtonName.formatted(
-                                randomButtonCountdown.decrementAndGet()
-                        )
-                );
+                randomButton.setText(randomButtonName.replace(
+                        "%time%", String.valueOf(randomButtonCountdown.decrementAndGet())
+                ));
+
             }
         }, 1000, 1000);
 
@@ -265,18 +276,18 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
             /** Removed to prevents bans.
              * Even though its delayed and therefore is not considered as instant-locking,
              * better to be save than late.
-            try {
-                Thread.sleep(1000);
+             try {
+             Thread.sleep(1000);
 
-                Requests.Send.Match.lockAgent(
-                        api.getSession().getClient(),
-                        api.getGame().currentMatch().matchId(),
-                        randomAgent.getAgentId()
-                );
+             Requests.Send.Match.lockAgent(
+             api.getSession().getClient(),
+             api.getGame().currentMatch().matchId(),
+             randomAgent.getAgentId()
+             );
 
-            } catch (final InterruptedException exception) {
-                exception.printStackTrace();
-            }
+             } catch (final InterruptedException exception) {
+             exception.printStackTrace();
+             }
              **/
         });
 

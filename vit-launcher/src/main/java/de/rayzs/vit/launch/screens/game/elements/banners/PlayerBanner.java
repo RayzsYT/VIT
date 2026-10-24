@@ -181,17 +181,19 @@ public abstract class PlayerBanner {
         final int headshotRate = (int) (player.stats().headShotRate() * 100);
 
         final String levelText = player.settings().levelHidden()
-                ? "Hidden"
-                : String.valueOf(player.level());
+                ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.level.hidden", "?")
+                : api.getGuiSettings().getOrSet("menus.in-game.player-statistics.level.shown", "%level%")
+                .replace("%level%", String.valueOf(player.level()));
 
         final String rrText = player.competitive() != null
-                ? String.valueOf(player.competitive().rr())
-                : "/";
+                ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.current", "%rr%")
+                .replace("%rr%", String.valueOf(player.competitive().rr()))
+                : api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.none", "/");
 
         final String lastGainedText = player.competitive() != null && player.competitive().latestMatch() != null
-                ? " (" + StringUtils.formatNumber(player.competitive().latestMatch().compMatchResult().rr()) + ")"
+                ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.last-received", "%last_received_rr%")
+                .replace("%last_received_rr%", StringUtils.formatNumber(player.competitive().latestMatch().compMatchResult().rr()))
                 : "";
-
 
         final String statsDisplay = api.getGuiSettings().getOrSet(
                 "menus.in-game.player-statistics.stats-format",
@@ -201,8 +203,14 @@ public abstract class PlayerBanner {
         playerStats.setText(StringUtils.replace(statsDisplay,
                 "%level%", levelText,
                 "%rr%", rrText + lastGainedText,
-                "%winrate%", String.valueOf(winRate),
-                "%headshotrate%", String.valueOf(headshotRate)
+                "%winrate%", player.playedMatches().length != 0
+                        ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.win-rate.available", "%win_rate%")
+                        .replace("%win_rate%", String.valueOf(winRate))
+                        : api.getGuiSettings().getOrSet("menus.in-game.player-statistics.win-rate.not-available", "?"),
+                "%headshotrate%", player.playedMatches().length != 0
+                        ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.headshot-rate.available", "%headshot_rate%")
+                        .replace("%headshot_rate%", String.valueOf(headshotRate))
+                        : api.getGuiSettings().getOrSet("menus.in-game.player-statistics.headshot-rate.not-available", "?")
         ));
 
 
@@ -283,7 +291,10 @@ public abstract class PlayerBanner {
         // user of the program.
         if (playerName.equalsIgnoreCase(game.self().name())) {
             return playerNameDisplay.formatted(
-                    250, 255, 181, "You",
+                    250,
+                    255,
+                    181,
+                    "You",
                     0, 0, 0, "" // Self player will be ignored anyway
             );
         }

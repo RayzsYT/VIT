@@ -27,11 +27,12 @@
           "hidden": "?"
         },
         "rr": {
-          "with-last-rr": "%rr% (%last_received_rr%)",
-          "no-last-rr": "%rr%"
+          "current": "%rr%",
+          "last": " (%last_received_rr%)",
+          "none": "/"
         },
         "win-rate": {
-          "available": "%win_rate%%",
+          "available": "%win_rate%",
           "not-available": "?"
         },
         "headshot-rate": {
@@ -90,18 +91,13 @@
       "title": "Map: %map%, Server: %server%",
       "loading-player-banners-text": "Loaded %current% out of %max% player banners...",
       "buttons": {
-        "reload": {
-          "text": "Reload",
-          "cooldown": 3,
-          "cooldown-text": "Wait %ds"
-        },
         "dodge": {
           "text": "Dodge!"
         },
         "random-agent": {
           "text": "Play Random Agent!",
           "cooldown": 3,
-          "cooldown-text": "Wait %ds"
+          "cooldown-text": "Wait %time%s"
         }
       },
       "team-role-display": {

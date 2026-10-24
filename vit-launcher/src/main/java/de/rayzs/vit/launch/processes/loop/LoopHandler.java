@@ -191,13 +191,23 @@ public class LoopHandler {
 
         final AtomicBoolean rateLimited = new AtomicBoolean(false);
 
+        final String loadingPlayerTitle = api.getGuiSettings().getOrSet(
+                "menus.loading.title",
+                "Map: %map%, Server: %server% (Fetching player data)"
+        );
+
+        final String loadingPlayerText = api.getGuiSettings().getOrSet(
+                "menus.loading.text",
+                "Loaded %players% players..."
+        );
+
 
         final Game game = api.getSession().constructGame(state, preloadedPlayers, event -> {
             final String server = event.getServer();
             final String map = event.getMap().mapName();
 
             guiUpdater.updateGUI(gui -> {
-                gui.setTitle("VIT | Map: " + map + ", Server: " + server + " [Fetching players data]");
+                gui.setTitle(loadingPlayerTitle.replace("%map%", map).replace("%server%", server));
             });
 
         }, loadedPlayersCount -> {
@@ -208,7 +218,9 @@ public class LoopHandler {
             }
 
 
-            final String updateText = "Loaded " + loadedPlayersCount + " players...";
+
+
+            final String updateText = loadingPlayerText.replace("%players%", loadingPlayerText);
 
 
             System.out.println(updateText);
