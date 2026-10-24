@@ -27,7 +27,7 @@ public enum Settings {
 
 
     // Cooldown (Once during runtime)
-    COOLDOWN_ONCE_ACTIVE_SEASON     ("cooldown.once.active-season",            2000),
+    COOLDOWN_ONCE_ACTIVE_SEASON     ("cooldown.once.active-season",     2000),
     COOLDOWN_ONCE_OWN_AGENTS        ("cooldown.once.season",            2000),
 
     // Cooldown (Player related)
