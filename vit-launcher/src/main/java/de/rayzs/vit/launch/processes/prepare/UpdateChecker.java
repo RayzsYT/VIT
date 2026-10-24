@@ -38,7 +38,7 @@ public class UpdateChecker {
                 ""
         );
 
-        final Optional<String> result = request.sendAndGet(Request.createClient());
+        final Optional<String> result = request.sendAndGet(Request.createClient(false));
 
         // In case the request failed.
         if (result.isEmpty()) {

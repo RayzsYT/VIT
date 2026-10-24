@@ -84,7 +84,7 @@ public class AssetPreparer {
 
 
         // Fetch and load all necessary assets.
-        final HttpClient client = Request.createClient();
+        final HttpClient client = Request.createClient(false);
 
 
         // Loading all weapons...

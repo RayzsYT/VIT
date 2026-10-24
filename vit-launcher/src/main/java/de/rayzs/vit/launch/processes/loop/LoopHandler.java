@@ -9,6 +9,7 @@ import de.rayzs.vit.api.event.events.system.state.StateChangeEvent;
 import de.rayzs.vit.api.event.events.system.tick.PreTickEvent;
 import de.rayzs.vit.api.event.events.system.tick.TickEvent;
 import de.rayzs.vit.api.objects.player.Player;
+import de.rayzs.vit.api.request.exceptions.InvalidRequestException;
 import de.rayzs.vit.api.settings.Settings;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
@@ -75,7 +76,12 @@ public class LoopHandler {
         if (!Request.areHeadersSet()) {
             try {
                 api.getSession().initialize();
-            } catch (Exception ignored) { return; }
+            } catch (final InvalidRequestException invalidRequestException) {
+                invalidRequestException.printStackTrace();
+                System.exit(-1);
+                return;
+
+            } catch (final Exception ignored) { return; }
         }
 
 

@@ -47,12 +47,13 @@ public class ImplSession implements Session {
 
     private String currentVersion;
 
-    private HttpClient client;
+    private HttpClient client, clientNoSSL;
     private String selfPlayerId;
 
     public ImplSession() {
         this.lockfile = FileDir.VALORANT_CONF.getFile("lockfile");
-        this.client = Request.createClient();
+        this.client = Request.createClient(false);
+        this.clientNoSSL = Request.createClient(true);
 
         fetchAuthToken();
         fetchRequestUrls();
@@ -72,7 +73,8 @@ public class ImplSession implements Session {
      */
     @Override
     public void initialize() {
-        this.client = Request.createClient();
+        this.client = Request.createClient(false);
+        this.clientNoSSL = Request.createClient(true);
 
         if (Request.isAuthTokenSet()) {
             Request.unsetAuthToken();
@@ -85,7 +87,7 @@ public class ImplSession implements Session {
         }
 
         fetchAuthToken();
-        fetchRequestHeaders(this.client);
+        fetchRequestHeaders(this.clientNoSSL);
     }
 
 
@@ -98,6 +100,18 @@ public class ImplSession implements Session {
     @Override
     public HttpClient getClient() {
         return this.client;
+    }
+
+    /**
+     * Get the client that ignores SSL verification
+     * to send requests to the VALORANT servers.
+     * Suitable for localhost requests.
+     *
+     * @return HttpClient.
+     */
+    @Override
+    public HttpClient getClientNoSSL() {
+        return this.clientNoSSL;
     }
 
 
@@ -281,7 +295,7 @@ public class ImplSession implements Session {
         }
 
 
-        final JSONObject presence = Requests.Get.General.fetchPresence(client);
+        final JSONObject presence = Requests.Get.General.fetchPresence(this.clientNoSSL);
 
         if (presence == null) {
             return SessionState.VALORANT_NOT_OPEN;

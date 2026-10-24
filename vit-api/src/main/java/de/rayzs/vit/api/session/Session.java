@@ -29,6 +29,15 @@ public interface Session {
      */
     HttpClient getClient();
 
+    /**
+     * Get the client that ignores SSL verification
+     * to send requests to the VALORANT servers.
+     * Suitable for localhost requests.
+     *
+     * @return HttpClient.
+     */
+    HttpClient getClientNoSSL();
+
 
     /**
      * Get the session state by sending a

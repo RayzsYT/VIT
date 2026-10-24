@@ -1,9 +1,8 @@
 package de.rayzs.vit.api.request;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import de.rayzs.vit.api.request.exceptions.InvalidRequestException;
+
+import javax.net.ssl.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
@@ -168,16 +167,21 @@ public class Request {
         return ACCESS_TOKEN != null && ENTITLEMENT_TOKEN != null && CURRENT_VERSION != null;
     }
 
-
     /**
      * Create a HttpClient.
      *
+     * @param skipSSL Whether to skip the SSL verification or not.
      * @return Created HttpClient.
      */
-    public static HttpClient createClient() {
-        return HttpClient.newBuilder()
-                .sslContext(SSL_CONTEXT)
-                .build();
+    public static HttpClient createClient(final boolean skipSSL) {
+        final HttpClient.Builder builder = HttpClient.newBuilder();
+
+        if (skipSSL) {
+            builder.sslContext(SSL_CONTEXT);
+        }
+
+
+        return builder.build();
     }
 
 
@@ -291,6 +295,15 @@ public class Request {
      */
     public Optional<String> sendAndGet(final HttpClient client) {
 
+        if (dest != RequestDest.LOCAL && client.sslContext() == SSL_CONTEXT) {
+            throw new InvalidRequestException("Request cannot be sent! Request requires SSL certificate verification for destination " + dest.name() + ".");
+        }
+
+        if (dest == RequestDest.LOCAL && client.sslContext() != SSL_CONTEXT) {
+            throw new InvalidRequestException("Request cannot be sent! Request should not have a SSL certificate verification for destination " + dest.name() + ".");
+        }
+
+
         try {
 
             final HttpResponse<String> contentResponse = client.send(
@@ -317,6 +330,8 @@ public class Request {
             return Optional.of(contentResponse.body());
 
         } catch (Exception exception) {
+
+            exception.printStackTrace();
 
             System.err.println("Request failed! (" + request.uri() + ")");
 
