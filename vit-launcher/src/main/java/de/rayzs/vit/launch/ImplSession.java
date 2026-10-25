@@ -1102,6 +1102,7 @@ public class ImplSession implements Session {
 
             // Put each player into their party.
             for (final Player player : players) {
+                final String selfPlayerId = player.id();
 
                 // Ignore in case its already been done.
                 if (player.party() != null || playerParties.containsKey(player)) {
@@ -1187,6 +1188,7 @@ public class ImplSession implements Session {
      * @return Set of player ids of players that were in previous matches on the same side.
      */
     private Set<String> estimatePartyMembers(final Player selfPlayer, Match[] history) {
+        final String selfPlayerId = selfPlayer.id();
         final HashMap<String, Integer> countMap = new HashMap<>();
 
 
