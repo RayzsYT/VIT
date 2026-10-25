@@ -1192,6 +1192,12 @@ public class ImplSession implements Session {
         final HashMap<String, Integer> countMap = new HashMap<>();
 
 
+        // Return empty list if there's no match history.
+        if (history == null) {
+            return new HashSet<>();
+        }
+
+
         for (Match match : history) {
 
             Team selfTeam = null;
