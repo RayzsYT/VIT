@@ -1,9 +1,7 @@
 package de.rayzs.vit.bootstrap;
 
 import de.rayzs.vit.api.VIT;
-import de.rayzs.vit.api.objects.player.party.Party;
-import de.rayzs.vit.api.objects.player.party.PartyColors;
-import de.rayzs.vit.api.settings.Settings;
+import de.rayzs.vit.api.utils.PartyEstimator;
 import de.rayzs.vit.launch.guis.MainGUI;
 import de.rayzs.vit.api.objects.game.Game;
 import de.rayzs.vit.api.objects.items.*;
@@ -18,7 +16,6 @@ import de.rayzs.vit.launch.screens.ScreenAbstr;
 
 import java.util.*;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TestDummy {
 
@@ -42,15 +39,16 @@ public class TestDummy {
         final List<Player> players = new ArrayList<>();
         for (int i = 0; i < playerNum; i++) {
             players.add(createRandomPlayer(i % 2 == 0 ? Team.ATTACK : Team.DEFEND));
-            //players.add(createRandomPlayer(Team.DEFEND));
         }
 
-        final Player self = players.getFirst();
+
+        final Player[] finalPlayers = PartyEstimator.estimateAndModifyPlayerParties(players.toArray(new Player[0]));
+        final Player self = finalPlayers[0];
 
         final Game game = new Game(
                 self,
                 SessionState.IN_LOBBY, // Does not matter anyway
-                players.toArray(new Player[0]),
+                finalPlayers,
                 null,
                 map,
                 "Wambooo" // Only legends will understand

@@ -12,7 +12,6 @@ import de.rayzs.vit.api.objects.items.*;
 import de.rayzs.vit.api.objects.player.*;
 import de.rayzs.vit.api.objects.player.competitive.CompRequirements;
 import de.rayzs.vit.api.objects.player.party.Party;
-import de.rayzs.vit.api.objects.player.party.PartyColors;
 import de.rayzs.vit.api.objects.player.season.SeasonStats;
 import de.rayzs.vit.api.objects.player.season.SeasonTiers;
 import de.rayzs.vit.api.objects.player.match.LastCompMatch;
@@ -25,6 +24,7 @@ import de.rayzs.vit.api.session.SessionState;
 import de.rayzs.vit.api.request.Request;
 import de.rayzs.vit.api.request.RequestDest;
 import de.rayzs.vit.api.settings.Settings;
+import de.rayzs.vit.api.utils.PartyEstimator;
 import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -1073,160 +1073,17 @@ public class ImplSession implements Session {
 
 
     /**
-     * Takes an array of players and estimates each of their parties if they're not in one yet.
-     * Returns a modified version of the array with all the player parties.
+     * Calls {@link de.rayzs.vit.api.utils.PartyEstimator#estimateAndModifyPlayerParties(Player...)} (Player...)}
+     * which estimates and returns a modified version of the player array including all estimated player parties.
      *
      * @param players Array of players to fetch their party ids from.
      *
-     * @return New array of all players with their fetched parties.
+     * @return New array of all players with their estimated parties.
      */
     @Override
     public Player[] updatePlayerParties(final Player... players) {
-
-        // Ignore in case it's disabled.
-        if (! (boolean) Settings.ESTIMATE_PLAYER_PARTIES.read()) return players;
-
-
-        final Map<String, Player> playerIdsMap = new HashMap<>();        // Player id, Player
-        final Map<Player, Party> playerParties = new HashMap<>();        // Player, Party
-
-
-        // Load all players intro the playerIdsMap.
-        for (final Player player : players) {
-            playerIdsMap.put(player.id(), player);
-        }
-
-
-        {
-            int currentPartyIndex = 0;
-
-            // Put each player into their party.
-            for (final Player player : players) {
-                final String selfPlayerId = player.id();
-
-                // Ignore in case its already been done.
-                if (player.party() != null || playerParties.containsKey(player)) {
-                    continue;
-                }
-
-
-                final Set<String> estimatedPartyMembers = estimatePartyMembers(player, player.playedMatches());
-
-                // Remove player ids that are not inside the provided players array.
-                estimatedPartyMembers.removeIf(otherPlayerId -> {
-                    if (selfPlayerId.equalsIgnoreCase(otherPlayerId)) {
-                        return false;
-                    }
-
-                    final Player other = playerIdsMap.get(otherPlayerId);
-                    return other == null || other.team() != player.team();
-                });
-
-                // After filtering out all unnecessary players, we can check
-                // whether the set still contains enough data, except the selfPlayerId.
-                // If so, we can guarantee that the player has played with people in previous
-                // matches that are in the current match even on the same team.
-                if (estimatedPartyMembers.size() > 1) {
-                    final Party party = new Party(
-                            currentPartyIndex,
-                            PartyColors.getPartyColor(currentPartyIndex),
-                            new Player[20]
-                    );
-
-                    { // Set party members.
-                        int partyMemberIndex = 0;
-                        for (String partyMemberId : estimatedPartyMembers) {
-                            final Player partyMember = playerIdsMap.get(partyMemberId);
-                            party.members()[partyMemberIndex++] = partyMember;
-                        }
-                    }
-
-                    estimatedPartyMembers.forEach(partyMemberId -> {
-                        final Player partyMember = playerIdsMap.get(partyMemberId);
-                        playerParties.put(partyMember, party);
-                    });
-
-                    currentPartyIndex++;
-                }
-            }
-        }
-
-
-        // Reconstruct player array and apply their fetched parties.
-        for (int i = 0; i < players.length; i++) {
-            final Player player = players[i];
-
-            players[i] = new Player(
-                    player.id(),
-                    player.team(),
-                    player.name(),
-                    player.agent(),
-                    player.level(),
-                    player.playerCardId(),
-                    player.playerTitleId(),
-                    player.settings(),
-                    player.inventory(),
-                    player.competitive(),
-                    player.stats(),
-                    playerParties.getOrDefault(player, player.party()),
-                    player.lastSeenDetails(),
-                    player.playedMatches()
-            );
-        }
-
-        return players;
+        return PartyEstimator.estimateAndModifyPlayerParties(players);
     }
-
-
-
-    /**
-     * Estimate party members by checking for previous games
-     * where the same players appeared in the same team.
-     *
-     * @param selfPlayer Player.
-     * @param history Player match history.
-     * @return Set of player ids of players that were in previous matches on the same side.
-     */
-    private Set<String> estimatePartyMembers(final Player selfPlayer, Match[] history) {
-        final String selfPlayerId = selfPlayer.id();
-        final HashMap<String, Integer> countMap = new HashMap<>();
-
-
-        // Return empty list if there's no match history.
-        if (history == null) {
-            return new HashSet<>();
-        }
-
-
-        for (Match match : history) {
-
-            Team selfTeam = null;
-            for (Player other : match.players()) {
-                if (other.id().equalsIgnoreCase(selfPlayer.id())) {
-                    selfTeam = other.team();
-                    break;
-                }
-            }
-
-            for (Player other : match.players()) {
-                if (other.team() != selfTeam || selfPlayerId.equalsIgnoreCase(other.id())) continue;
-
-                countMap.put(other.id(), countMap.getOrDefault(other.id(), 0) + 1);
-            }
-        }
-
-        // Only collect player ids whose count is higher than 1.
-        // Basically as soon someone played with the same person at least 2 times on the same team.
-        final Set<String> playerSet = countMap.keySet().stream()
-                .filter(id -> countMap.get(id) > 1)
-                .collect(Collectors.toSet());
-
-        // Add id of selfPlayer since he's also part of the party.
-        playerSet.add(selfPlayerId);
-
-        return playerSet;
-    }
-
 
 
     /**
