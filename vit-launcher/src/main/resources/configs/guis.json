@@ -10,7 +10,8 @@
     },
     "loading": {
       "title": "Map: %map%, Server: %server% (Fetching player data)",
-      "text": "Loaded %players% players..."
+      "text": "Loaded %players% players...",
+      "rate-limited-text": "Rate limited! (%time%s)"
     },
     "in-game": {
       "match-title": "Map: %map%, Server: %server%",

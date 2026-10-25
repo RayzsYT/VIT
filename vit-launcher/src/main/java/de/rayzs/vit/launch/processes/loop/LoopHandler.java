@@ -236,13 +236,20 @@ public class LoopHandler {
         if (game == null) {
 
             if (rateLimited.get()) {
+                final String rateLimitedText = api.getGuiSettings().getOrSet(
+                        "menus.loading.rate-limited-text",
+                        "Rate limited! (%time%s)"
+                );
+
                 final AtomicInteger time = new AtomicInteger(0);
                 final int waitingTime = 10;
 
                 while (time.getAndIncrement() < waitingTime) {
 
                     guiUpdater.updateLoadingScreen(loadingScreen -> {
-                        loadingScreen.updateText("Rate limited! (" + (waitingTime - time.get()) + "s)");
+                        loadingScreen.updateText(rateLimitedText.replace(
+                                "%time%", String.valueOf(waitingTime - time.get())
+                        ));
                     });
 
                     try {
