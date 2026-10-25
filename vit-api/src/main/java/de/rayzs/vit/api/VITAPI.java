@@ -26,7 +26,7 @@ public interface VITAPI {
      *
      * @return VIT version.
      */
-    static String getVersion() { return "1.0.20"; }
+    static String getVersion() { return "1.0.21"; }
 
     /**
      * Get current screen.
