@@ -1474,8 +1474,7 @@ public class ImplSession implements Session {
             agentList.add(agent);
         }
 
-        System.out.println(Arrays.toString(agentList.toArray()));
-
+        System.out.println("List of owning agents: " + Arrays.toString(agentList.toArray()));
         VIT.get().updateOwningAgents(agentList.toArray(new Agent[0]));
     }
 
