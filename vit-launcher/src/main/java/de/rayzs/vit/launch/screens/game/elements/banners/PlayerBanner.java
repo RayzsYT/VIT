@@ -191,7 +191,7 @@ public abstract class PlayerBanner {
                 : api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.none", "/");
 
         final String lastGainedText = player.competitive() != null && player.competitive().latestMatch() != null
-                ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.last-received", "%last_received_rr%")
+                ? api.getGuiSettings().getOrSet("menus.in-game.player-statistics.rr.last", " (%last_received_rr%)")
                 .replace("%last_received_rr%", StringUtils.formatNumber(player.competitive().latestMatch().compMatchResult().rr()))
                 : "";
 
