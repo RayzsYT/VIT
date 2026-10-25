@@ -909,11 +909,6 @@ public class ImplSession implements Session {
             final JSONObject player = (JSONObject) playerObj;
 
 
-            // See what happens first.
-            // Maybe there's a player name to display?
-            System.out.println(player.toString());
-
-
             final String playerId = player.getString("subject");
             final String teamId = player.getString("teamId");
 
