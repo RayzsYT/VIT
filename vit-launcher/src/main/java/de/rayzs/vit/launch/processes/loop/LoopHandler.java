@@ -207,7 +207,11 @@ public class LoopHandler {
             final String map = event.getMap().mapName();
 
             guiUpdater.updateGUI(gui -> {
-                gui.setTitle(loadingPlayerTitle.replace("%map%", map).replace("%server%", server));
+                gui.setTitle(
+                        loadingPlayerTitle
+                                .replace("%map%", map)
+                                .replace("%server%", server)
+                );
             });
 
         }, loadedPlayersCount -> {
@@ -220,9 +224,7 @@ public class LoopHandler {
 
 
 
-            final String updateText = loadingPlayerText.replace("%players%", loadingPlayerText);
-
-
+            final String updateText = loadingPlayerText.replace("%players%", String.valueOf(loadedPlayersCount));
             System.out.println(updateText);
 
             guiUpdater.updateLoadingScreen(loadingScreen -> {
