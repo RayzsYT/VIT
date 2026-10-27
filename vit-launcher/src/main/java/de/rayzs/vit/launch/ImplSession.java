@@ -911,6 +911,7 @@ public class ImplSession implements Session {
 
             final String playerId = player.getString("subject");
             final String teamId = player.getString("teamId");
+            final String partyId = player.getString("partyId");
 
             final Team team = Team.getTeamById(teamId);
 
@@ -930,7 +931,7 @@ public class ImplSession implements Session {
                     null,
                     null,
                     null,
-                    null,
+                    new Party(partyId, null, new Player[] {}),
                     null,
                     null
             );
