@@ -70,7 +70,7 @@ public class PartyEstimator {
                 // matches that are in the current match even on the same team.
                 if (estimatedPartyMembers.size() > 1) {
                     final Party party = new Party(
-                            currentPartyIndex,
+                            String.valueOf(currentPartyIndex),
                             PartyColors.getPartyColor(currentPartyIndex),
                             new Player[20]
                     );
@@ -130,43 +130,35 @@ public class PartyEstimator {
      * @return Set of player ids of players that were in previous matches on the same side.
      */
     private static Set<String> estimatePartyMembers(final Player selfPlayer, Match[] history) {
-        final String selfPlayerId = selfPlayer.id();
-        final HashMap<String, Integer> countMap = new HashMap<>();
+        final Set<String> probablePartyMembers = new HashSet<>();
 
 
         // Return empty list if there's no match history.
         if (history == null) {
-            return new HashSet<>();
+            return probablePartyMembers;
         }
 
 
         for (Match match : history) {
 
-            Team selfTeam = null;
+            String selfPartyId = null;
             for (Player other : match.players()) {
-                if (other.id().equalsIgnoreCase(selfPlayer.id())) {
-                    selfTeam = other.team();
+                if (selfPlayer.id().equalsIgnoreCase( other.id() )) {
+                    selfPartyId = other.party().partyId();
                     break;
                 }
             }
 
             for (Player other : match.players()) {
-                if (other.team() != selfTeam || selfPlayerId.equalsIgnoreCase(other.id())) continue;
+                if (other.party() == null) continue;
 
-                countMap.put(other.id(), countMap.getOrDefault(other.id(), 0) + 1);
+                if (other.party().partyId().equalsIgnoreCase(selfPartyId)) {
+                    probablePartyMembers.add(other.id());
+                }
             }
         }
 
-        // Only collect player ids whose count is higher than 1.
-        // Basically as soon someone played with the same person at least 2 times on the same team.
-        final Set<String> playerSet = countMap.keySet().stream()
-                .filter(id -> countMap.get(id) > 1)
-                .collect(Collectors.toSet());
 
-        // Add id of selfPlayer since he's also part of the party.
-        playerSet.add(selfPlayerId);
-
-        return playerSet;
+        return probablePartyMembers;
     }
-
 }
