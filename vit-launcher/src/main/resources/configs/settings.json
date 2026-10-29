@@ -1,5 +1,4 @@
 {
-  "player-statistics": "Lvl.: %level% | RR: %rr% | WR: %winrate%% | HS: %headshotrate%%",
   "scan": {
     "estimate-player-parties": true,
     "player-matches-amount": 5
