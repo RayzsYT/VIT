@@ -2,6 +2,7 @@ package de.rayzs.vit.api.request;
 
 import de.rayzs.vit.api.objects.items.AvailableItem;
 import de.rayzs.vit.api.session.SessionState;
+import de.rayzs.vit.api.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,6 +41,52 @@ public class Requests {
                 );
             }
 
+
+        }
+
+
+        public static class ValoStats {
+            private ValoStats() {}
+
+
+            /**
+             * Fetch player stats from the valostats api.
+             * This includes matchIds, damage, etc.
+             */
+            public static JSONObject fetchPlayerStats(final HttpClient client, final String userName, final String userTag) {
+                String result = getAsString(
+                        client,
+                        RequestDest.VST,
+                        "stats/" + userName.replace(" ", "") + "/" + userTag.replace(" ", "%20") + "/stream"
+                );
+
+                if (result == null || result.startsWith("event: error")) {
+                    return null;
+                }
+
+                final int firstIndex = StringUtils.searchIndex("data: ", result);
+                if (firstIndex == -1) return null;
+
+                result = result.substring(firstIndex, result.length() - 13);
+                return new JSONObject(result);
+            }
+
+            /**
+             * Fetches match details from the valostats api.
+             */
+            public static JSONObject fetchMatchDetails(final HttpClient client, final String matchId) {
+                String result = getAsString(
+                        client,
+                        RequestDest.VST,
+                        "match/" + matchId
+                );
+
+                if (result == null || result.contains("invalid match id")) {
+                    return null;
+                }
+
+                return new JSONObject(result);
+            }
 
         }
 
