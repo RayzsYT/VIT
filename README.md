@@ -11,7 +11,7 @@
 <br> <br> <br>
 
 <p align="center">
-    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.22/vit-installation-script.bat">
+    <a href="https://github.com/RayzsYT/VIT/releases/download/1.0.23/vit-installation-script.bat">
         <img src="images/try-now.png" />
     </a>
 </p>
