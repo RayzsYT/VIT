@@ -57,7 +57,28 @@ public class Requests {
                 String result = getAsString(
                         client,
                         RequestDest.VST,
-                        "stats/" + userName.replace(" ", "") + "/" + userTag.replace(" ", "%20") + "/stream"
+                        "stats/" + userName.replace(" ", "%20") + "/" + userTag.replace(" ", "%20") + "/stream"
+                );
+
+                if (result == null || result.startsWith("event: error")) {
+                    return null;
+                }
+
+                final int firstIndex = StringUtils.searchIndex("data: ", result);
+                if (firstIndex == -1) return null;
+
+                result = result.substring(firstIndex, result.length() - 13);
+                return new JSONObject(result);
+            }
+
+            /**
+             * Fetch the players the player queued with.
+             */
+            public static JSONObject fetchPlayerParties(final HttpClient client, final String playerId) {
+                String result = getAsString(
+                        client,
+                        RequestDest.VST,
+                        "players/" + playerId.replace(" ", "%20") + "/partied-with"
                 );
 
                 if (result == null || result.startsWith("event: error")) {
