@@ -6,7 +6,7 @@ public enum RequestDest {
 
     API                 ("https://valorant-api.com/v1/"),
 
-    VST                 ("https://valstats.site/v1/"),
+    VST                 ("https://valstats.site/v1/"),          // Actually not using it.
 
 
     LOCAL               ("https://127.0.0.1:%s/"),              // port

@@ -50,5 +50,4 @@ VIT offers you an API to work with to create your very own addons.
 <br>
 
 # Credits
-- [valorant-api](https://valorant-api.com/) for their awesome api!
-- [valostats](https://valstats.site/) for their great and beautifully organised player and match statistics database!
+- [valorant-api](https://valorant-api.com/) (for images and internal game data)
