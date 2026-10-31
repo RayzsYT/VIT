@@ -81,14 +81,10 @@ public class Requests {
                         "players/" + playerId.replace(" ", "%20") + "/partied-with"
                 );
 
-                if (result == null || result.startsWith("event: error")) {
+                if (result == null) {
                     return null;
                 }
 
-                final int firstIndex = StringUtils.searchIndex("data: ", result);
-                if (firstIndex == -1) return null;
-
-                result = result.substring(firstIndex, result.length() - 13);
                 return new JSONObject(result);
             }
 
