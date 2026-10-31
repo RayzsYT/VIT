@@ -46,3 +46,9 @@ VIT offers you an API to work with to create your very own addons.
 - ~~At least [**Java 21 or higher**](https://www.oracle.com/de/java/technologies/downloads/#jdk21-windows).~~
 
 **(!) The installation script will install both Java and all necessary libraries automatically. No need to install anything manually.**
+
+<br>
+
+# Credits
+- [valorant-api](https://valorant-api.com/) (for images and internal game data)
+- [valostats](https://valstats.site/) (purely out of inspiration)
