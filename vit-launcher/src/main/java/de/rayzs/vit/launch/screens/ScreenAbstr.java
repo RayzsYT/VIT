@@ -43,7 +43,7 @@ public abstract class ScreenAbstr implements de.rayzs.vit.api.gui.Screen {
     @Override
     public void updatePlayerBanner(final Player player) {
         if (playerBanners.containsKey(player.id())) {
-            playerBanners.get(player.id()).updatePlayer(player);
+            playerBanners.get(player.id()).updatePlayer(player, true);
             return;
         }
 

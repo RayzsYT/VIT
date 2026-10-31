@@ -156,6 +156,6 @@ public class LivePlayerBanner extends PlayerBanner {
         banner.add(inner, BorderLayout.CENTER);
 
 
-        updatePlayer(player);
+        updatePlayer(player, false);
     }
 }

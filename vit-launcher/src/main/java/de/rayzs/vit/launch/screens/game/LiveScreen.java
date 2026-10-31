@@ -289,7 +289,7 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
             gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             for (final Player player : api.getGame().players()) {
-                playerBanners.get(player.id()).updatePlayer(player);
+                playerBanners.get(player.id()).updatePlayer(player, true);
             }
 
             gui.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

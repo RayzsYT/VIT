@@ -145,6 +145,6 @@ public class LobbyPlayerBanner extends PlayerBanner {
         banner.add(inner, BorderLayout.CENTER);
 
 
-        updatePlayer(player);
+        updatePlayer(player, false);
     }
 }

@@ -168,9 +168,12 @@ public abstract class PlayerBanner {
      *
      * @param newPlayerObj New player object.
      */
-    public void updatePlayer(final Player newPlayerObj) {
-        final PreCreatePlayerBannerEvent playerBannerEvent = api.getEventManager().call(new PreCreatePlayerBannerEvent(newPlayerObj));
-        this.player = playerBannerEvent.getPlayer();
+    public void updatePlayer(final Player newPlayerObj, final boolean callEvent) {
+        if (callEvent) {
+            final PreCreatePlayerBannerEvent playerBannerEvent = api.getEventManager().call(new PreCreatePlayerBannerEvent(newPlayerObj));
+            this.player = playerBannerEvent.getPlayer();
+        } else this.player = newPlayerObj;
+
 
         // Set player name
         playerName.setText(formatPlayerName(player));
