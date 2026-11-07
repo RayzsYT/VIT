@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.event.events.player.PostCreatedAllPlayerBannersEvent;
 import de.rayzs.vit.api.event.events.player.PreCreatePlayerBannerEvent;
 import de.rayzs.vit.api.event.events.player.PreCreatePlayerWindowEvent;
 import de.rayzs.vit.api.gui.GUI;
@@ -165,6 +166,7 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
 
             }
 
+
             contentPane.remove(playersWaitingPanel);
             contentPane.add(playersPanel, BorderLayout.CENTER);
 
@@ -172,6 +174,11 @@ public class LiveScreen extends ScreenAbstr implements GameScreen {
             clearImageCache();
 
             playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
+
+
+            api.getEventManager().call(new PostCreatedAllPlayerBannersEvent());
+
+
         }).start();
 
 

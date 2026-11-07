@@ -1,6 +1,7 @@
 package de.rayzs.vit.launch.screens.game;
 
 import de.rayzs.vit.api.VITAPI;
+import de.rayzs.vit.api.event.events.player.PostCreatedAllPlayerBannersEvent;
 import de.rayzs.vit.api.gui.GUI;
 import de.rayzs.vit.api.gui.PopupGUI;
 import de.rayzs.vit.api.objects.items.Agent;
@@ -125,6 +126,9 @@ public class LobbyScreen extends ScreenAbstr implements GameScreen {
             clearImageCache();
 
             playerBanners.values().forEach(banner -> banner.getBanner().setVisible(true));
+
+
+            api.getEventManager().call(new PostCreatedAllPlayerBannersEvent());
         }).start();
 
 
