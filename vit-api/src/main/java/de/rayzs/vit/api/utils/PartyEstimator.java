@@ -142,6 +142,8 @@ public class PartyEstimator {
         for (Match match : history) {
 
             String selfPartyId = null;
+            if (match.players() == null) continue;
+
             for (Player other : match.players()) {
                 if (selfPlayer.id().equalsIgnoreCase( other.id() )) {
                     selfPartyId = other.party().partyId();
