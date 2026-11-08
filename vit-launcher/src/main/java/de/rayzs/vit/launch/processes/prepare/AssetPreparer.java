@@ -651,11 +651,17 @@ public class AssetPreparer {
 
                     final String chromaId = chroma.getString("uuid");
                     final String chromaName = formatWeaponName(chroma.getString("displayName"));
-                    final Object displayChromaIconObj = chroma.get("displayIcon");
 
                     api.getImageProvider().getWeaponSkins().putName(chromaId, chromaName);
 
-                    if (displayChromaIconObj instanceof String displayChromaIcon) {
+                    if (chroma.get("displayIcon") instanceof String displayChromaIcon) {
+
+                        if (availableSkinDisplayIcon == null) {
+                            availableSkinDisplayIcon = displayChromaIcon;
+                        }
+
+                        api.getImageProvider().getWeaponSkins().putImage(chromaId, displayChromaIcon);
+                    } else if (chroma.get("fullRender") instanceof String displayChromaIcon) {
 
                         if (availableSkinDisplayIcon == null) {
                             availableSkinDisplayIcon = displayChromaIcon;
